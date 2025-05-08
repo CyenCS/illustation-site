@@ -1,0 +1,87 @@
+.registry-page * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.registry-page-container {
+  height: 100vh; /* Ensure it covers the entire viewport */
+  background: rgb(171, 247, 255); /* Cyan background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.registry-page {
+  width: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2), 0 5px 5px rgba(0, 0, 0, 0.24);
+  background: #fff;
+}
+
+.registry-page .inputbox {
+  margin-bottom: 10px;
+}
+
+.registry-page .inputbox input {
+  width: 100%;
+  font-size: 16px;
+  padding: 15px;
+  border: 0;
+  background: #e8e8e8;
+  outline: none;
+}
+
+.proceed {
+  width: 100%;
+  font-size: 12px;
+  padding: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  background: rgb(0, 36, 91);
+  border: 0;
+  color: #fff;
+  text-transform: uppercase;
+  transition: all ease 0.5s;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.switch{
+  background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+  text-decoration: none;
+    color: #2000af;
+}
+
+
+.proceed:hover {
+  background: rgb(0, 102, 255);
+}
+
+.registry-page p {
+  color: #b3b3b3;
+  font-size: 12px;
+}
+
+.registry-page p a {
+  text-decoration: none;
+  color: #2000af;
+}
+
+.registry-page .registration {
+  /* display: none; */
+}
+
+.registry-page form {
+  transition: all 0.5s ease;
+  opacity: 1;
+}
