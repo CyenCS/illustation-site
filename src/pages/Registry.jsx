@@ -14,11 +14,11 @@ function Registry() {
         ) : (
           <SignupForm />
         )}
-        <p className="message">
+        <p className="message"></p>
           <button type="button" className="switch" onClick={() => setShowLogin(!showLogin)}>
             {showLogin ? "Create account now" : "Back to Sign In"}
           </button>
-        </p>
+        
       </div>
     </main>
   );

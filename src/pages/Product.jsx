@@ -1,5 +1,6 @@
 import React from "react";
 import '../Design/product.css';
+import {Insert} from './placeholder/Insert.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,25 +15,9 @@ function Product() {
         </p>
       </div>
       <div className="content product-content">
+        {/* To be moved to another file - Insert.jsx*/}
+        <Insert/>
         {/* To be moved to another file */}
-            <div className="product">
-                <form method="post" id="insertitem">
-                    <div className="row">
-                        <div className="inputbox">
-                            <label>Enter Item Name</label>
-                            <input type="text" id="itemname" className="form-control" name="itemname" placeholder="Item name" minLength="3" autoComplete="off" required /><br/><br/>
-                        </div>
-                        <div className="inputbox">
-                            <label>Enter Amount of the Item</label>
-                            <input type="text" id="amount" className="form-control" name="amount" placeholder="Amount" minLength="1" autoComplete="off" required />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <button className ="action" type="submit">Submit</button>
-                    </div>
-                </form>
-            </div>
-            {/* To be moved to another file */}
             <div className="product">
                 <form method="post" id="searchform">
                     <h2>Search your ordered items</h2>

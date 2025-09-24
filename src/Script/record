@@ -1,0 +1,265 @@
+// Updated record.js to dynamically integrate sorting logic with the updated table display.
+document.addEventListener('DOMContentLoaded', () => {
+    const searchform = document.getElementById('searchform');
+    const resultsTable = document.querySelector('.resultsTable');
+    const paginationContainer = document.querySelector('.pagination-container');
+    const searchContainer = document.querySelector('.search-container');
+
+    insertitem();
+
+    class Search {
+        constructor(keyword, userid) {
+            this.keyword = keyword;
+            this.userid = userid;
+        }
+
+        async search() {
+            const formData = new FormData();
+            formData.append('keyword', this.keyword);
+            formData.append('userid', this.userid);
+
+            fetch('../UI/Service/search.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.displayResults(data.data);
+                } else {
+                    this.displayMessage(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        displayResults(results) {
+            if (resultsTable) {
+                resultsTable.innerHTML = '';
+
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                headerRow.innerHTML = `
+                    <th data-type="number">ID</th>
+                    <th data-type="string">Item Name</th>
+                    <th data-type="number">Amount</th>
+                    <th data-type="number">Date</th>
+                    <th>Actions</th>
+                `;
+                thead.appendChild(headerRow);
+                resultsTable.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                tbody.id = 'paginated-list';
+                results.forEach(result => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${result.id}</td>
+                        <td>${result.itemname}</td>
+                        <td>${result.amount}</td>
+                        <td>${result.date}</td>
+                        <td>
+                            <button class="edit-btn" data-id="${result.id}" data-amount="${result.amount}">Edit</button>
+                            <button class="delete-btn" data-id="${result.id}">Delete</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                resultsTable.appendChild(tbody);
+
+                // sortTable(); // Reinitialize sorting after updating rows
+
+                paginationContainer.innerHTML = ''; // Clear existing pagination content
+
+                const prevButton = document.createElement('button');
+                prevButton.classList.add('pagination-button');
+                prevButton.id = 'prevButton';
+                prevButton.setAttribute('aria-label', 'Previous page');
+                prevButton.setAttribute('title', 'Previous page');
+                prevButton.innerHTML = '&lt;';
+                paginationContainer.appendChild(prevButton);
+
+                const paginationNumbers = document.createElement('div');
+                paginationNumbers.id = 'pagination-numbers';
+                paginationContainer.appendChild(paginationNumbers);
+
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('pagination-button');
+                nextButton.id = 'nextButton';
+                nextButton.setAttribute('aria-label', 'Next page');
+                nextButton.setAttribute('title', 'Next page');
+                nextButton.innerHTML = '&gt;';
+                paginationContainer.appendChild(nextButton);
+
+            } else {
+                console.error('Error: resultsTable or footer is null');
+            }
+        }
+
+        displayMessage(message) {
+            if (resultsTable) {
+                resultsTable.innerHTML = `<tr><td colspan="5">${message}</td></tr>`;
+            } else {
+                console.error('Error: resultsTable is null');
+            }
+        }
+    }
+
+    const userid = localStorage.getItem('userid');
+    if (!userid) {
+        displayLoginMessage();
+    } else {
+        const keyword = '';
+        const search = new Search(keyword, userid);
+        search.search();
+
+        if (searchform) {
+            searchform.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const keyword = document.getElementById('keyword').value;
+                search.keyword = keyword;
+                search.search();
+            });
+        }
+    }
+
+    if (resultsTable) {
+        resultsTable.addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-btn')) {
+                handleEdit(e.target);
+            } else if (e.target.classList.contains('delete-btn')) {
+                handleDelete(e.target);
+            }
+        });
+    } else {
+        console.error('Error: resultsTable is null');
+    }
+
+    function handleEdit(button) {
+        const id = button.getAttribute('data-id');
+        const amount = button.getAttribute('data-amount');
+        const newAmount = prompt('Enter new amount:', amount);
+        if (newAmount !== null && newAmount !== '') {
+            localStorage.setItem('itemid', id);
+            localStorage.setItem('newAmount', newAmount);
+            update();
+        }
+    }
+
+    function handleDelete(button) {
+        const id = button.getAttribute('data-id');
+        if (confirm('Are you sure you want to delete this item?')) {
+            localStorage.setItem('itemid', id);
+            remove();
+        }
+    }
+
+    function insertitem() {
+        const insertform = document.getElementById('insertitem');
+        if (insertform) {
+            insertform.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const itemname = document.getElementById('itemname').value;
+                const amount = document.getElementById('amount').value;
+                const userid = localStorage.getItem('userid');
+
+                const itemData = new FormData();
+                itemData.append('itemname', itemname);
+                itemData.append('amount', amount);
+                itemData.append('userid', userid);
+
+                fetch('../UI/Service/insert.php', {
+                    method: 'POST',
+                    body: itemData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Item inserted successfully');
+                        const search = new Search('', userid);
+                        search.search();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error: ', error);
+                });
+            });
+        } else {
+            console.error('Error: insertform is null');
+        }
+    }
+
+    function update() {
+        const id = localStorage.getItem('itemid');
+        const newAmount = localStorage.getItem('newAmount');
+        const userid = localStorage.getItem('userid');
+
+        if (id && newAmount && userid) {
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('amount', newAmount);
+            formData.append('userid', userid);
+
+            fetch('../UI/Service/update.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.error('Error: id, newAmount, or userid is null');
+        }
+    }
+
+    function remove() {
+        const id = localStorage.getItem('itemid');
+        const userid = localStorage.getItem('userid');
+
+        if (id && userid) {
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('userid', userid);
+
+            fetch('../UI/Service/remove.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.error('Error: id or userid is null');
+        }
+    }
+
+    function displayLoginMessage() {
+        if (searchContainer) {
+            const message = document.createElement('div');
+            message.className = 'login-message';
+            message.textContent = 'You must be logged in to search for items.';
+            searchContainer.appendChild(message);
+        } else {
+            console.error('Error: searchContainer is null');
+        }
+    }
+});

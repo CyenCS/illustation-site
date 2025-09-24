@@ -1,4 +1,4 @@
-.row {
+.inputrow {
     display: flex; /*Align items in a horizontal row  */
     flex-direction: row; /*Default*/
     justify-content: flex-start; /* Add space between input groups */
@@ -33,13 +33,15 @@
   
   .searchbox {
     display: flex;
-    flex-direction: row; /* Labels stack vertically above inputs */
+    flex-direction: row;
+    width: 30%;
+    
   }
   
   .form-control{
     width:100%;
     display: block;
-    height: 50px;
+    height: 30px;
     box-sizing: border-box;
     margin: 0;
   }

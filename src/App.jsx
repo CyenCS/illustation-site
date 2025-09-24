@@ -2,12 +2,15 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./Components/Navbar.jsx";
 import Footer from "./Components/Footer.jsx";
-import MainContent from "./pages/MainContent.jsx";
+import MainContent from "./Main.jsx";
 import './Design/style.css';
-import About from "./pages/About.jsx";
+import './Design/posts.css';
+import About from "./pages/placeholder/About.jsx";
 import Product from "./pages/Product.jsx";
-import Contact from "./pages/Contact.jsx";
+import Contact from "./pages/placeholder/Contact.jsx";
 import Registry from "./pages/Registry.jsx";
+import Upload from "./pages/Upload.jsx";
+import Posts from "./pages/Posts.jsx";
 
 // const Layout = ({ children }) => {
 
@@ -31,11 +34,15 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<MainContent />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/product" element={<Product />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/registry" element={<Registry />} />
+          <Route path="/*" element={<MainContent />} />{/* '/*' Catches all sub routes (Nested inside) */}
+          {/* <Route path="/illustration" element={<Illustration />} /> */}
+          <Route path="/upload" element={<Upload />} />
+          {/* Assuming Registry is a component for user registration */}
+          <Route path="registry" element={<Registry />} />
+          <Route path="posts/:artid" element={<Posts />} />
+          
+          {/* Add more routes as needed */}
+
         </Routes>
       </Layout>
     </Router>

@@ -1,0 +1,125 @@
+.posts-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    
+}
+
+  .posts-content .posts{
+    /* place-items: center; */
+    border-radius: 10px;
+    padding:30px;
+    /* width: 50%; */
+    box-shadow: 0 0 20px rgb(0,0,0,0.2),
+    0 5px 5px 0 rgb(0,0,0,0.24);
+    background-color: hsl(0, 0%, 30%);
+    width: 30%;
+    overflow: auto;
+  }
+
+  .form-control{
+    width:100%;
+    display: block;
+    height: 30px;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .image-item {
+  display: block;
+  flex-direction: column;
+  margin: 50px 0;
+}
+
+.image-item__btn-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.upload__image-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  gap: 16px;
+  margin-top: 16px;
+}
+
+
+textarea {
+    font-family: inherit;
+  resize: vertical;
+  width: 100%; /* or fixed width like 300px */
+  min-height: 60px;
+  max-height: 300px; /* optional */
+  font-size: 16px;
+}
+
+button.action{
+    /* width: 100%; */
+    width:100px; display:flex;
+    justify-content: center; align-items: center;
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 10px;
+    font-weight: bold;
+    background: rgb(0, 102, 255);
+    border: 0;
+    color: #ffff;
+    transition: all ease .5s;
+    cursor: pointer;
+    margin-bottom: 10px;
+    place-items: center;
+  }
+
+button.action:disabled {
+  background-color: #444;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+
+  /* Posts */
+  .line {
+            border-bottom: 5px solid hsl(0, 0%, 10%);
+            margin-top: 5px;
+            width: 100%;
+        }
+
+  .title{
+    border-radius: 10px;
+    padding: 10px;
+    background-color: hsl(0, 0%, 20%);
+    display: flex;
+  }
+
+  .info{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: hsl(0, 0%, 20%);
+    border-radius: 10px;
+    height: 80%;
+    font-size: 16px;
+  }
+
+  .description{
+    background-color: hsl(0, 0%, 10%);
+    height: 80%;
+    padding: 10px;
+    overflow: auto;
+  }
+
+  .image{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: hsl(0, 0%, 20%);
+    height: 80%;
+    font-size: 16px;
+  }
+
+  .errormsg{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  

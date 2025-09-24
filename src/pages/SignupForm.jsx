@@ -1,25 +1,37 @@
 import React, { useState } from "react";
-import { handleFormSubmit } from "../Script/backend";
+// import { handleFormSubmit } from "../Script/backend";
+import axios from 'axios'; // make sure it's imported
+
+
+// WARNING: Hashed password length is 60 characters, so ensure your database parameter can have above that limit.
 
 function SignupForm() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {//Manual Trigger
+  e.preventDefault(); 
+  try {
+    const response = await axios.post(
+      'http://localhost:3001/fetch/registry', {
+      name,
+      password
+    });
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('password', password);
-
-    handleFormSubmit(
-      'http://localhost:80/Service/signup.php',
-      formData,
-      () => window.location.reload(),
-      setErrorMessage
-    );
-  };
+    if (response.data.success) {
+      alert('Registration successful! Please log in.');
+      // localStorage.setItem('name', response.data.user.name);
+      // localStorage.setItem('id', response.data.user.id);
+      window.location.href = '/registry';
+    } else {
+      setErrorMessage(response.data.message || 'Signup failed');
+    }
+  } catch (err) {
+    console.error(err);
+    setErrorMessage('Server error');
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} id="signupform" className="registration">

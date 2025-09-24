@@ -1,25 +1,38 @@
 import React, { useState } from "react";
-import { handleFormSubmit } from "../Script/backend";
+// import { handleFormSubmit } from "../Script/backend";
+import axios from 'axios'; // make sure it's imported
 
 function LoginForm() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('password', password);
+  const handleSubmit //Manual Trigger
+= async (e) => {
+  e.preventDefault(); 
+  try {
+    const response = await axios.post(
+      'http://localhost:3001/fetch/login', {
+      name,
+      password
+    });
 
-    handleFormSubmit(
-      'http://localhost:80/Service/login.php',
-      formData,
-      () => (window.location.href = '/'),
-      setErrorMessage
-    );
-  };
+    if (response.data.success) {
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('name', response.data.user.name);
+      localStorage.setItem('id', response.data.user.id);
+      
+      console.log('Login successful:', response.data.user.id);
+      window.location.href = '/';
+    } else {
+      setErrorMessage(response.data.message || 'Login failed');
+    }
+  } catch (err) {
+    console.error(err);
+    setErrorMessage('Server error');
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} id="loginform" className="login">

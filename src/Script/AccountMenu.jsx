@@ -3,22 +3,31 @@ import { getAccountMenuData } from './backend';
 // import '../Design/Dropdown.css';
 
 export default function AccountMenu() {
-  const username = localStorage.getItem('username');
+  const displayname = localStorage.getItem('name');
   const [showDropdown, setShowDropdown] = useState(false);
 
   const toggleDropdown = () => {
       console.log('Dropdown toggled!');
       setShowDropdown(!showDropdown);
     };
-  if (!username) return null;
+  if (!displayname) return null;
 
-  const { name, links } = getAccountMenuData(username);
+  const { name, links } = getAccountMenuData(displayname);
 
   return (
     <div className="dropdown">
-      <a href="#" id="accname" onClick={toggleDropdown}>
+      {/* <a href="#" id="accname" onClick={toggleDropdown}></a> */}
+      <div >
+        <button
+        id="accname"
+        className={"transparent" + (showDropdown ? ' active' : '')}
+        onClick={toggleDropdown}
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={showDropdown}
+      >
         {name}
-      </a>
+      </button>
       {showDropdown && (
         <div className="dropdown-content">
           {links.map(link => (
@@ -36,6 +45,9 @@ export default function AccountMenu() {
           ))}
         </div>
       )}
+
+      </div>
+      
     </div>
     // <div className="dropdown" ref={dropdownRef}>
     //   <button onClick={toggleDropdown} className="dropbtn">

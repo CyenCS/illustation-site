@@ -1,3 +1,4 @@
+/*Footer & Header*/
 body {
   display: flex;
   flex-direction: column;
@@ -6,7 +7,7 @@ body {
   font-family: calibri;
 }
 
-elementincenter{
+.elementincenter{
   /* Method 1 */
   position: absolute;
   top:50%;
@@ -39,11 +40,11 @@ header {
 .main {
   text-align: center;
   background-color: hsla(221, 100%, 50%, 0.295);
-  padding: 10px;
   border: 10px;
   flex-wrap: wrap;
   margin: 0px;
   height: 30vh;
+  padding: 10px 100px;
 }
 
 .spilt {
@@ -58,16 +59,58 @@ header {
   margin-left: 100px;
 }
 
-
-
 .content {
-  height: 80vh;
+  height: 100vh;
   overflow: auto;
-  border: 25px solid #E8C48F;
-  padding: 10px;
+  border: 25px ; /* solid #E8C48F */
   display: flex; /* Use flex for better alignment */
   flex-direction: column; /* Align items vertically */
   gap: 10px; /* Add spacing between items */
+  padding: 10px 120px;
+  background-color: rgb(55, 55, 55);
+  color: white;
+}
+
+.navpage{
+  border: 25px;
+  background: black;
+  padding: 10px 100px;
+  
+}
+
+.navpage button {
+  background: none;
+  border: none;
+  padding: 10px 50px;
+  margin: 0;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.navpage button:hover {
+  background-color: hsl(199, 100%, 66%);
+  color: white;
+}
+
+.navpage button.active {
+  background-color: hsl(0, 0%, 100%);
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.inputbox {
+    padding: 10px;
+    border-radius: 5px;
+    width: 400px;
+  }
+
+.searchbar {
+    display: flex;
+    flex-direction: row;
+    width: 30%;
 }
 
 .navbar {
@@ -104,14 +147,15 @@ header {
 }
 
 .navbar a:hover {
-  background-color: hsl(0, 0%, 10%)
+  background-color: hsl(0, 0%, 10%);
+  color: white;
 }
 
 .navdiv {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  /* ^ Separate each of elements to the justify alignment*/
+  
 }
 
 .highlight {
@@ -141,30 +185,36 @@ header {
   font-size: 16px;
 }
 
+.transparent{
+          background: none; border: none;
+          padding: 15px;
+          margin: 0;
+          color: white;
+          text-decoration: none;
+          cursor: pointer;
+          font: inherit;
+          align-items: center; justify-content: center;
+          display: flex; text-align: center;
+}
+
+.transparent:hover {
+  background-color: hsl(0, 0%, 0%);
+  color: white;
+}
+
+.transparent.active {
+  background-color: hsl(136, 100%, 24%);
+  color: white;
+}
+
 footer {
   display: flex;
   flex-wrap: wrap;
   margin-top: auto;
   background-color: hsl(0, 100%, 38%);
-  padding: 10px;
+  color: white;
+  padding: 20px;
 }
-
-/* #registry{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  padding: 10px 20px;
-  height: auto;
-  color: black;
-  background-color: hsl(123, 100%, 50%);
-}
-
-#registry:hover{
-  color:white;
-  background-color: hsl(154, 100%, 22%)
-} */
-
 
 #account {
   position: relative;
@@ -175,14 +225,7 @@ footer {
   float: right;
   position: relative;
 }
-/* .dropbtn {
-  background-color: #3498db;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-} */
+
 .dropdown-content {
   display: block; /* Hidden by default, DO NOT SET AS NONE */
   position: absolute;
@@ -208,3 +251,18 @@ footer {
 /* .dropdown .show {
   display: block;
 } */
+
+/*Home Page*/
+.thumbnail-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.thumbnail-link:visited {
+  color: inherit;
+}
+
+.thumbnail-link:focus,
+.thumbnail-link:active {
+  outline: none;
+}
