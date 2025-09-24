@@ -135,16 +135,24 @@ router.get('/posts/:artid', async (req, res) => {
 
 router.get('/illusts', async (req, res) => {
   try {
+    const keyword = req.query.search || '';
+    const limit = parseInt(req.query.limit);
+    const offset = parseInt(req.query.offset);
+
+
+
     const query = `
       SELECT artwork.*, users.name AS username
-      FROM artwork
-      INNER JOIN users ON artwork.userid = users.id
+      FROM artwork INNER JOIN users ON artwork.userid = users.id
+      WHERE artwork.title LIKE ?
       ORDER BY artwork.created DESC
-      LIMIT 20
+      LIMIT ? OFFSET ?
     `;
     //OFFSET ?
     // offset formula = (current page - 1) * limit
-    const [rows] = await db.promise().query(query);
+    const [rows] = await db.promise()
+    .query(query, [`%${keyword}%`, limit || 100, offset || 0]);
+    console.log('Debug: ', limit, offset, keyword);
 
     const posts = rows.map(post => {
       let images = [];

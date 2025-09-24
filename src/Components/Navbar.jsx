@@ -15,12 +15,13 @@ function Navbar() {
 
   function onSearchSubmit(e) {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (searchText.trim()) {
-      params.append("search", searchText.trim());
+    const trimmed = (searchText || '').trim();
+    if (trimmed.length > 0) {
+      navigate('illustration');
+    } else {
+      navigate(`/illustration?search=${encodeURIComponent(trimmed)}&page=1`);
     }
-     params.set('page', '1'); // start at page 1 for new searches
-    navigate(`/illustration?${params.toString()}`);
+
   }
  
   return (
