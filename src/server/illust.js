@@ -136,8 +136,9 @@ router.get('/posts/:artid', async (req, res) => {
 router.get('/illusts', async (req, res) => {
   try {
     const keyword = req.query.search || '';
-    const limit = parseInt(req.query.limit);
-    const offset = parseInt(req.query.offset);
+    const limit = 10;
+  const currentPage = parseInt(req.query.currentPage) || 1;
+  const offset = parseInt((currentPage - 1) * limit);
 
 
 
@@ -151,8 +152,12 @@ router.get('/illusts', async (req, res) => {
     //OFFSET ?
     // offset formula = (current page - 1) * limit
     const [rows] = await db.promise()
-    .query(query, [`%${keyword}%`, limit || 100, offset || 0]);
-    console.log('Debug: ', limit, offset, keyword);
+    .query(query, [`%${keyword}%`, limit, offset]);
+
+    const countQuery = `SELECT COUNT(*) AS total FROM artwork WHERE title LIKE ?`;
+    const [countRows] = await db.promise().query(countQuery, [`%${keyword}%`]);
+    const total = countRows[0]?.total;
+    const maxpage = Math.max(1, Math.ceil(total / limit));
 
     const posts = rows.map(post => {
       let images = [];
@@ -173,7 +178,7 @@ router.get('/illusts', async (req, res) => {
       };
     });
 
-    res.json({ success: true, posts });
+    res.json({ success: true, posts, total,  maxpage});
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "DB error: " + err.message });
