@@ -135,12 +135,11 @@ router.get('/posts/:artid', async (req, res) => {
 
 router.get('/illusts', async (req, res) => {
   try {
-    const keyword = req.query.search || '';
+    const {search = ""} = req.query;
     const limit = 10;
   const currentPage = parseInt(req.query.currentPage) || 1;
   const offset = parseInt((currentPage - 1) * limit);
-
-
+  
 
     const query = `
       SELECT artwork.*, users.name AS username
@@ -149,13 +148,15 @@ router.get('/illusts', async (req, res) => {
       ORDER BY artwork.created DESC
       LIMIT ? OFFSET ?
     `;
+
     //OFFSET ?
     // offset formula = (current page - 1) * limit
+    const params = [`%${search}%`, limit, offset];
     const [rows] = await db.promise()
-    .query(query, [`%${keyword}%`, limit, offset]);
+    .query(query, params);
 
     const countQuery = `SELECT COUNT(*) AS total FROM artwork WHERE title LIKE ?`;
-    const [countRows] = await db.promise().query(countQuery, [`%${keyword}%`]);
+    const [countRows] = await db.promise().query(countQuery, [`%${search}%`]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
 
@@ -198,7 +199,7 @@ router.get('/recent', async (req, res) => {
     // WHERE userid = ? AND itemname LIKE ?
     // LIMIT ? OFFSET ?`;
 
-  const [rows] = await db.promise().query(query);
+  // const [rows] = await db.promise().query(query);
 
   db.query(query, [userid, `%${keyword}%`, limit, offset], (err, results) => {
     if (err) {

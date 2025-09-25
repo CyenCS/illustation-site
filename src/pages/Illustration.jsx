@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, use } from 'react';
 import Recommendation from '../Components/Recommendation.jsx';
 import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 function truncateText(text, maxLength) {
   if (text.length <= maxLength) return text;
@@ -9,75 +10,92 @@ function truncateText(text, maxLength) {
 }
 
 function Illustration() {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const initialKeyword = params.get("search") || '';
-  const initialPage = parseInt(params.get("page"), 10) || 1;
+  // const location = useLocation();
+  // const params = new URLSearchParams(location.search);
+  // // const initialKeyword = params.get("search") || '';
+  // const initialPage = parseInt(params.get("page"), 10) || 1;
   //... to do: Add search functionality
 
 
-  const [activeKeyword, setActiveKeyword] = useState(initialKeyword);
+  // const [activeKeyword, setActiveKeyword] = useState(initialKeyword);
   const [posts, setPosts] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const search = searchParams.get("search") || '';
+  const pageParam = parseInt(searchParams.get("page") || '1', 10);
+
   const [total, setTotal] = useState(0);
    const [maxPage, setMaxPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [currentPage, setCurrentPage] = useState(pageParam);
 
-  
+  useEffect(() => {
+    setCurrentPage(pageParam);
+  }, [pageParam]);
 
     const fetchPosts = useCallback(
-    async (keyword) => {
+    async (search, currentPage) => {
+            setLoading(true); setError(null);
       try{
         const res = await axios.get(`http://localhost:3001/illust/illusts`, {
           params: {
-            search: keyword,
-            currentPage: currentPage,
+            search: search || '',
+            currentPage: currentPage || 1,
           }
         });
-        if (res.data.success) {
+        if (res.data?.success) {
             setPosts(res.data.posts);
             setTotal(res.data.total);
             setMaxPage(res.data.maxpage);
+            setCurrentPage((prev) => Math.min(prev, res.data.maxpage)); // Adjust current page if it exceeds maxPage
             setError(null);
             setLoading(false);
             console.log("Fetched posts: ", res.data.posts);
         } else{
-            setError("Failed to fetch posts: " + res.data.message);
-            setLoading(false);
+          setPosts([]);
+          setTotal(0);
+          setMaxPage(1);
+          setLoading(false);
         }
       } catch (err){
+        setPosts([]);
         console.error("Error fetching posts: ", err);
+        setLoading(false);
       } finally{
         setLoading(false);
       }
-    }, [currentPage]);
+    }, []);
 
     useEffect(() => {
-      fetchPosts(activeKeyword);
-    },[currentPage, activeKeyword]);
+      fetchPosts(search, currentPage);
+    },[search, currentPage, fetchPosts]);
 
-  const handlePageChange = (direction) => {
-    setCurrentPage((prev) => {
-      let nextPage;
-      if (direction === "next") {
-        nextPage = Math.min(prev + 1, maxPage);
-      } else {
-        nextPage = Math.max(prev - 1, 1);
-      }
-      window.history.pushState({}, '', `?search=${encodeURIComponent(activeKeyword)}&page=${nextPage}`);
-      return nextPage;
-    });
-  };
+  //!!!!!!!!Abandoned - useSearchParams already does this kind of function
+  // const handlePageChange = (direction) => {
+  //   setCurrentPage((prev) => {
+  //     let nextPage;
+  //     if (direction === "next") {
+  //       nextPage = Math.min(prev + 1, maxPage);
+  //     } else {
+  //       nextPage = Math.max(prev - 1, 1);
+  //     }
+  //     window.history.pushState({}, '', `?search=${encodeURIComponent(search)}&page=${nextPage}`);
+  //     return nextPage;
+  //   });
+  // };
+
+    if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
     return (
       <div>
         <div> 
           <h2>Illustrations</h2>
-          {activeKeyword ? <p>Search: <strong>{activeKeyword || '(empty)'}</strong></p>:null}
-          {activeKeyword ? <p>Found: <strong>{total || '(empty)'}</strong> artworks</p>:null}
+          {search ? <p>Search: <strong>{search || '(empty)'}</strong></p>:null}
+          {search && total > 0 ? <p>Found: <strong>{total}</strong> artworks</p>:null}
           
-          {posts.length === 0 && activeKeyword ? (
+          {posts.length === 0 ? (
             <p>No illustrations found.</p>
           ): (
             <div>
@@ -99,7 +117,9 @@ function Illustration() {
         ))}
   </div>
   <div style={{ marginTop: 20 }}>
-              <button onClick={() => handlePageChange("prev")} disabled={currentPage === 1}>
+              <button 
+              disabled = {currentPage <= 1}
+              onClick={() => setSearchParams({ search: search, page: currentPage - 1 })}>
                 Previous
               </button>
 
@@ -107,7 +127,10 @@ function Illustration() {
                 Page {currentPage} of {maxPage}
               </span>
 
-              <button onClick={() => handlePageChange("next")} disabled={currentPage === maxPage}>
+              <button 
+              
+              onClick={() => setSearchParams({ search: search, page: currentPage + 1 })} 
+              disabled={currentPage === maxPage}>
                 Next
               </button>
             </div>

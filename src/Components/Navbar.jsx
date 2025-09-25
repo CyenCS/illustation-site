@@ -10,16 +10,16 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 function Navbar() {
 
   const isLoggedIn = !!localStorage.getItem('name'); //!! => boolean check
-  const [searchText, setSearchText] = useState(""); //input text state only, not the active search query
+  const [search, setSearch] = useState(""); //input text state only, not the active search query
   const navigate = useNavigate();
 
   function onSearchSubmit(e) {
     e.preventDefault();
-    const trimmed = (searchText || '').trim();
+    const trimmed = (search || '').trim();
     if (trimmed.length > 0) {
-      navigate('illustration');
-    } else {
       navigate(`/illustration?search=${encodeURIComponent(trimmed)}&page=1`);
+    } else {
+      navigate(`/illustration?page=1`);
     }
 
   }
@@ -32,7 +32,7 @@ function Navbar() {
         </div>
         
           <form onSubmit={onSearchSubmit} className="searchbar">
-            <input value={searchText} onChange={(e) => setSearchText(e.target.value)} 
+            <input value={search} onChange={(e) => setSearch(e.target.value)} 
             type="text" placeholder="Search" className="inputbox"/>
             <button type="submit" ><FontAwesomeIcon icon={faSearch} /></button>
           </form>
