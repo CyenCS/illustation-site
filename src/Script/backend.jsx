@@ -1,4 +1,4 @@
-// import { User } from "../Class/user.js";
+import api from "../Script/axiosInstance";
 
 export function getAccountMenuData(name) {
   return {
@@ -15,7 +15,13 @@ function profile() {
   // Your profile logic goes here
 }
 
-function signout() {
+async function signout() {
+  try {
+    await api.post("/fetch/logout"); // tells server to clear refresh token cookie
+  } catch (err) {
+    console.error("Error during logout", err);
+  }
+
   localStorage.clear(); // Remove all user data
   sessionStorage.clear();
   alert('You have been logged out!');

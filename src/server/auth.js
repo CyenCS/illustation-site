@@ -15,7 +15,10 @@ function verifyToken(req, res, next) {
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err)  {
-      console.error("JWT verification failed:", err.message);
+      console.error("JWT verification failed:", err);
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ success: false, message: "Token expired" });
+      }
       return res.status(403).json({ success: false, message: `Invalid token: ${err.message}` });
     }
     

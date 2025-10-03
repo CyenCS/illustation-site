@@ -47,12 +47,12 @@ if (notFound) {
             <div className="posts" style={{width: "40%" }}>
                 <h3 className="title">{post.title ?? "No Title"}</h3>
                 <div className="info">
-                    <p>Username: {post.username??"None"}</p>
-                    <p>Published: {post.created??"None"}</p>
+                    <p>By: {post.username}</p>
+                    <p>Published: {post.created}</p>
                     {post.edited ? <p>Edited: {post.edited}</p>:null}
-                    <p>Category: {post.category??"None"}</p>
+                    <p>Category: {post.category}</p>
                     <div className="description">
-                        {post.caption ?? "No Desription"}
+                        {post.caption ?? <i>No Desription</i>}
                     </div>
                 </div>
             </div>

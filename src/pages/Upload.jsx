@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import ImageUploading from "react-images-uploading";
 import axios from 'axios';
+import api from "../Script/axiosInstance";
 
 function Upload() {
     const [title, setTitleName] = useState('');
@@ -25,9 +26,12 @@ function Upload() {
       alert("Please upload at least one image.");
       return;
     }
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert("You must be logged in to upload.");
+    const accessToken = localStorage.getItem("accessToken");
+    // const accessToken = (typeof window !== 'undefined' && typeof localStorage !== 'undefined')
+    //   ? (localStorage.getItem("accessToken") || localStorage.getItem("token"))
+    //   : null;
+    if (!accessToken) {
+      alert("You must be log in to upload.");
       return;
     }
 
@@ -44,11 +48,11 @@ function Upload() {
 
     try{
       
-      const response = await axios.post('http://localhost:3001/illust/upload', 
+      const response = await api.post('/illust/upload', 
         formData,
         {headers: { 
-          "Authorization": `Bearer ${token}`,
-          // 'Content-Type': 'multipart/form-data' //No Boundary - Unable to read token
+          "Authorization": `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data' //No Boundary - Unable to read token
         }}
       );
 
@@ -62,6 +66,7 @@ function Upload() {
     } catch (err) {
       const serverMessage = err.response?.data?.message || err.message;
       alert("Upload error: " + serverMessage);
+      console.error("localStorage is:", localStorage);
       console.error("Upload error details:", err);
     }
   }

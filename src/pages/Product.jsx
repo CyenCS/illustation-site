@@ -1,5 +1,5 @@
 import React from "react";
-import '../Design/product.css';
+// import '../Design/product.css';
 import {Insert} from './placeholder/Insert.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';

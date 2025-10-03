@@ -19,7 +19,7 @@ function LoginForm() {
     });
 
     if (response.data.success) {
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('name', response.data.user.name);
       localStorage.setItem('id', response.data.user.id);
       

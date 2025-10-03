@@ -4,13 +4,19 @@ const cors = require('cors');
 const fetchRoutes = require('./fetch'); 
 const db = require('./connect');
 const uploadRoutes = require('./illust');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = 3001;
 
-// Middleware
-app.use(cors());
+//Missing this part will cause errors - explicitly allowing credentials like cookies
+app.use(cors({
+  origin: "http://localhost:3000",  // frontend URL
+  credentials: true                 // allow cookies
+}));
+
 app.use(express.json());
+app.use(cookieParser());
 
 // Test DB connection at startup
 db.getConnection((err, connection) => {
@@ -31,3 +37,4 @@ app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
 app.listen(PORT, () => {
     console.log(`🚀 Backend server running at http://localhost:${PORT}`);
 });
+
