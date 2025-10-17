@@ -1,7 +1,6 @@
 import { useParams,} from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import axios from "axios";
-import Gallery from "../pages/Gallery";
 import '../Design/posts.css';
 
 function Posts() {
