@@ -10,14 +10,6 @@ function truncateText(text, maxLength) {
 }
 
 function Illustration() {
-  // const location = useLocation();
-  // const params = new URLSearchParams(location.search);
-  // // const initialKeyword = params.get("search") || '';
-  // const initialPage = parseInt(params.get("page"), 10) || 1;
-  //... to do: Add search functionality
-
-
-  // const [activeKeyword, setActiveKeyword] = useState(initialKeyword);
   const [posts, setPosts] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -85,8 +77,12 @@ function Illustration() {
   //   });
   // };
 
-    if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) {
+  return <div className="loading"><p>Loading...</p></div>;
+} 
+
+if (error) {
+  return <div className="error"><p>Error: ${error}</p></div>;}
 
     return (
       <div>
@@ -96,16 +92,16 @@ function Illustration() {
           {search && total > 0 ? <p>Found: <strong>{total}</strong> artworks</p>:null}
           
           {posts.length === 0 ? (
-            <p>No illustrations found.</p>
+            <p>No Illustrations found.</p>
           ): (
             <div>
-            <div style={{display: "flex", flexWrap: "wrap", gap: "50px", placeItems: "center"}}>
+            <div className='listpage'>
             {posts.map((post) => (
               <Link key={post.artid} to={`/posts/${post.artid}`} className="thumbnail-link">
-              <div>
+              <div >
                 {post.firstImage && (
                   <img style={{width: "170px", height: "170px", objectFit: "cover"}}
-                  src={`http://localhost:3001/${post.firstImage}`}
+                  src={`http://localhost:3001/posts/${post.firstImage}`}
                   alt={post.title}
                   className="thumbnail"
               />

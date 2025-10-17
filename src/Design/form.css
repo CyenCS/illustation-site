@@ -1,0 +1,91 @@
+.listpage{
+    display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columns */
+  gap: 10px;
+}
+
+.forms-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+/*Uploads */
+
+/* posts of posts-content / posts-content targets posts */
+  .forms-content .forms{
+    /* place-items: center; */
+    display: "block";
+    width: 600px;
+    height:500px;
+    border-radius: 10px;
+    padding: 30px;
+    flex-direction: column;
+  
+    /* width: 50%; */
+    box-shadow: 0 0 20px rgb(0,0,0,0.2),
+    0 5px 5px 0 rgb(0,0,0,0.24);
+    background-color: hsl(0, 0%, 30%);
+    overflow: auto;
+  }
+
+
+  .form-control{
+    width:100%;
+    display: block;
+    height: 30px;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .image-item {
+  display: block;
+  flex-direction: column;
+  margin: 50px 0;
+}
+
+.image-item__btn-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.upload__image-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  gap: 16px;
+  margin-top: 16px;
+}
+
+
+textarea {
+    font-family: inherit;
+  resize: vertical;
+  width: 100%; /* or fixed width like 300px */
+  min-height: 60px;
+  max-height: 300px; /* optional */
+  font-size: 16px;
+}
+
+button.action{
+    /* width: 100%; */
+    width:100px; display:flex;
+    justify-content: center; align-items: center;
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 10px;
+    font-weight: bold;
+    background: rgb(0, 102, 255);
+    border: 0;
+    color: #ffff;
+    transition: all ease .5s;
+    cursor: pointer;
+    margin-bottom: 10px;
+    place-items: center;
+  }
+
+button.action:disabled {
+  background-color: #444;
+  color: #aaa;
+  cursor: not-allowed;
+}

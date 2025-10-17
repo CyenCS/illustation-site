@@ -6,8 +6,10 @@ const db = require('./connect'); // Make sure connect.js exports the MySQL pool
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { requireLogin } = require('./auth');
 
-const verifyToken = require('./auth');
+// const verifyToken = require('../unused/auth');
+
 
 function generateArtId() {
   return Math.floor(Math.random() * 1e10).toString();
@@ -46,9 +48,9 @@ const upload = multer({ storage});
 
 
 //Upload Artwork
-router.post('/upload', verifyToken, upload.array('images', 1), async (req, res) => {
+router.post('/upload', requireLogin, upload.array('images', 3), async (req, res) => {
   try{
-    const userid = req.user?.id;
+    const userid = req.body.userid;
     const { title, caption, category, artid } = req.body;
     
 
@@ -58,7 +60,7 @@ router.post('/upload', verifyToken, upload.array('images', 1), async (req, res) 
     }
 
     const imagePaths = req.files.map((file) =>
-    `posts/${artid}/${file.filename}`
+    `${artid}/${file.filename}`
   );
     
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // import { handleFormSubmit } from "../Script/backend";
 import axios from 'axios'; // make sure it's imported
+// import api from "../Script/axiosInstance";
 
 function LoginForm() {
   const [name, setName] = useState('');
@@ -13,13 +14,15 @@ function LoginForm() {
   e.preventDefault(); 
   try {
     const response = await axios.post(
+      
       'http://localhost:3001/fetch/login', {
-      name,
-      password
-    });
+      name, password,
+    },
+    { withCredentials: true }
+  );
 
     if (response.data.success) {
-      localStorage.setItem('accessToken', response.data.accessToken);
+      // localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('name', response.data.user.name);
       localStorage.setItem('id', response.data.user.id);
       

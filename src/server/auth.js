@@ -1,31 +1,12 @@
-const jwt = require("jsonwebtoken");
-const path = require('path');
-require("dotenv").config({ path: path.join(__dirname, '.env') });
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) console.error('JWT_SECRET is not set. Set it in src/server/.env or environment variables.');
-
-function verifyToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  console.log("AuthHeader:", authHeader);
-  console.log("Verifying token:", token);
-
-  if (!token) return res.status(401).json({ success: false, message: "No token provided" });
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err)  {
-      console.error("JWT verification failed:", err);
-      if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({ success: false, message: "Token expired" });
-      }
-      return res.status(403).json({ success: false, message: `Invalid token: ${err.message}` });
-    }
-    
-    // localStorage.setItem('token', token); // Store token in localStorage
-    req.user = user; // attach decoded user info
-    next();
-  });
+function requireLogin(req, res, next) {
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: "Session expired or not logged in" });
+  }
+  next();
 }
 
-module.exports = verifyToken;
+module.exports = { requireLogin };
+
+
+//https://medium.com/%40ucangun76/session-and-cookie-management-in-express-js-for-login-and-authentication-bc63ec89e000
+//https://medium.com/@mohitgadhavi1/creating-and-managing-cookies-in-node-js-and-react-a-comprehensive-guide-91893a5bbd09

@@ -1,11 +1,11 @@
 /*Footer & Header*/
 body {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  /* display: flex; */
+  /* flex-direction: column; */
   margin: 0px;
   font-family: calibri;
 }
+
 
 .elementincenter{
   /* Method 1 */
@@ -59,23 +59,45 @@ header {
   margin-left: 100px;
 }
 
-.content {
-  height: 100vh;
-  overflow: auto;
+.navbar,
+footer {
+  box-sizing: border-box;
+  width: 1200px;       /* fixed layout width */
+  min-width: 1200px;   /* prevent shrinking below this */
+  margin: 0 auto;      /* center on larger viewports */
+  flex: 0 0 auto;      /* do not grow or shrink in flex containers */
+}
+
+.content { /* keep layout from compressing; page will scroll horizontally */
+  box-sizing: border-box;
+  min-width: 1200px;   /* adjust to the layout width you want */
+  overflow-x: hidden;
+  margin-top: auto;
+  
   border: 25px ; /* solid #E8C48F */
-  display: flex; /* Use flex for better alignment */
   flex-direction: column; /* Align items vertically */
   gap: 10px; /* Add spacing between items */
-  padding: 10px 120px;
+  padding: 20px 50px;
   background-color: rgb(55, 55, 55);
   color: white;
+}
+
+.loading, .error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  background-color: rgb(55, 55, 55);
+  color: white;
+  font-size: 1.5em;
 }
 
 .navpage{
   border: 25px;
   background: black;
   padding: 10px 100px;
-  
+  display: flex;
 }
 
 .navpage button {
@@ -110,10 +132,11 @@ header {
 .searchbar {
     display: flex;
     flex-direction: row;
-    width: 30%;
+    width: 600px;
 }
 
 .navbar {
+  width: auto;
   background-color: hsl(0, 100%, 32%);
 }
 
@@ -208,8 +231,11 @@ header {
 }
 
 footer {
-  display: flex;
-  flex-wrap: wrap;
+  /* width: 1200px;          
+  min-width: 1200px;
+  max-width: 1200px;
+  margin: 0 auto;          */
+  width: auto;
   margin-top: auto;
   background-color: hsl(0, 100%, 38%);
   color: white;

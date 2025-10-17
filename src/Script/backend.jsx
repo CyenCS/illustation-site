@@ -1,4 +1,4 @@
-import api from "../Script/axiosInstance";
+// import api from "../Script/axiosInstance";
 
 export function getAccountMenuData(name) {
   return {
@@ -16,11 +16,11 @@ function profile() {
 }
 
 async function signout() {
-  try {
-    await api.post("/fetch/logout"); // tells server to clear refresh token cookie
-  } catch (err) {
-    console.error("Error during logout", err);
-  }
+  // try {
+  //   await api.post("/fetch/logout"); // tells server to clear refresh token cookie
+  // } catch (err) {
+  //   console.error("Error during logout", err);
+  // }
 
   localStorage.clear(); // Remove all user data
   sessionStorage.clear();

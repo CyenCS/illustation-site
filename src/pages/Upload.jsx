@@ -3,7 +3,9 @@ import React, {useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import ImageUploading from "react-images-uploading";
 import axios from 'axios';
-import api from "../Script/axiosInstance";
+import "../Design/form.css";
+// import api from "../unused/axiosInstance";
+// import { v4 as uuidv4 } from 'uuid';
 
 function Upload() {
     const [title, setTitleName] = useState('');
@@ -13,7 +15,7 @@ function Upload() {
     const navigate = useNavigate();
 
   const [images, setImages] = React.useState([]);
-  const maxNumber = 1;
+  const maxNumber = 3;
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
     console.log(imageList, addUpdateIndex);
@@ -26,34 +28,44 @@ function Upload() {
       alert("Please upload at least one image.");
       return;
     }
-    const accessToken = localStorage.getItem("accessToken");
+    // const accessToken = localStorage.getItem("accessToken");
     // const accessToken = (typeof window !== 'undefined' && typeof localStorage !== 'undefined')
     //   ? (localStorage.getItem("accessToken") || localStorage.getItem("token"))
     //   : null;
-    if (!accessToken) {
-      alert("You must be log in to upload.");
-      return;
-    }
+    // if (!accessToken) {
+    //   alert("You must be log in to upload.");
+    //   return;
+    // }
 
     const formData = new FormData();
     formData.append("userid", localStorage.getItem("id"));
+    // formData.append('artid', uuidv4());
     formData.append('artid', Math.floor(Math.random() * 1e10).toString());
     formData.append("title", title);
     formData.append("caption", description);
     formData.append("category", category);
+    
 
     images.forEach((imgObj) => {
       formData.append("images", imgObj.file);
     });
 
+    for (const entry of formData.entries()) {
+     // Input Test - Consists of key-value pairs
+      console.log('FormData entry:', entry[0], entry[1]);
+    }
+
     try{
       
-      const response = await api.post('/illust/upload', 
+      // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
+      const response = await axios.post('http://localhost:3001/illust/upload', 
         formData,
-        {headers: { 
-          "Authorization": `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data' //No Boundary - Unable to read token
-        }}
+        {withCredentials: true}
+        // api already includes this
+        // {headers: { 
+        //   "Authorization": `Bearer ${accessToken}`,
+        //   'Content-Type': 'multipart/form-data' //No Boundary - Unable to read token
+        // }}
       );
 
       if (response.data.success) {
@@ -65,9 +77,11 @@ function Upload() {
       }
     } catch (err) {
       const serverMessage = err.response?.data?.message || err.message;
+      if(err.response?.status===401){
       alert("Upload error: " + serverMessage);
-      console.error("localStorage is:", localStorage);
-      console.error("Upload error details:", err);
+      localStorage.clear();
+      navigate('/');
+      }
     }
   }
 
@@ -75,8 +89,8 @@ function Upload() {
     return(
           <div className="content" >
             <h3>Sumbit artwork</h3>
-            <div className="content posts-content">
-                <div className="posts" style={{width: "40%" }}>
+            <div className="forms-content">
+                <div className="forms" style={{width: "40%" }}>
                     <ImageUploading
                             multiple
                             value={images}
@@ -122,7 +136,7 @@ function Upload() {
                       </ImageUploading>
                 </div>
                 
-                <div className="posts"  style={{width: "60%"}} >
+                <div className="forms"  style={{width: "60%"}} >
                     <form onSubmit={handleSubmit}>
                         <div className="inputbox">
                             <label>Title</label>

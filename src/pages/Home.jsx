@@ -16,6 +16,7 @@ function Home(){
       try{
         const res = await axios.get(`http://localhost:3001/illust/illusts`);
         if (res.data.success) {
+          // console.log("access: "+localStorage.getItem("accessToken"));
             setPosts(res.data.posts);
         }
       } catch (err){
@@ -30,13 +31,13 @@ function Home(){
     return (
         <div>
             <h2>Recent Posts</h2>
-        <div style={{display: "flex", flexWrap: "wrap", gap: "50px", placeItems: "center"}}>
+        <div className='listpage'>
         {posts.map((post) => (
           <Link key={post.artid} to={`/posts/${post.artid}`} className="thumbnail-link">
                <div>
                {post.firstImage && (
                <img style={{width: "170px", height: "170px", objectFit: "cover"}}
-               src={`http://localhost:3001/${post.firstImage}`}
+               src={`http://localhost:3001/posts/${post.firstImage}`}
                alt={post.title}
                className="thumbnail"
                />
