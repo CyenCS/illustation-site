@@ -3,6 +3,9 @@ import Recommendation from '../Components/Recommendation.jsx';
 import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import { useRef } from 'react';
+
 
 function truncateText(text, maxLength) {
   if (text.length <= maxLength) return text;
@@ -10,6 +13,10 @@ function truncateText(text, maxLength) {
 }
 
 function Illustration() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+
   const [posts, setPosts] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -21,7 +28,7 @@ function Illustration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(pageParam);
-
+  
   useEffect(() => {
     setCurrentPage(pageParam);
   }, [pageParam]);
@@ -63,6 +70,19 @@ function Illustration() {
       fetchPosts(search, currentPage);
     },[search, currentPage, fetchPosts]);
 
+
+    const toastShown = useRef(false);
+  useEffect(() => {
+    if (location.state?.deleted) {
+      toastShown.current = true;
+      toast.success("Artwork deleted successfully!");
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+        toastShown.current = false;
+      }, 1); 
+    }
+  }, [location.state, navigate, location.pathname]);
+
   //!!!!!!!!Abandoned - useSearchParams already does this kind of function
   // const handlePageChange = (direction) => {
   //   setCurrentPage((prev) => {
@@ -85,8 +105,7 @@ if (error) {
   return <div className="error"><p>Error: ${error}</p></div>;}
 
     return (
-      <div>
-        <div> 
+        <div className="content"> 
           <h2>Illustrations</h2>
           {search ? <p>Search: <strong>{search || '(empty)'}</strong></p>:null}
           {search && total > 0 ? <p>Found: <strong>{total}</strong> artworks</p>:null}
@@ -136,7 +155,6 @@ if (error) {
         }
 
       </div>
-        </div>
     );
 }
 

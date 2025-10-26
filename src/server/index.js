@@ -36,7 +36,8 @@ db.getConnection((err, connection) => {
 
 //https://darifnemma.medium.com/how-to-store-session-in-mysql-database-using-express-mysql-session-ae2f67ef833e
 
-const MySQLStore = require('express-mysql-session')(session);
+const MySQLStore = require('express-mysql-session')(session); 
+// ^ Automatically creates sessions table if not exists for the database
 
 const sessionStore = new MySQLStore({}, db.promise()); // Reuses the existing db connection
 // !!!!!!NOTICE!!!!

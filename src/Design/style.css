@@ -1,9 +1,13 @@
+*{
+  font-family: calibri;
+}
+
 /*Footer & Header*/
 body {
   /* display: flex; */
   /* flex-direction: column; */
+  min-height: 100vh;
   margin: 0px;
-  font-family: calibri;
 }
 
 
@@ -70,6 +74,7 @@ footer {
 
 .content { /* keep layout from compressing; page will scroll horizontally */
   box-sizing: border-box;
+  min-height: 100vh;
   min-width: 1200px;   /* adjust to the layout width you want */
   overflow-x: hidden;
   margin-top: auto;

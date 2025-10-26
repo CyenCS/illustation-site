@@ -6,7 +6,6 @@
     flex-direction: row;
     align-items: flex-start;
     gap: 20px;
-    margin-top: 20px;
   justify-content: center;
 
   }
@@ -17,6 +16,7 @@
     background-color: hsl(0, 0%, 20%);
     display: flex;
   }
+  
 
   .info{
     flex-direction: column;
@@ -36,21 +36,26 @@
 
   .blocks{
     display: block;
-    min-height: 800px;
+    min-height: 200px;
     box-shadow: 0 0 20px rgb(0,0,0,0.2),
     0 5px 5px 0 rgb(0,0,0,0.24);
     background-color: hsl(0, 0%, 30%);
   }
 
   .details{
+    height: 800px;
     border-radius: 10px;
-    padding:30px;
+    padding-top: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 50px;
     min-width: 400px;
     max-width: 400px;
     
   }
 
   .showimage{
+    height: 800px;
     border-radius: 10px;
     padding:30px;
     min-width: 800px;
@@ -63,9 +68,23 @@
     justify-content: center;
   }
 
+
+  .options{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    height: 80px;
+    background-color: hsl(0, 0%, 20%);
+    border-radius: 10px;
+    padding:10px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
   /* Gallery */
   
-  .gallery-outer {
+.gallery-outer {
   min-height: 700px;               /* full viewport height */
   display: flex;
   align-items: center;             /* vertical center */
@@ -74,7 +93,8 @@
 
 .gallery-container {
   /* border */
-  width: 720px;
+  width: 600px;
+  height: 720px;
   text-align: center;
   color: white;
   background: #111;
@@ -84,8 +104,8 @@
 }
 
 .main-image img {
-  width: 720px;
-  height: 720px;
+  width: 600px;
+  height: 600px;
   object-fit: contain;
   /* border: 3px solid #333;
   border-radius: 8px; */
@@ -149,4 +169,29 @@
   color: #aaa;
 }
 
-  
+/* .button[class="nav-btn"] {
+  padding: 10px 15px;
+} */
+
+button{
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-btn{
+  height: 40px;
+  width: 300px;
+  background-color: #fff700;
+  color: black;
+}
+
+.delete-btn{
+  height: 40px;
+  width: 300px;
+  background-color: #ff4d4d;
+}

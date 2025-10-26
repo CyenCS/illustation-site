@@ -177,7 +177,7 @@ router.get('/illusts', async (req, res) => {
         caption: post.caption,
         category: post.category,
         created: post.created,
-        firstImage: images[0] || null // ✅ only first image
+        firstImage: images[0] || null // Return only the first image for listing
       };
     });
 
@@ -187,6 +187,30 @@ router.get('/illusts', async (req, res) => {
     res.status(500).json({ success: false, message: "DB error: " + err.message });
   }
 });
+
+router.post('/delete', requireLogin, async (req, res) => {
+  const { artid } = req.body;
+  const userId = req.session.user.id;
+
+  try {
+    const [rows] = await db.promise().query('SELECT userid FROM artwork WHERE artid = ?', [artid]);
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Artwork not found' });
+    }
+
+    const postOwner = rows[0].userid;
+    if (postOwner !== userId) {
+      return res.status(403).json({ success: false, message: 'Unauthorized: Not your post' });
+    }
+
+    await db.promise().query('DELETE FROM artwork WHERE artid = ?', [artid]);
+    res.json({ success: true, message: 'Artwork deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 
 
 // ✅ PAGINATION ROUTE
