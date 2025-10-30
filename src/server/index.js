@@ -19,7 +19,7 @@ console.log("API URL from env:", KEY_SECRET + " " + REACT_APP_API_URL);
 // const REFRESH_SECRET = process.env.REFRESH_SECRET;
 
 //Missing this part will cause errors - explicitly allowing credentials like cookies
-const allowedOrigins = ["http://localhost:3000", "https://illustation.vercel.app/"]; // Frontend URL 
+const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app/"]; // Frontend URL 
 app.use(cors({
   origin: allowedOrigins,
   
