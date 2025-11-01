@@ -19,7 +19,14 @@ const KEY_SECRET = process.env.KEY_SECRET;
 //Missing this part will cause errors - explicitly allowing credentials like cookies
 const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app/"]; // Frontend URL 
 app.use(cors({
-  origin: allowedOrigins, //Domains allowed to access the server
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+   //Domains allowed to access the server
   
   credentials: true                 // allow cookies
 }));
