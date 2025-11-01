@@ -4,6 +4,7 @@ import axios from 'axios'; // make sure it's imported
 // import api from "../Script/axiosInstance";
 
 function LoginForm() {
+  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -15,7 +16,7 @@ function LoginForm() {
   try {
     const response = await axios.post(
       
-      'http://localhost:3001/fetch/login', {
+      `${APIURL}/fetch/login`, {
       name, password,
     },
     { withCredentials: true }

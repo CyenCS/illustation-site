@@ -13,6 +13,8 @@ function truncateText(text, maxLength) {
 }
 
 function Illustration() {
+  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,7 +39,7 @@ function Illustration() {
     async (search, currentPage) => {
             setLoading(true); setError(null);
       try{
-        const res = await axios.get(`http://localhost:3001/illust/illusts`, {
+        const res = await axios.get(`${APIURL}/illust/illusts`, {
           params: {
             search: search || '',
             currentPage: currentPage || 1,
@@ -120,7 +122,7 @@ if (error) {
               <div >
                 {post.firstImage && (
                   <img style={{width: "170px", height: "170px", objectFit: "cover"}}
-                  src={`http://localhost:3001/posts/${post.firstImage}`}
+                  src={`${APIURL}/posts/${post.firstImage}`}
                   alt={post.title}
                   className="thumbnail"
               />

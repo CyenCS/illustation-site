@@ -14,14 +14,12 @@ const PORT = 3001;
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const KEY_SECRET = process.env.KEY_SECRET;
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
-console.log("API URL from env:", KEY_SECRET + " " + REACT_APP_API_URL);
 // const REFRESH_SECRET = process.env.REFRESH_SECRET;
 
 //Missing this part will cause errors - explicitly allowing credentials like cookies
 const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app/"]; // Frontend URL 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: allowedOrigins, //Domains allowed to access the server
   
   credentials: true                 // allow cookies
 }));

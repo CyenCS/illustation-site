@@ -1,11 +1,11 @@
 const mysql = require('mysql2');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..' , '.env') });
 
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '', // if your MySQL has a password, set it here
-  database: 'illustation',
+host: process.env.DBHOST,
+user: process.env.DBUSER,
+database: process.env.DBNAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

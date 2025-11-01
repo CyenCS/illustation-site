@@ -4,6 +4,7 @@ import axios from "axios";
 import '../Design/posts.css';
 import DeleteDialog from '../Components/Dialog.jsx';
 import { useNavigate } from 'react-router-dom';
+import FormatTime from "../Script/TimeFormat.jsx";
 
 function Posts() {
   const navigate = useNavigate();
@@ -15,18 +16,22 @@ function Posts() {
   const [notFound, setNotFound] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  // const [published, setPublished] = useState(null);
+  // const [edited, setEdited] = useState(null);
   
   //Right
   const [imagesList, setImagesList] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const thumbnailsRef = useRef(null);
   const thumbRefs = useRef([])
-  
 
-  const postsURL = "http://localhost:3001/illust/posts/";
+  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
+
+  const postsURL = `${APIURL}/illust/posts/`;
   // base URL to serve image files (files are stored under /posts/<artid>/...)
-  const imagesBase = "http://localhost:3001/posts/";
+  const imagesBase = `${APIURL}/posts/`;
 
+  const { published, edited } = FormatTime(post?.created, post?.edited);
 //NOTICE: useCallback not needed due to the function being inside of useEffect
   useEffect(() => {
     if (!artid) return;
@@ -37,6 +42,8 @@ function Posts() {
         console.log("Response:", res.data);
         if (res.data.success) {
           setPost(res.data.post);
+          console.log(res.data.post.created, res.data.post.edited);
+          
           const imgs = Array.isArray(res.data.post.images) ? res.data.post.images : [];
           setImagesList(imgs);
           setSelectedIndex(0);
@@ -57,6 +64,8 @@ console.log("Post user_id:", res.data.post.userid, typeof res.data.post.userid);
       }).finally(() => setLoading(false));
   }, [postsURL, artid, userId]);
 
+
+  // Scroll selected thumbnail into view when selectedIndex changes
   useEffect(() => {
     const selectedborder = thumbRefs.current[selectedIndex];
     if (selectedborder) {
@@ -65,7 +74,8 @@ console.log("Post user_id:", res.data.post.userid, typeof res.data.post.userid);
     }
   }, [selectedIndex]);
 
-  if (loading) {
+// Loading and Not Found states
+if (loading) {
   return <div className="loading"><p>Loading...</p></div>;
 } 
 
@@ -74,9 +84,10 @@ if (notFound) {
 
   console.log("Images List:", imagesList);    
 
-  const handleDelete = async (e) => {
+// Delete handler
+const handleDelete = async (e) => {
   // ...delete logic...
-  const response = await axios.post('http://localhost:3001/illust/delete',
+  const response = await axios.post(`${APIURL}/illust/delete`,
     {artid},
     { withCredentials: true }
   );
@@ -99,8 +110,10 @@ if (notFound) {
                 <h3 className="title">{post.title ?? "No Title"}</h3>
                 <div className="info">
                     <p>By: {post.username}</p>
-                    <p>Published: {post.created}</p>
-                    {post.edited ? <p>Edited: {post.edited}</p>:null}
+                    <p>Published: {published}</p>
+                    {/* post.created */}
+                    {edited ? <p>Edited: {edited}</p>:null}
+                    {/* post.edited */}
                     <p>Category: {post.category}</p>
                     <div className="description">
                         {post.caption ?? <i>No Desription</i>}

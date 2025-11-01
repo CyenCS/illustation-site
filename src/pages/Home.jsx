@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import Recommendation from '../Components/Recommendation.jsx';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
 
 function truncateText(text, maxLength) {
   if (text.length <= maxLength) return text;
@@ -14,7 +15,7 @@ function Home(){
     const fetchPosts = useCallback(
     async () => {
       try{
-        const res = await axios.get(`http://localhost:3001/illust/illusts`);
+        const res = await axios.get(`${APIURL}/illust/illusts`);
         if (res.data.success) {
           // console.log("access: "+localStorage.getItem("accessToken"));
             setPosts(res.data.posts);
@@ -37,7 +38,7 @@ function Home(){
                <div>
                {post.firstImage && (
                <img style={{width: "170px", height: "170px", objectFit: "cover"}}
-               src={`http://localhost:3001/posts/${post.firstImage}`}
+               src={`${APIURL}/posts/${post.firstImage}`}
                alt={post.title}
                className="thumbnail"
                />
