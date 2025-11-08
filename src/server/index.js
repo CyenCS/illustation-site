@@ -38,7 +38,6 @@ app.use(cookieParser());
 db.getConnection((err, connection) => {
     if (err) {
         console.error('Database connection failed:', err);
-        process.exit(1);
     } else {
         console.log('Connected to the server database.');
         connection.release();
