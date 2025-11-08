@@ -98,8 +98,3 @@ app.use(async (req, res, next) => {
 app.use('/fetch', fetchRoutes); //API routes for fetching data
 app.use('/illust', uploadRoutes);
 app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
-
-app.listen(PORT, () => {
-    console.log(`Backend server running at http://localhost:${PORT}`);
-});
-
