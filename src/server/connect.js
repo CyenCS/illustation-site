@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 if (process.env.NODE_ENV !== 'production') {
   const path = require('path');
