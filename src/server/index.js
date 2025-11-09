@@ -18,8 +18,6 @@ const KEY_SECRET = process.env.KEY_SECRET;
 const allowedOrigins = [
   "http://localhost:3000",
   "https://illustation-site.vercel.app",
-  "https://illustation-site-cyencss-projects.vercel.app",
-  "https://illustation-site-8pnjlom0e-cyencss-projects.vercel.app"
 ]; // Frontend URL 
 
 app.use(cors({
