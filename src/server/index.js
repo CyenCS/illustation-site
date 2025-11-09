@@ -8,8 +8,6 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const app = express();
-const PORT = 3001;
-
 
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
