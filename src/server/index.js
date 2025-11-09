@@ -15,7 +15,13 @@ const KEY_SECRET = process.env.KEY_SECRET;
 // const REFRESH_SECRET = process.env.REFRESH_SECRET;
 
 //Missing this part will cause errors - explicitly allowing credentials like cookies
-const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app"]; // Frontend URL 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://illustation-site.vercel.app",
+  "https://illustation-site-cyencss-projects.vercel.app",
+  "https://illustation-site-8pnjlom0e-cyencss-projects.vercel.app"
+]; // Frontend URL 
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
