@@ -99,7 +99,7 @@ app.use('/fetch', fetchRoutes); //API routes for fetching data
 app.use('/illust', uploadRoutes);
 app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.DBPORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
