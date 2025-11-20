@@ -6,7 +6,7 @@ import axios from 'axios'; // make sure it's imported
 // WARNING: Hashed password length is 60 characters, so ensure your database parameter can have above that limit.
 
 function SignupForm() {
-  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
+  const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

@@ -25,7 +25,7 @@ function Posts() {
   const thumbnailsRef = useRef(null);
   const thumbRefs = useRef([])
 
-  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
+  const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
 
   const postsURL = `${APIURL}/illust/posts/`;
   // base URL to serve image files (files are stored under /posts/<artid>/...)
@@ -47,8 +47,6 @@ function Posts() {
           const imgs = Array.isArray(res.data.post.images) ? res.data.post.images : [];
           setImagesList(imgs);
           setSelectedIndex(0);
-          console.log("Stored userId:", userId, typeof userId);
-console.log("Post user_id:", res.data.post.userid, typeof res.data.post.userid);
           setIsOwner(Number(userId) === res.data.post.userid);
         } else {
           setNotFound(true);
@@ -120,7 +118,7 @@ const handleDelete = async (e) => {
                     </div>
                 </div>
                 {isOwner && (<div className="options">
-                    <button className="edit-btn">Edit</button>
+                    {/* <button className="edit-btn">Edit</button> */}
                      <div>
                       <button className="delete-btn" onClick={() => setShowDialog(true)}>Delete</button>
                       {showDialog && (

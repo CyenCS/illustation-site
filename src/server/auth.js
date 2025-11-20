@@ -1,9 +1,24 @@
 function requireLogin(req, res, next) {
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: "Session expired or not logged in" });
+  try {
+    if (!req.session) {
+      throw new Error("NO_SESSION_OBJECT");
+    }
+
+    if (!req.session.user) {
+      throw new Error("USER_NOT_LOGGED_IN");
+    }
+
+    // If everything is fine, continue
+    next();
+  } catch (err) {
+    // Catch any error and display it in the message
+    return res.status(401).json({
+      success: false,
+      message: `Session expired or not logged in (${err.message})`
+    });
   }
-  next();
 }
+
 
 module.exports = { requireLogin };
 

@@ -8,16 +8,14 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const app = express();
-const PORT = 3001;
 
 
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const KEY_SECRET = process.env.KEY_SECRET;
-// const REFRESH_SECRET = process.env.REFRESH_SECRET;
 
 //Missing this part will cause errors - explicitly allowing credentials like cookies
-const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app/"]; // Frontend URL 
+const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app"]; // Frontend URL 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -38,7 +36,7 @@ app.use(cookieParser());
 db.getConnection((err, connection) => {
     if (err) {
         console.error('Database connection failed:', err);
-        process.exit(1);
+        // process.exit(1);
     } else {
         console.log('Connected to the server database.');
         connection.release();
@@ -64,7 +62,7 @@ app.use(session({
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // Set to true in production (HTTPS)
-        maxAge: 1 * 1 * 60 * 60 * 1000 // 1 hour for testing
+        maxAge: 1 * 24 * 60 * 60 * 1000 // 1 hour for testing
     }
 }))
 
@@ -100,7 +98,8 @@ app.use('/fetch', fetchRoutes); //API routes for fetching data
 app.use('/illust', uploadRoutes);
 app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
 
-app.listen(PORT, () => {
-    console.log(`Backend server running at http://localhost:${PORT}`);
+const PORT = process.env.DBPORT || 3001;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });
 

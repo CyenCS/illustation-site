@@ -2,7 +2,8 @@ import React, {useState, useEffect, useCallback} from 'react';
 import Recommendation from '../Components/Recommendation.jsx';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
+const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrender.com";
+//No more http://localhost:3001 as server for production
 
 function truncateText(text, maxLength) {
   if (text.length <= maxLength) return text;
@@ -27,7 +28,9 @@ function Home(){
 
     useEffect(() => {
       fetchPosts();
-    },[]);
+    },[
+      fetchPosts
+    ]);
 
     return (
         <div>

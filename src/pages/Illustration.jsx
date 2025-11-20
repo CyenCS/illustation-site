@@ -7,13 +7,16 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useRef } from 'react';
 
 
+
 function truncateText(text, maxLength) {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + '...';
 }
 
 function Illustration() {
-  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
+  
+  const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrender.com";
+  console.log("URL: "+ process.env.REACT_APP_API_URL);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,6 +48,7 @@ function Illustration() {
             currentPage: currentPage || 1,
           }
         });
+        // console.log();
         if (res.data?.success) {
             setPosts(res.data.posts);
             setTotal(res.data.total);
@@ -104,8 +108,9 @@ function Illustration() {
 } 
 
 if (error) {
-  return <div className="error"><p>Error: ${error}</p></div>;}
-
+  return <div className="error"><p>Error: ${error}</p></div>;
+}
+console.log("Search: ", search);
     return (
         <div className="content"> 
           <h2>Illustrations</h2>
@@ -122,7 +127,8 @@ if (error) {
               <div >
                 {post.firstImage && (
                   <img style={{width: "170px", height: "170px", objectFit: "cover"}}
-                  src={`${APIURL}/posts/${post.firstImage}`}
+                  src={post.firstImage}
+                  //`${APIURL}/posts/${post.firstImage}`
                   alt={post.title}
                   className="thumbnail"
               />

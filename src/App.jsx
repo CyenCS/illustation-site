@@ -8,9 +8,6 @@ import Footer from "./Components/Footer.jsx";
 import MainContent from "./Main.jsx";
 import './Design/style.css';
 
-// import About from "./pages/placeholder/About.jsx";
-// import Product from "./pages/Product.jsx";
-// import Contact from "./pages/placeholder/Contact.jsx";
 import Registry from "./pages/Registry.jsx";
 import Upload from "./pages/Upload.jsx";
 import Posts from "./pages/Posts.jsx";

@@ -7,6 +7,14 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { requireLogin } = require('./auth');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // const verifyToken = require('../unused/auth');
 
@@ -16,41 +24,73 @@ function generateArtId() {
 }
 
 // Set storage engine
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const artid = req.body.artid || generateArtId();
-    if (!req.body.artid){
-      req.generatedArtid = artid;
-      req.body.artid = artid;
-    }
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     const artid = req.body.artid || generateArtId();
+//     if (!req.body.artid){
+//       req.generatedArtid = artid;
+//       req.body.artid = artid;
+//     }
 
-    // Ensure both exist
-    if (!artid) return cb(new Error("Missing userid or artid"));
+//     // Ensure both exist
+//     if (!artid) return cb(new Error("Missing userid or artid"));
 
-    const dir = path.join(__dirname, '..', '..', 'posts', artid);
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: function (req, file, callback) {
-    // Generate unique filename: artid + original extension
-    const artid = req.body.artid || req.generatedArtid || generateArtId();
-    if (req.fileIndex === undefined) req.fileIndex = 0;
-    const index = req.fileIndex;
-    req.fileIndex += 1;
-    const ext = path.extname(file.originalname);
-    const filename = `${artid}_p${index}${ext}`;
+//     const dir = path.join(__dirname, '..', '..', 'posts', artid);
+//     fs.mkdirSync(dir, { recursive: true });
+//     cb(null, dir);
+//   },
+//   filename: function (req, file, callback) {
+//     // Generate unique filename: artid + original extension
+//     const artid = req.body.artid || req.generatedArtid || generateArtId();
+//     if (req.fileIndex === undefined) req.fileIndex = 0;
+//     const index = req.fileIndex;
+//     req.fileIndex += 1;
+//     const ext = path.extname(file.originalname);
+//     const filename = `${artid}_p${index}${ext}`;
     
-    callback(null, filename)
+//     callback(null, filename)
+//   }
+// });
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    const artid = req.body.artid || generateArtId();
+    if (!req.body.artid) req.body.artid = artid;
+
+    if (req.fileIndex === undefined) req.fileIndex = 0;
+    const index = req.fileIndex++;
+
+    return {
+      folder: `posts/${artid}`,
+      public_id: `${artid}_p${index}`,
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    };
   }
 });
 
-const upload = multer({ storage});
+const upload = require("multer")({ storage });
 
+const toCloudinaryUrls = (filename, artid) => {
+
+  const parts = filename.split("/");
+  const fileWithExt = parts[1];               // "6130789239_p0.png"
+  const fileNoExt = fileWithExt.split(".")[0];// "6130789239_p0"
+
+  // Your final Cloudinary public ID:
+  // posts/<artid>/<fileNoExt>
+  const publicId = `posts/${artid}/${fileNoExt}`;
+  
+  return cloudinary.url(publicId, {
+    secure: true,
+  }
+  );
+};
 
 //Upload Artwork
 router.post('/upload', requireLogin, upload.array('images', 3), async (req, res) => {
   try{
     const userid = req.body.userid;
+    const uploadedImages = [];
     const { title, caption, category, artid } = req.body;
     
 
@@ -59,31 +99,49 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
       });
     }
 
-    const imagePaths = req.files.map((file) =>
-    `${artid}/${file.filename}`
-  );
+    for (const file of req.files){
+      const publicId = `posts/${artid}/${file.originalname.split(".")[0]}`; // exact name in DB
+
+      const result = await cloudinary.uploader.upload_stream(
+        { 
+          public_id: publicId ,
+          folder: `posts/${artid}`,
+          resource_type: 'image',
+        },
+        (error, result) => {
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            throw new Error("Cloudinary upload failed");
+          }
+          uploadedImages.push(`${artid}/${file.originalname}`);
+        }
+      );
+
+      result.end(file.buffer);
+    }
+
+    // const imagePaths = req.files.map((file) =>
+    // `${artid}/${file.filename}`
+    // );
     
 
   const insertQuery = `INSERT INTO artwork (userid, artid, image, title, caption, category) VALUES (?, ?, ?, ?, ?, ?)`;
   
   await db.promise().query(insertQuery, 
-    [ userid, artid, JSON.stringify(imagePaths), title, caption, category ]);
+    [ userid, artid, JSON.stringify(uploadedImages), title, caption, category ]);
+
 
     res.json({
       success: true,
       message: 'Upload successful',
-      post: {
-    artid,
-    userid,
-    title,
-    caption,
-    category,
-    image: imagePaths
+      post: { artid, userid,
+    title, caption, category,
+    image: uploadedImages
   } // send the inserted post data
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("Upload failed: ", err);
     res.status(500).json({ success: false, message: 'Upload error: '+err.message });
   }
 });
@@ -111,23 +169,29 @@ router.get('/posts/:artid', async (req, res) => {
     let images = [];
     try {
       images = JSON.parse(post.image);
-    } catch {
-      images = [post.image];
+    } catch (e){
+      console.error("Image JSON parse error:", e);
+      // images = [post.image];
     }
+
+    post.images = toCloudinaryUrls(images, artid);
+    console.log("Post images converted to Cloudinary URLs:", post.images);
+
 
     res.json({
       success: true,
-      post: {
-        artid: post.artid,
-        userid: post.userid,
-        username: post.username,
-        title: post.title,
-        caption: post.caption,
-        category: post.category,
-        created: post.created,
-        edited: post.edited,
-        images
-      }
+      post: post,
+      // {
+      //   artid: post.artid,
+      //   userid: post.userid,
+      //   username: post.username,
+      //   title: post.title,
+      //   caption: post.caption,
+      //   category: post.category,
+      //   created: post.created,
+      //   edited: post.edited,
+      //   images
+      // }
     });
   } catch (err) {
     console.error(err);
@@ -142,42 +206,52 @@ router.get('/illusts', async (req, res) => {
   const currentPage = parseInt(req.query.currentPage) || 1;
   const offset = parseInt((currentPage - 1) * limit);
   
-
-    const query = `
-      SELECT artwork.*, users.name AS username
-      FROM artwork INNER JOIN users ON artwork.userid = users.id
-      WHERE artwork.title LIKE ?
-      ORDER BY artwork.created DESC
-      LIMIT ? OFFSET ?
-    `;
-
-    //OFFSET ?
-    // offset formula = (current page - 1) * limit
-    const params = [`%${search}%`, limit, offset];
-    const [rows] = await db.promise()
-    .query(query, params);
-
-    const countQuery = `SELECT COUNT(*) AS total FROM artwork WHERE title LIKE ?`;
+  //1) Count Total
+  const countQuery = `SELECT COUNT(*) AS total FROM artwork WHERE title LIKE ?`;
     const [countRows] = await db.promise().query(countQuery, [`%${search}%`]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
 
+    //2) Fetch Posts
+
+    const query = `
+      SELECT artwork.*, users.name AS username
+      FROM artwork INNER JOIN users ON artwork.userid = users.id
+      WHERE artwork.title COLLATE utf8mb4_general_ci LIKE ?
+      ORDER BY artwork.created DESC
+      LIMIT ? OFFSET ?
+    `;
+    //case sensitive (for TiDB): utf8mb4_bin, 
+    //case insensitive by default (for mysql): utf8mb4_general_ci
+
+    //OFFSET ? // offset formula = (current page - 1) * limit
+    const params = [`%${search}%`, limit, offset];
+    const [rows] = await db.promise().query(query, params);
+    
+
+    // 3) Convert image arrays => Cloudinary URLs
+    
+
     const posts = rows.map(post => {
-      let images = [];
+      let imagesArray = [];
       try {
-        images = JSON.parse(post.image);
-      } catch {
-        images = [post.image];
+        imagesArray = JSON.parse(post.image);
+        
+      } catch (e) {
+        console.error("Image JSON parse error:", e);
+        // imagesArray = [post.image];
       }
       return {
-        artid: post.artid,
-        userid: post.userid,
-        username: post.username,
-        title: post.title,
-        caption: post.caption,
-        category: post.category,
-        created: post.created,
-        firstImage: images[0] || null // Return only the first image for listing
+        ...post,
+        firstImage: imagesArray.length > 0 ? toCloudinaryUrls(posts.artid, imagesArray[0]): null, // Return only the first image URL as thumbnail
+        // artid: post.artid,
+        // userid: post.userid,
+        // username: post.username,
+        // title: post.title,
+        // caption: post.caption,
+        // category: post.category,
+        // created: post.created,
+        // firstImage: imagesArray[0] || null // Return only the first image for listing
       };
     });
 

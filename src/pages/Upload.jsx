@@ -8,7 +8,7 @@ import "../Design/form.css";
 // import { v4 as uuidv4 } from 'uuid';
 
 function Upload() {
-  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
+  const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
     const [title, setTitleName] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('illustration');
@@ -61,7 +61,11 @@ function Upload() {
       // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
       const response = await axios.post(`${APIURL}/illust/upload`, 
         formData,
-        {withCredentials: true}
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true
+        }
+        
         // api already includes this
         // {headers: { 
         //   "Authorization": `Bearer ${accessToken}`,
