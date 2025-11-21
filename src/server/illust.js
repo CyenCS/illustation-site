@@ -71,7 +71,7 @@ const storage = new CloudinaryStorage({
 const upload = require("multer")({ storage });
 
 const toCloudinaryUrls = (filename, artid) => {
-
+  if (!filename || typeof filename !== "string") return null;
   const parts = filename.split("/");
   const fileWithExt = parts[1];               // "6130789239_p0.png"
   const fileNoExt = fileWithExt.split(".")[0];// "6130789239_p0"
@@ -123,6 +123,9 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
     // const imagePaths = req.files.map((file) =>
     // `${artid}/${file.filename}`
     // );
+
+    console.log("Upload body:", req.body);
+    console.log("Upload files:", req.files);
     
 
   const insertQuery = `INSERT INTO artwork (userid, artid, image, title, caption, category) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -243,7 +246,7 @@ router.get('/illusts', async (req, res) => {
       }
       return {
         ...post,
-        firstImage: imagesArray.length > 0 ? toCloudinaryUrls(posts.artid, imagesArray[0]): null, // Return only the first image URL as thumbnail
+        firstImage: imagesArray.length > 0 ? toCloudinaryUrls(imagesArray[0], posts.artid): null, // Return only the first image URL as thumbnail
         // artid: post.artid,
         // userid: post.userid,
         // username: post.username,
