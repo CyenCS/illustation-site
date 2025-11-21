@@ -39,9 +39,17 @@ router.post('/login', async (req, res) => {
         maxAge: 1 * 1 * 1 * 60 * 1000, //Automatically expires even if stolen
       });
 
-      return res.json({
-        success: true, 
-        user: req.session.user });
+      req.session.save(err => {
+  if (err) {
+    console.error("SESSION SAVE ERROR:", err);
+    return res.status(500).json({ success: false, message: "Session error" });
+  }
+
+  return res.json({
+    success: true,
+    user: req.session.user
+  });
+});
     
   } catch (err) {
     console.error('Login error: ',err);

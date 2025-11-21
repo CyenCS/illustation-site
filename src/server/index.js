@@ -11,13 +11,19 @@ const app = express();
 
 
 
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+// if (process.env.NODE_ENV !== 'production') {
+//   require('dotenv').config({ path: path.join(__dirname, '.env') });
+// }
+require("dotenv").config(); 
+
 const KEY_SECRET = process.env.KEY_SECRET;
+
 
 //Missing this part will cause errors - explicitly allowing credentials like cookies
 const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app"]; // Frontend URL 
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: 
+  function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -52,6 +58,7 @@ const sessionStore = new MySQLStore({}, db.promise()); // Reuses the existing db
 // !!!!!!NOTICE!!!!
 //Not including this part will cause error if the server restarted/initiated while users already logged in
 //Although unless the user logged in again, the session will be lost if server restarted
+app.set("trust proxy", 1);
 app.use(session({
   //Session cleanup on server
     secret: KEY_SECRET,
@@ -61,15 +68,20 @@ app.use(session({
     rolling: true, // Refresh cookie expiry on each request
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Set to true in production (HTTPS)
-        maxAge: 1 * 24 * 60 * 60 * 1000 // 1 hour for testing
+        secure: true, 
+        sameSite: "none",
+        //secure: process.env.NODE_ENV === 'production', // Set to true in production (HTTPS)
+        maxAge: 1 * 24 * 60 * 60 * 1000 // 24 hours
     }
 }))
 
 //Middleware logic
 app.use(async (req, res, next) => {
   if (req.session.user) { // Extend expiry every visit
-    req.session.cookie.expires = new Date(Date.now() + 1 * 2 * 60 * 60 * 1000); 
+    req.session.cookie.expires = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); 
+    req.session.save(() => {
+      next();   // Continue processing request (Only for middleware)
+    });
   } 
   else if (!req.session.user && req.cookies.rememberToken) { 
     //Restore session from rememberToken
@@ -81,15 +93,19 @@ app.use(async (req, res, next) => {
         console.log(`Auto-logged user ${rows[0].name}`);
         res.cookie('rememberToken', token, {
         httpOnly: true,
+        sameSite: "none",
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1 * 24 * 60 * 60 * 1000,
-      });
+      }, 
+    );
+    req.session.save(() => next() )
+    return;
       }
     } catch (err) {
       console.error("Auto-login error:", err);
     }
   }
-  next();
+  else{ next(); }
 });
 
 
@@ -102,4 +118,3 @@ const PORT = process.env.DBPORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
-
