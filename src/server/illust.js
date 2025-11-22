@@ -80,7 +80,9 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
       });
     }
 
-    const uploadedImages = req.files.map(file => file.path);
+    const stripVersion = (url) => url.replace(/\/v\d+\//, '/');
+
+    const uploadedImages = req.files.map(file => stripVersion(file.path));
 
     // const imagePaths = req.files.map((file) =>
     // `${artid}/${file.filename}`
@@ -143,7 +145,6 @@ router.get('/posts/:artid', async (req, res) => {
     }
 
     post.images = images;
-    console.log("Post images converted to Cloudinary URLs:", post.images);
 
 
     res.json({
