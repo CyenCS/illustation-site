@@ -212,7 +212,7 @@ router.get('/illusts', async (req, res) => {
       }
       return {
         ...post,
-        firstImage: imagesArray, // Return only the first image URL as thumbnail
+        firstImage: imagesArray[0], // Return only the first image URL as thumbnail
         // artid: post.artid,
         // userid: post.userid,
         // username: post.username,
