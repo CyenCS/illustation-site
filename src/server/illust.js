@@ -1,11 +1,12 @@
+// References
+// https://www.npmjs.com/package/multer-storage-cloudinary
+
 // Uploads
 const express = require('express');
 const router = express.Router();
 const db = require('./connect'); // Make sure connect.js exports the MySQL pool
 
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const { requireLogin } = require('./auth');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -29,11 +30,12 @@ const storage = new CloudinaryStorage({
       folder: `posts/${artid}`,
       public_id: `${artid}_p${index}`,
       allowed_formats: ["jpg", "jpeg", "png", "webp"],
+      version: null,
     };
   },
 });
 
-const upload = require("multer")({ storage });
+const upload = multer({ storage });
 
 // const verifyToken = require('../unused/auth');
 

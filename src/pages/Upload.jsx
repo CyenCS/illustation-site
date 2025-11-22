@@ -76,7 +76,6 @@ function Upload() {
       if (response.data.success) {
         // const userId = encodeURIComponent(response.data.post.userid);
         const artId = encodeURIComponent(response.data.post.artid);
-        alert("Upload successful!\nImages: ", response.data.post.images);
         navigate(`/posts/${artId}`);
       } else{
         alert("Upload failed: " + response.data.message);
@@ -154,7 +153,7 @@ function Upload() {
                             minLength="3" autoComplete="off"  required
                             />
                         </div>
-                        <div className="inputbox" >
+                        <div className="inputbox description-box" >
                             <label>Description</label>
                             <textarea type="text" 
                             value={description} 
