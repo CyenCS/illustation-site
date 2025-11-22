@@ -62,8 +62,8 @@ function Upload() {
       const response = await axios.post(`${APIURL}/illust/upload`, 
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true
+          withCredentials: true,
+          // headers: { "Content-Type": "multipart/form-data" },//Breaks Boundary - do not use 
         }
         
         // api already includes this
@@ -76,6 +76,7 @@ function Upload() {
       if (response.data.success) {
         // const userId = encodeURIComponent(response.data.post.userid);
         const artId = encodeURIComponent(response.data.post.artid);
+        alert("Upload successful!\nImages: ", response.data.post.images);
         navigate(`/posts/${artId}`);
       } else{
         alert("Upload failed: " + response.data.message);

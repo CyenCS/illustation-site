@@ -73,12 +73,15 @@ function Posts() {
   }, [selectedIndex]);
 
 // Loading and Not Found states
-if (loading) {
+if (!post && loading) {
   return <div className="loading"><p>Loading...</p></div>;
 } 
 
 if (notFound) {
-  return <div className="error"><p>Page Not Found</p></div>;}
+  return <div className="error"><p>Page Not Found</p></div>;
+}
+
+if (!post) return <div>Post data not available</div>;
 
   console.log("Images List:", imagesList);    
 
