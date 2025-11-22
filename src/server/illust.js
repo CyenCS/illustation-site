@@ -16,12 +16,26 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    const artid = req.body.artid || Math.floor(Math.random() * 1e10).toString();
+    if (!req.body.artid) req.body.artid = artid;
+
+    if (req.fileIndex === undefined) req.fileIndex = 0;
+    const index = req.fileIndex++;
+
+    return {
+      folder: `posts/${artid}`,
+      public_id: `${artid}_p${index}`,
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    };
+  },
+});
+
+const upload = require("multer")({ storage });
+
 // const verifyToken = require('../unused/auth');
-
-
-function generateArtId() {
-  return Math.floor(Math.random() * 1e10).toString();
-}
 
 // Set storage engine
 // const storage = multer.diskStorage({
@@ -51,46 +65,11 @@ function generateArtId() {
 //     callback(null, filename)
 //   }
 // });
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    const artid = req.body.artid || generateArtId();
-    if (!req.body.artid) req.body.artid = artid;
-
-    if (req.fileIndex === undefined) req.fileIndex = 0;
-    const index = req.fileIndex++;
-
-    return {
-      folder: `posts/${artid}`,
-      public_id: `${artid}_p${index}`,
-      allowed_formats: ["jpg", "jpeg", "png", "webp"],
-    };
-  }
-});
-
-const upload = require("multer")({ storage });
-
-const toCloudinaryUrls = (filename, artid) => {
-  if (!filename || typeof filename !== "string") return null;
-  const parts = filename.split("/");
-  const fileWithExt = parts[1];               // "6130789239_p0.png"
-  const fileNoExt = fileWithExt.split(".")[0];// "6130789239_p0"
-
-  // Your final Cloudinary public ID:
-  // posts/<artid>/<fileNoExt>
-  const publicId = `posts/${artid}/${fileNoExt}`;
-  
-  return cloudinary.url(publicId, {
-    secure: true,
-  }
-  );
-};
 
 //Upload Artwork
 router.post('/upload', requireLogin, upload.array('images', 3), async (req, res) => {
   try{
     const userid = req.body.userid;
-    const uploadedImages = [];
     const { title, caption, category, artid } = req.body;
     
 
@@ -99,26 +78,7 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
       });
     }
 
-    for (const file of req.files){
-      const publicId = `posts/${artid}/${file.originalname.split(".")[0]}`; // exact name in DB
-
-      const result = await cloudinary.uploader.upload_stream(
-        { 
-          public_id: publicId ,
-          folder: `posts/${artid}`,
-          resource_type: 'image',
-        },
-        (error, result) => {
-          if (error) {
-            console.error("Cloudinary upload error:", error);
-            throw new Error("Cloudinary upload failed");
-          }
-          uploadedImages.push(`${artid}/${file.originalname}`);
-        }
-      );
-
-      result.end(file.buffer);
-    }
+    const uploadedImages = req.files.map(file => file.path);
 
     // const imagePaths = req.files.map((file) =>
     // `${artid}/${file.filename}`
@@ -128,10 +88,13 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
     console.log("Upload files:", req.files);
     
 
-  const insertQuery = `INSERT INTO artwork (userid, artid, image, title, caption, category) VALUES (?, ?, ?, ?, ?, ?)`;
+  const insertQuery = 
+  `INSERT INTO artwork (userid, artid, image, title, caption, category) 
+  VALUES (?, ?, ?, ?, ?, ?)`;
   
   await db.promise().query(insertQuery, 
     [ userid, artid, JSON.stringify(uploadedImages), title, caption, category ]);
+    console.log("Images: ", JSON.stringify(uploadedImages));
 
 
     res.json({
@@ -177,7 +140,7 @@ router.get('/posts/:artid', async (req, res) => {
       // images = [post.image];
     }
 
-    post.images = toCloudinaryUrls(images, artid);
+    post.images = images;
     console.log("Post images converted to Cloudinary URLs:", post.images);
 
 
@@ -246,7 +209,7 @@ router.get('/illusts', async (req, res) => {
       }
       return {
         ...post,
-        firstImage: imagesArray.length > 0 ? toCloudinaryUrls(imagesArray[0], posts.artid): null, // Return only the first image URL as thumbnail
+        firstImage: imagesArray, // Return only the first image URL as thumbnail
         // artid: post.artid,
         // userid: post.userid,
         // username: post.username,

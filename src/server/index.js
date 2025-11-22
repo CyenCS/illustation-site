@@ -20,7 +20,7 @@ const KEY_SECRET = process.env.KEY_SECRET;
 
 
 //Missing this part will cause errors - explicitly allowing credentials like cookies
-const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app"]; // Frontend URL 
+const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app", "https://illustation-site.onrender.com" ]; // Frontend URL 
 app.use(cors({
   origin: 
   function (origin, callback) {
@@ -114,7 +114,9 @@ app.use('/fetch', fetchRoutes); //API routes for fetching data
 app.use('/illust', uploadRoutes);
 app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
 
-const PORT = process.env.DBPORT || 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+console.log("Server in development is running on port " + PORT);
