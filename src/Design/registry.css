@@ -1,13 +1,13 @@
 .registry-page * {
-  margin: 0;
+  margin-top: 10px;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
+
 }
 
 .registry-page-container {
   height: 100vh; /* Ensure it covers the entire viewport */
-  background: rgb(171, 247, 255); /* Cyan background */
+  background: rgb(121, 121, 121); /* Cyan background */
   display: flex;
   justify-content: center;
   align-items: center;

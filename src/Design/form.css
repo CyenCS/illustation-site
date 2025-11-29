@@ -36,18 +36,30 @@
     display: block;
     height: 30px;
     box-sizing: border-box;
-    margin: 0;
   }
 
   .image-item {
-  display: block;
+  display: flex;
   flex-direction: column;
-  margin: 50px 0;
+  margin: 10px 0;
+  max-width:200px;
+  max-height: 300px;
+  padding: 50px;
+  background-color: rgb(47, 47, 47);
+  overflow: hidden;
 }
 
+.image-item img {
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* Image item button wrapper */
 .image-item__btn-wrapper {
   display: flex;
   flex-direction: row;
+  gap: 10px;
 }
 
 .upload__image-wrapper {
@@ -55,6 +67,7 @@
   grid-template-columns: repeat(2, 1fr); /* 2 columns */
   gap: 16px;
   margin-top: 16px;
+  
 }
 
 
@@ -65,6 +78,13 @@ textarea {
   min-height: 60px;
   max-height: 300px; /* optional */
   font-size: 16px;
+}
+
+.mode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px 0 20px 0;
 }
 
 button.action{

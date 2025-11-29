@@ -16,9 +16,9 @@ import Posts from "./pages/Posts.jsx";
 
 // }
 
-function Layout({ children }) {
+function Layout({ children }) { //Global layout wrapper
   const {pathname} = useLocation();
-  const hideLayoutPaths = ["/registry"];
+  const hideLayoutPaths = ["/registry"]; //Hides Navbar and Footer when on /registry
   const shouldHideLayout = hideLayoutPaths.includes(pathname);
   return(
     <>
@@ -36,11 +36,12 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/*" element={<MainContent />} />{/* '/*' Catches all sub routes (Nested inside) */}
-          {/* <Route path="/illustration" element={<Illustration />} /> */}
-          <Route path="/upload" element={<Upload />} />
+          {/* Key: Changes the componenets especially within the same place */}
+          <Route path="/upload" element={<Upload key="upload"/>} />
+          <Route path="/posts/:artid/edit" element={<Upload key="edit"/>} />
           {/* Assuming Registry is a component for user registration */}
-          <Route path="registry" element={<Registry />} />
-          <Route path="posts/:artid" element={<Posts />} />
+          <Route path="/registry" element={<Registry />} />
+          <Route path="/posts/:artid" element={<Posts />} />
           
           {/* Add more routes as needed */}
 

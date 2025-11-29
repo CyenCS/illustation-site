@@ -28,7 +28,7 @@ function Navbar() {
     <nav className="navbar">
       <div className="navdiv">
         <div className="logo">
-          <NavLink to="/">IlluStation</NavLink>
+          <NavLink to="/">IlluStation (PT)</NavLink>
         </div>
         
           <form onSubmit={onSearchSubmit} className="searchbar">

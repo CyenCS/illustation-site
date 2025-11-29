@@ -84,10 +84,6 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
 
     const uploadedImages = req.files.map(file => stripVersion(file.path));
 
-    // const imagePaths = req.files.map((file) =>
-    // `${artid}/${file.filename}`
-    // );
-
     console.log("Upload body:", req.body);
     console.log("Upload files:", req.files);
     
@@ -116,6 +112,38 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
   }
 });
 
+// // Edit (replace existing)
+// router.post('/edit/:artid', async (req, res) => {
+//   const { artid } = req.params;
+//   await db.query("UPDATE artwork SET title=?, caption=?, image=? WHERE artid=?", [..., artid]);
+// });
+
+// Get post data for editing
+router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
+  try {
+    const { artid } = req.params;
+    const userId = req.session.userid; // or however you store user ID in session
+
+    // Fetch the post
+    const [rows] = await db.promise().query(
+      'SELECT * FROM artwork WHERE artid = ?', [artid]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+    const post = rows[0];
+
+    // Check ownership
+    if (post.userid !== userId) {
+      return res.status(403).json({ success: false, message: "Unauthorized" });
+    }
+
+    // Return post data for editing
+    res.json({ success: true, post });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error: " + err.message });
+  }
+});
 
 // Redirect to specific post for details
 router.get('/posts/:artid', async (req, res) => {
@@ -205,6 +233,7 @@ router.get('/illusts', async (req, res) => {
       let imagesArray = [];
       try {
         imagesArray = JSON.parse(post.image);
+        console.log("Parsed images:", imagesArray);
         
       } catch (e) {
         console.error("Image JSON parse error:", e);
@@ -212,7 +241,7 @@ router.get('/illusts', async (req, res) => {
       }
       return {
         ...post,
-        firstImage: imagesArray, // Return only the first image URL as thumbnail
+        firstImage: imagesArray[0], // Return only the first image URL as thumbnail
         // artid: post.artid,
         // userid: post.userid,
         // username: post.username,

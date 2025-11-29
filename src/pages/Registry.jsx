@@ -9,6 +9,7 @@ function Registry() {
   return (
     <main className="registry-page-container">
       <div className="registry-page">
+        <h1>ILLUSTATION</h1>
         {showLogin ? (
           <LoginForm />
         ) : (

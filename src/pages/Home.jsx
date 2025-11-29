@@ -41,7 +41,7 @@ function Home(){
                <div>
                {post.firstImage && (
                <img style={{width: "170px", height: "170px", objectFit: "cover"}}
-               src={`${APIURL}/posts/${post.firstImage}`}
+               src={`${post.firstImage}`}
                alt={post.title}
                className="thumbnail"
                />
