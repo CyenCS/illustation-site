@@ -124,7 +124,7 @@ useEffect(() => {
         })
         .catch(err => {
           if (err.response?.status === 403) {
-            alert("You do not have permission to edit this artwork.");
+            alert(`You do not have permission to edit this artwork. ${err.response.data.message || ''}`);
             navigate(`/posts/${artid}`);
           }
         });
