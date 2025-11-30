@@ -10,7 +10,7 @@ function Posts() {
   const navigate = useNavigate();
   
     const { artid } = useParams();
-    const userId = localStorage.getItem('id'); // set at login
+    const userId = localStorage.getItem('userid'); // set at login
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -99,7 +99,7 @@ if (!post) return <div>Post data not available</div>;
                     onClick={()=> navigate('/posts/'+post.artid+'/edit', 
                       {state: 
                         {artimages: imagesList, 
-                          arttitle: post.title, artdescription: post.caption, artid: post.artid
+                          arttitle: post.title, artdescription: post.caption, artid: post.artid,
                         }
                       }
                     )}

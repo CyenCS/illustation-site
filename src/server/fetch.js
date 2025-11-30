@@ -25,12 +25,12 @@ router.post('/login', async (req, res) => {
       user.password = undefined; // Remove password from user object
 
       // Successful login
-      req.session.user = {id: user.id, name: user.name}; // Store user info in session
+      req.session.user = {userid: user.userid, name: user.name}; // Store user info in session
       
 
         //A long-term cookie to remember the user that restores session if session expired or browser closed
         const rememberToken = crypto.randomBytes(32).toString('hex');
-        await db.promise().query('UPDATE users SET remember_token = ? WHERE id = ?', [rememberToken, user.id]);
+        await db.promise().query('UPDATE users SET remember_token = ? WHERE id = ?', [rememberToken, user.userid]);
 
 
       res.cookie('rememberToken', rememberToken, {
@@ -86,7 +86,7 @@ router.post('/registry', async (req, res) => {
 
 router.post('/logout', requireLogin, async (req, res) => {
   try{
-    await db.promise().query('UPDATE users SET remember_token = NULL WHERE id = ?', [req.session.user.id]);
+    await db.promise().query('UPDATE users SET remember_token = NULL WHERE id = ?', [req.session.user.userid]);
 
     res.clearCookie('connect.sid');
     res.clearCookie("rememberToken");

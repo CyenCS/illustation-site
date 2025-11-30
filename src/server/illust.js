@@ -123,8 +123,7 @@ router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
   try {
     const { artid } = req.params;
     const userId = req.session.userid; // or however you store user ID in session
-    console.log("Edit request for artid:", artid, "by userId:", userId);
-
+    console.log("Edit request for artid:", artid, "by userId:", userId); //Unable to print log
     // Fetch the post
     const [rows] = await db.promise().query(
       'SELECT * FROM artwork WHERE artid = ?', [artid]

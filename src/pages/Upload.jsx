@@ -38,7 +38,7 @@ function Upload() {
     }
 
     const formData = new FormData();
-    formData.append("userid", localStorage.getItem("id"));
+    formData.append("userid", localStorage.getItem("userid"));
     // formData.append('artid', uuidv4());
     formData.append('artid', artid || Math.floor(Math.random() * 1e10).toString());
     formData.append("title", title);
@@ -107,7 +107,7 @@ const handleDelete = async (e) => {
   }
 };
 
-const userid = localStorage.getItem('id');
+const userid = localStorage.getItem('userid');
 useEffect(() => {
   if (!userid) {
     alert("You must log in for upload.");

@@ -23,7 +23,7 @@ function SignupForm() {
     if (response.data.success) {
       alert('Registration successful! Please log in.');
       // localStorage.setItem('name', response.data.user.name);
-      // localStorage.setItem('id', response.data.user.id);
+      // localStorage.setItem('userid', response.data.user.userid);
       window.location.href = '/registry';
     } else {
       setErrorMessage(response.data.message || 'Signup failed');
