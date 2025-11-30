@@ -19,6 +19,7 @@ function Upload() {
     const [showDialog, setShowDialog] = useState(false);
     
       const navigate = useNavigate();
+      
   const [images, setImages] = React.useState(artimages || []);
   const maxNumber = 3;
   const onChange = (imageList, addUpdateIndex) => {
@@ -56,8 +57,8 @@ function Upload() {
       let response;
       // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
       if (isEdit){
-         response =  await axios.get(`${APIURL}/illust/edit/${artid}`, //Edit route
-        title, description, userid, artid, Date.now(), //edited time
+         response =  await axios.post(`${APIURL}/illust/edit/${artid}`, //Edit route
+        {title, description, userid, artid, edited: Date.now()}, //edited time
         { withCredentials: true,} 
       );
       
@@ -110,14 +111,15 @@ useEffect(() => {
     alert("You must log in for upload.");
     navigate('/registry');
   }
-  if (isEdit) {
-      axios.get(`${APIURL}/illust/posts/${artid}/edit`, { withCredentials: true })//To be changed to /illust/edit/:artid
+  else{
+    if (isEdit) {
+      axios.get(`${APIURL}/illust/posts/${artid}/edit`, // Fetch existing post data for editing
+        { withCredentials: true })
         .then(res => {
           if (res.data.success) {
             setTitleName(res.data.post.title || '');
             setDescription(res.data.post.caption || '');
-            const imgs = Array.isArray(res.data.post.images) ? res.data.post.images : [];
-            setImages(imgs);
+            setImages(JSON.parse(res.data.post.images) || []);
           }
         })
         .catch(err => {
@@ -127,6 +129,7 @@ useEffect(() => {
           }
         });
     }
+  }
 }
 , [userid, navigate, isEdit, artid, APIURL]);
 
@@ -144,15 +147,11 @@ useEffect(() => {
                   <p>ID: {artid}</p>
                   <p>Current Images:</p>
                   <div className="upload__image-wrapper">
-                  {Array.isArray(images) && images.length > 0 ? images.map((image, index) => 
-                  { const src = typeof image === "string" ? image : image.data_url;
-                    return (
-                      console.log('Displaying image src:', src),
+                  {images && images.length > 0 ? images.map((image, index) => (
                     <div key={index} className="image-item">
-                      <img  src={src} alt={`Artwork ${index + 1}`}/>
+                      <img  src={image} alt={`Artwork ${index + 1}`}/>
                     </div>
-                  )}
-                  ) : <p>Error: No images available.</p>}
+                  )) : <p>Error: No images available.</p>}
                   </div>
                 </div>)
                 : 

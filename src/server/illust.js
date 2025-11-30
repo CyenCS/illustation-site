@@ -123,7 +123,6 @@ router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
   try {
     const { artid } = req.params;
     const userId = req.session.userid; // or however you store user ID in session
-    console.log("Edit request for artid:", artid, "by userId:", userId); //Unable to print log
     // Fetch the post
     const [rows] = await db.promise().query(
       'SELECT * FROM artwork WHERE artid = ?', [artid]
@@ -132,6 +131,13 @@ router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
       return res.status(404).json({ success: false, message: "Post not found" });
     }
     const post = rows[0];
+
+    try {
+      post.images = JSON.parse(post.image || '[]');
+    } catch (e) {
+      console.error("Image JSON parse error (edit):", e);
+      post.images = [];
+    }
 
     // Check ownership
     if (post.userid !== userId) {
