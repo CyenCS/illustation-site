@@ -89,7 +89,7 @@ app.use(async (req, res, next) => {
     try {
       const [rows] = await db.promise().query('SELECT id, name FROM users WHERE remember_token = ?', [token]);
       if (rows.length > 0) {
-        req.session.user = { userid: rows[0].userid, name: rows[0].name };
+        req.session.user = { userid: rows[0].id, name: rows[0].name };
         console.log(`Auto-logged user ${rows[0].name}`);
         res.cookie('rememberToken', token, {
         httpOnly: true,

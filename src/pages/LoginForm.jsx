@@ -25,7 +25,8 @@ function LoginForm() {
     if (response.data.success) {
       // localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('name', response.data.user.name);
-      localStorage.setItem('userid', response.data.user.userid);
+      localStorage.setItem('userid', response.data.user.id);
+      alert(`Welcome! ${response.data.user.name}  ID: ${response.data.user.id}`);
       
       console.log('Login successful:', response.data.user.userid);
       window.location.href = '/';
