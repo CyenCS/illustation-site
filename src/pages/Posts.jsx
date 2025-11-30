@@ -47,7 +47,6 @@ function Posts() {
           const imgs = Array.isArray(res.data.post.images) ? res.data.post.images : [];
           setImagesList(imgs);
           setSelectedIndex(0);
-          console.log("UserId:", userId, " Post UserId:", res.data.post.userid);
           setIsOwner(Number(userId) === res.data.post.userid);
         } else {
           setNotFound(true);

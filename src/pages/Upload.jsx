@@ -16,12 +16,9 @@ function Upload() {
     const [title, setTitleName] = useState(arttitle||'');
     const [description, setDescription] = useState(artdescription||'');
     const [category, setCategory] = useState('illustration');
-      const [showDialog, setShowDialog] = useState(false);
-
-    
+    const [showDialog, setShowDialog] = useState(false);
     
       const navigate = useNavigate();
-
   const [images, setImages] = React.useState(artimages || []);
   const maxNumber = 3;
   const onChange = (imageList, addUpdateIndex) => {
@@ -119,7 +116,8 @@ useEffect(() => {
           if (res.data.success) {
             setTitleName(res.data.post.title || '');
             setDescription(res.data.post.caption || '');
-            setImages(res.data.post.images || []);
+            const imgs = Array.isArray(res.data.post.images) ? res.data.post.images : [];
+            setImages(imgs);
           }
         })
         .catch(err => {
@@ -130,7 +128,7 @@ useEffect(() => {
         });
     }
 }
-, [userid, navigate, isEdit, artid, arttitle, artimages, APIURL]);
+, [userid, navigate, isEdit, artid, APIURL]);
 
 
 
@@ -146,11 +144,15 @@ useEffect(() => {
                   <p>ID: {artid}</p>
                   <p>Current Images:</p>
                   <div className="upload__image-wrapper">
-                  {images && images.length > 0 ? images.map((image, index) => (
+                  {Array.isArray(images) && images.length > 0 ? images.map((image, index) => 
+                  { const src = typeof image === "string" ? image : image.data_url;
+                    return (
+                      console.log('Displaying image src:', src),
                     <div key={index} className="image-item">
-                      <img  src={image} alt={`Artwork ${index + 1}`}/>
+                      <img  src={src} alt={`Artwork ${index + 1}`}/>
                     </div>
-                  )) : <p>Error: No images available.</p>}
+                  )}
+                  ) : <p>Error: No images available.</p>}
                   </div>
                 </div>)
                 : 

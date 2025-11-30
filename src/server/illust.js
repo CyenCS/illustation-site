@@ -135,7 +135,7 @@ router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
 
     // Check ownership
     if (post.userid !== userId) {
-      return res.status(403).json({ success: false, message: `${artid} by User: ${userId}` });
+      return res.status(403).json({ success: false, message:`Unauthorized` });
     }
 
     // Return post data for editing
