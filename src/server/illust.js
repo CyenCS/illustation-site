@@ -243,7 +243,6 @@ router.get('/illusts', async (req, res) => {
         
       } catch (e) {
         console.error("Image JSON parse error:", e);
-        // imagesArray = [post.image];
       }
       return {
         ...post,
