@@ -10,17 +10,19 @@ import DeleteDialog from '../Components/Dialog.jsx';
 function Upload() {
   const { artid } = useParams(); //replaces encodeURIComponent()
   const isEdit = !!artid;
-  const { artimages, arttitle, artdescription} = useLocation().state || {};
+  const { arttitle, artdescription} = useLocation().state || {};
 
   const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
-    const [title, setTitleName] = useState(arttitle||'');
-    const [description, setDescription] = useState(artdescription||'');
+    const [title, setTitleName] = useState('');
+    const [description, setDescription] = useState('');
+    const [initialTitle, setInitialTitle] = useState('');
+    const [initialDescription, setInitialDescription] = useState('');
     const [category, setCategory] = useState('illustration');
     const [showDialog, setShowDialog] = useState(false);
     
       const navigate = useNavigate();
       
-  const [images, setImages] = React.useState(artimages || []);
+  const [images, setImages] = React.useState([]);
   const maxNumber = 3;
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
@@ -58,7 +60,7 @@ function Upload() {
       // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
       if (isEdit){
          response =  await axios.post(`${APIURL}/illust/edit/${artid}`, //Edit route
-        {title, description, userid, artid, edited: Date.now()}, //edited time
+        {title, description}, //edited time
         { withCredentials: true,} 
       );
       
@@ -105,33 +107,51 @@ const handleDelete = async (e) => {
   }
 };
 
+
 const userid = localStorage.getItem('userid');
 useEffect(() => {
-  if (!userid) {
-    alert("You must log in for upload.");
-    navigate('/registry');
-  }
-  else{
-    if (isEdit) {
-      axios.get(`${APIURL}/illust/posts/${artid}/edit`, // Fetch existing post data for editing
+  function fetchPostDataForEdit(artid) {
+  axios.get(`${APIURL}/illust/posts/${artid}/edit`, // Fetch existing post data for editing
         { withCredentials: true })
         .then(res => {
           if (res.data.success) {
-            setTitleName(res.data.post.title || '');
-            setDescription(res.data.post.caption || '');
-            setImages(JSON.parse(res.data.post.images) || []);
+            const post = res.data.post || {};
+            setTitleName(post.title || '');
+            setDescription(post.caption || '');
+            setInitialTitle(post.title || '');
+            setInitialDescription(post.caption || '');
+            let imgs = (post.images ?? []);
+            console.log("Type image: ", typeof imgs, imgs); //object
+            if ((Array.isArray(imgs))) {
+              try { imgs = imgs || '[]'; }
+              catch (e) { console.error('Failed to parse images:', e); imgs = []; }
+            }
+            if (!Array.isArray(imgs)) imgs = [];
+            setImages(imgs);
           }
         })
         .catch(err => {
           if (err.response?.status === 403) {
             alert(`You do not have permission to edit this artwork. ${err.response.data.message || ''}`);
             navigate(`/posts/${artid}`);
+            return;
           }
         });
+}
+
+  if (!userid) {
+    alert("You must log in for upload.");
+    navigate('/registry');
+  }
+  else{
+    if (isEdit) {
+      fetchPostDataForEdit();
+    } else{
+      return;
     }
   }
 }
-, [userid, navigate, isEdit, artid, APIURL]);
+, [userid, isEdit, artid, navigate, APIURL]);
 
 
 
@@ -151,7 +171,7 @@ useEffect(() => {
                     <div key={index} className="image-item">
                       <img  src={image} alt={`Artwork ${index + 1}`}/>
                     </div>
-                  )) : <p>Error: No images available.</p>}
+                  )) : null}
                   </div>
                 </div>)
                 : 
@@ -227,8 +247,8 @@ useEffect(() => {
                           {isEdit ? 
                           <div >
                             <button className="action" type="submit" 
-                          disabled={(title === arttitle || "" || null) && 
-                            (description === artdescription || "" || null)}>Save Changes</button>
+                          disabled={(title === initialTitle || "" || null) && 
+                            (description === initialDescription || "" || null)}>Save Changes</button>
                             <div>
                       <button type="button" className="delete-btn" onClick={() => setShowDialog(true)}>Delete</button>
                       {showDialog && (

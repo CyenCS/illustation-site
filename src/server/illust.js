@@ -113,10 +113,34 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
 });
 
 // // Edit (replace existing)
-// router.post('/edit/:artid', async (req, res) => {
-//   const { artid } = req.params;
-//   await db.query("UPDATE artwork SET title=?, caption=?, image=? WHERE artid=?", [..., artid]);
-// });
+router.put('/edit/:artid', requireLogin, async (req, res) => {
+  try{
+    const userid = req.session.user.id;
+    const artid = req.params.artid; //from url path
+    const { title, caption} = req.body;
+
+    if (!userid || !title || !caption || !artid) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+
+    const updateQuery = 
+    `UPDATE artwork SET title = ?, caption = ?, edited = ? WHERE artid = ? AND userid = ?`;
+
+    const params = [title, caption, Date.now(), artid, userid];
+    const [result] = await db.promise().query(updateQuery, params);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Post not found or unauthorized' });
+    }
+    res.json({ success: true, message: 'Edit successful' });
+
+  } catch (err) {
+    console.error("Edit failed: ", err);
+    res.status(500).json({ success: false, message: 'Edit error: '+err.message });
+  }
+  // await db.query("UPDATE artwork SET title=?, caption=?, WHERE artid=?", [..., artid]);
+
+});
 
 // Get post data for editing
 router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
