@@ -30,6 +30,34 @@ function Upload() {
     setImages(imageList);
   };
 
+  const handleEdit = async (e) => {
+    e.preventDefault();
+
+        const formData = new FormData();
+    formData.append("userid", localStorage.getItem("userid"));
+    // formData.append('artid', uuidv4());
+    formData.append('artid', artid || Math.floor(Math.random() * 1e10).toString());
+    formData.append("title", title);
+    formData.append("caption", description);
+      
+      // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
+    try{
+      const response =  await axios.post(`${APIURL}/illust/edit/${artid}`, //Edit route
+        {title, description,artid}, //edited time
+        { withCredentials: true,} 
+      );
+
+    if (response.data.success) {
+      const artId = encodeURIComponent(response.data.post.artid);
+      navigate(`/posts/${artId}`);
+    } else{
+      alert(`Edit failed: ` + response.data.message);
+    }
+    } catch (err) {
+      console.error("Edit upload error: ", err);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (images.length === 0) {
@@ -50,40 +78,27 @@ function Upload() {
       formData.append("images", imgObj.file);
     });
 
-    for (const entry of formData.entries()) {
-     // Input Test - Consists of key-value pairs
-      console.log('FormData entry:', entry[0], entry[1]);
-    }
-
+    // for (const entry of formData.entries()) {
+    //  // Input Test - Consists of key-value pairs
+    //   console.log('FormData entry:', entry[0], entry[1]);
+    // }
     try{
-      let response;
-      // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
-      if (isEdit){
-         response =  await axios.post(`${APIURL}/illust/edit/${artid}`, //Edit route
-        {title, description}, //edited time
-        { withCredentials: true,} 
-      );
       
-      } else{
-         response =  await axios.post(`${APIURL}/illust/upload`, 
-        formData,
-        { withCredentials: true,} 
-      );
-      
-      }
-     
+     const response =  await axios.post(`${APIURL}/illust/upload`, 
+          formData, { withCredentials: true,} 
+        );
       // headers: { "Content-Type": "multipart/form-data" },//Breaks Boundary - do not use 
 
       if (response.data.success) {
         const artId = encodeURIComponent(response.data.post.artid);
         navigate(`/posts/${artId}`);
       } else{
-        alert("Upload failed: " + response.data.message);
+        alert(`Upload failed: ` + response.data.message);
       }
     } catch (err) {
       const serverMessage = err.response?.data?.message || err.message;
       if(err.response?.status===401){
-      alert("Upload error: " + serverMessage);
+      alert(`Upload error: ` + serverMessage);
       localStorage.clear();
       navigate('/');
       }
@@ -145,7 +160,7 @@ useEffect(() => {
   }
   else{
     if (isEdit) {
-      fetchPostDataForEdit();
+      fetchPostDataForEdit(artid);
     } else{
       return;
     }
@@ -222,14 +237,14 @@ useEffect(() => {
                 
                 {/* Form Section */}
                 <div className="forms"  style= {{width: "60%"}} >
-                    <form onSubmit={isEdit ? undefined : handleSubmit} >
+                    <form onSubmit={isEdit ? handleEdit : handleSubmit} >
                         <div className="inputbox">
                             <label>Title</label>
                             <input type="text" 
                             value={title} 
                             onChange={(e) => setTitleName(e.target.value)}  
-                            id="itemname" className="form-control" 
-                            name="itemname" placeholder="Enter title here" 
+                            id="title" className="form-control" 
+                            name="title" placeholder="Enter title here" 
                             minLength="3" autoComplete="off"  required
                             />
                         </div>
@@ -238,8 +253,8 @@ useEffect(() => {
                             <textarea type="text" 
                             value={description} 
                             onChange={(e) => setDescription(e.target.value)}  
-                            id="itemname" className="form-control" 
-                            name="itemname" placeholder="Enter description here" 
+                            id="description" className="form-control" 
+                            name="description" placeholder="Enter description here" 
                             minLength="3" autoComplete="off"  required
                              ></textarea>
                         </div>

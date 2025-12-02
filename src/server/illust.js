@@ -116,8 +116,8 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
 router.put('/edit/:artid', requireLogin, async (req, res) => {
   try{
     const userid = req.session.user.id;
-    const artid = req.params.artid; //from url path
-    const { title, caption} = req.body;
+    // const artid = req.params.artid; //from url path
+    const {title, caption, artid} = req.body;
 
     if (!userid || !title || !caption || !artid) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
