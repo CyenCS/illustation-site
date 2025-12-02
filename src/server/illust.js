@@ -114,8 +114,11 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
 
 // // Edit (replace existing)
 router.put('/edit/:artid', requireLogin, async (req, res) => {
+    console.log('EDIT request:', { params: req.params, body: req.body, session: req.session && {
+    userid: req.session.userid
+  }});
   try{
-    const userid = req.session.user.id;
+    const userid = req.session.userid;
     // const artid = req.params.artid; //from url path
     const {title, caption, artid} = req.body;
 
