@@ -100,9 +100,9 @@ async function verifyartwork(res, artid, userId) {
 
 // // Edit (replace existing)
 router.put('/edit/:artid', requireLogin, async (req, res) => {
-    console.log('EDIT request:', { params: req.params, body: req.body, session: req.session && {
-    userid: req.session.userid
-  }});
+  //   console.log('EDIT request:', { params: req.params, body: req.body, session: req.session && {
+  //   userid: req.session.userid
+  // }});
   try{
     const userid = req.session.userid;
     // const artid = req.params.artid; //from url path
@@ -282,9 +282,10 @@ router.delete('/delete', requireLogin, async (req, res) => {
   try {
     if (!(await verifyartwork(res, artid, userid))) {return;}
     else{
-      await db.promise().query('DELETE FROM artwork WHERE artid = ?', [artid]);
-    await cloudinary.api.delete_resources_by_prefix(`posts/${artid}`);
+      await cloudinary.api.delete_resources_by_prefix(`posts/${artid}`);
     await cloudinary.api.delete_folder(`posts/${artid}`);
+      await db.promise().query('DELETE FROM artwork WHERE artid = ?', [artid]);
+    
     res.json({ success: true, message: 'Artwork deleted' });
     }
     
