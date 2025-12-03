@@ -280,22 +280,14 @@ router.delete('/delete', requireLogin, async (req, res) => {
   const userid = req.session.userid;
 
   try {
-    // const [rows] = await db.promise().query('SELECT userid FROM artwork WHERE artid = ?', [artid]);
-    // if (rows.length === 0) {
-    //   return res.status(404).json({ success: false, message: 'Artwork not found' });
-    // }
-
-    // const postOwner = rows[0].userid;
-    // if (postOwner !== userId) {
-    //   return res.status(403).json({ success: false, message: 'Unauthorized: Not your post' });
-    // }
-
-    if (!(await verifyartwork(res, artid, userid))) return;
-
-    await db.promise().query('DELETE FROM artwork WHERE artid = ?', [artid]);
+    if (!(await verifyartwork(res, artid, userid))) {return;}
+    else{
+      await db.promise().query('DELETE FROM artwork WHERE artid = ?', [artid]);
     await cloudinary.api.delete_resources_by_prefix(`posts/${artid}`);
     await cloudinary.api.delete_folder(`posts/${artid}`);
     res.json({ success: true, message: 'Artwork deleted' });
+    }
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error' });
