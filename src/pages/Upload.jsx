@@ -42,19 +42,19 @@ function Upload() {
       
       // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
     try{
-      const response =  await axios.post(`${APIURL}/illust/edit/${artid}`, //Edit route
-        {title, description,artid}, //edited time
+      const payload = { title, caption: description, artid }; // send caption
+      const response =  await axios.put(`${APIURL}/illust/edit/${artid}`, //Edit route
+        payload, //edited time
         { withCredentials: true,} 
       );
 
     if (response.data.success) {
-      const artId = encodeURIComponent(response.data.post.artid);
-      navigate(`/posts/${artId}`);
+      navigate(`/posts/${artid}`);
     } else{
       alert(`Edit failed: ` + response.data.message);
     }
     } catch (err) {
-      console.error("Edit upload error: ", err);
+      console.error("Edit error: ", err);
     }
   }
 
@@ -115,6 +115,7 @@ const handleDelete = async (e) => {
   console.log("Delete response:", response.data);
   setShowDialog(false);
   if(response.data.success){
+    alert(response.data.message);
     navigate('/illustration', { state: { deleted: true } });
   }
   else{
@@ -136,7 +137,6 @@ useEffect(() => {
             setInitialTitle(post.title || '');
             setInitialDescription(post.caption || '');
             let imgs = (post.images ?? []);
-            console.log("Type image: ", typeof imgs, imgs); //object
             if ((Array.isArray(imgs))) {
               try { imgs = imgs || '[]'; }
               catch (e) { console.error('Failed to parse images:', e); imgs = []; }
@@ -167,8 +167,6 @@ useEffect(() => {
   }
 }
 , [userid, isEdit, artid, navigate, APIURL]);
-
-
 
     return(
       <>

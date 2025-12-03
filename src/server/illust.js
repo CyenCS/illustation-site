@@ -37,37 +37,6 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-// const verifyToken = require('../unused/auth');
-
-// Set storage engine
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     const artid = req.body.artid || generateArtId();
-//     if (!req.body.artid){
-//       req.generatedArtid = artid;
-//       req.body.artid = artid;
-//     }
-
-//     // Ensure both exist
-//     if (!artid) return cb(new Error("Missing userid or artid"));
-
-//     const dir = path.join(__dirname, '..', '..', 'posts', artid);
-//     fs.mkdirSync(dir, { recursive: true });
-//     cb(null, dir);
-//   },
-//   filename: function (req, file, callback) {
-//     // Generate unique filename: artid + original extension
-//     const artid = req.body.artid || req.generatedArtid || generateArtId();
-//     if (req.fileIndex === undefined) req.fileIndex = 0;
-//     const index = req.fileIndex;
-//     req.fileIndex += 1;
-//     const ext = path.extname(file.originalname);
-//     const filename = `${artid}_p${index}${ext}`;
-    
-//     callback(null, filename)
-//   }
-// });
-
 //Upload Artwork
 router.post('/upload', requireLogin, upload.array('images', 3), async (req, res) => {
   try{
@@ -80,6 +49,7 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
       });
     }
 
+    //Images being uploaded to Cloudinary
     const stripVersion = (url) => url.replace(/\/v\d+\//, '/');
 
     const uploadedImages = req.files.map(file => stripVersion(file.path));
@@ -112,6 +82,22 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
   }
 });
 
+async function verifyartwork(res, artid, userId) {
+  const [rows] = await db.promise().query('SELECT userid FROM artwork WHERE artid = ?', [artid]);
+    if (rows.length === 0) {
+      res.status(404).json({ success: false, message: 'Artwork not found' });
+      return false;
+    }
+
+    const postOwner = rows[0].userid;
+    if (postOwner !== userId) {
+      res.status(403).json({ success: false, message: 'Unauthorized: Not your post' });
+      return false;
+    }
+
+    return true;
+}
+
 // // Edit (replace existing)
 router.put('/edit/:artid', requireLogin, async (req, res) => {
     console.log('EDIT request:', { params: req.params, body: req.body, session: req.session && {
@@ -126,10 +112,14 @@ router.put('/edit/:artid', requireLogin, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
+    const edited = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+    
+
     const updateQuery = 
     `UPDATE artwork SET title = ?, caption = ?, edited = ? WHERE artid = ? AND userid = ?`;
 
-    const params = [title, caption, Date.now(), artid, userid];
+    const params = [title, caption, edited, artid, userid];
     const [result] = await db.promise().query(updateQuery, params);
 
     if (result.affectedRows === 0) {
@@ -139,7 +129,7 @@ router.put('/edit/:artid', requireLogin, async (req, res) => {
 
   } catch (err) {
     console.error("Edit failed: ", err);
-    res.status(500).json({ success: false, message: 'Edit error: '+err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
   // await db.query("UPDATE artwork SET title=?, caption=?, WHERE artid=?", [..., artid]);
 
@@ -274,14 +264,7 @@ router.get('/illusts', async (req, res) => {
       return {
         ...post,
         firstImage: imagesArray[0], // Return only the first image URL as thumbnail
-        // artid: post.artid,
-        // userid: post.userid,
-        // username: post.username,
-        // title: post.title,
-        // caption: post.caption,
-        // category: post.category,
-        // created: post.created,
-        // firstImage: imagesArray[0] || null // Return only the first image for listing
+        // artid: post.artid, ...
       };
     });
 
@@ -292,22 +275,26 @@ router.get('/illusts', async (req, res) => {
   }
 });
 
-router.post('/delete', requireLogin, async (req, res) => {
+router.delete('/delete', requireLogin, async (req, res) => {
   const { artid } = req.body;
-  const userId = req.session.user.id;
+  const userid = req.session.userid;
 
   try {
-    const [rows] = await db.promise().query('SELECT userid FROM artwork WHERE artid = ?', [artid]);
-    if (rows.length === 0) {
-      return res.status(404).json({ success: false, message: 'Artwork not found' });
-    }
+    // const [rows] = await db.promise().query('SELECT userid FROM artwork WHERE artid = ?', [artid]);
+    // if (rows.length === 0) {
+    //   return res.status(404).json({ success: false, message: 'Artwork not found' });
+    // }
 
-    const postOwner = rows[0].userid;
-    if (postOwner !== userId) {
-      return res.status(403).json({ success: false, message: 'Unauthorized: Not your post' });
-    }
+    // const postOwner = rows[0].userid;
+    // if (postOwner !== userId) {
+    //   return res.status(403).json({ success: false, message: 'Unauthorized: Not your post' });
+    // }
+
+    if (!(await verifyartwork(res, artid, userid))) return;
 
     await db.promise().query('DELETE FROM artwork WHERE artid = ?', [artid]);
+    await cloudinary.api.delete_resources_by_prefix(`posts/${artid}`);
+    await cloudinary.api.delete_folder(`posts/${artid}`);
     res.json({ success: true, message: 'Artwork deleted' });
   } catch (err) {
     console.error(err);
@@ -358,3 +345,34 @@ router.get('/recent', async (req, res) => {
 });
 
 module.exports = router;
+
+// const verifyToken = require('../unused/auth');
+
+// Set storage engine
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     const artid = req.body.artid || generateArtId();
+//     if (!req.body.artid){
+//       req.generatedArtid = artid;
+//       req.body.artid = artid;
+//     }
+
+//     // Ensure both exist
+//     if (!artid) return cb(new Error("Missing userid or artid"));
+
+//     const dir = path.join(__dirname, '..', '..', 'posts', artid);
+//     fs.mkdirSync(dir, { recursive: true });
+//     cb(null, dir);
+//   },
+//   filename: function (req, file, callback) {
+//     // Generate unique filename: artid + original extension
+//     const artid = req.body.artid || req.generatedArtid || generateArtId();
+//     if (req.fileIndex === undefined) req.fileIndex = 0;
+//     const index = req.fileIndex;
+//     req.fileIndex += 1;
+//     const ext = path.extname(file.originalname);
+//     const filename = `${artid}_p${index}${ext}`;
+    
+//     callback(null, filename)
+//   }
+// });
