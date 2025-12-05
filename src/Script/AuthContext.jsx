@@ -6,20 +6,33 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
     const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
 
   useEffect(() => {
-    axios.get(`${APIURL}/auth/me`, { withCredentials: true })
+    axios.get(`${APIURL}/fetch/auth/me`, { withCredentials: true })
       .then(res => {
         if (res.data.success) {
           setUser(res.data); // { userid, username, ... }
         }
       })
-      .catch(() => setUser(null));
-  }, []);
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+      
+  }, [APIURL]);
+
+  const logout = async () => {
+    try {
+      await axios.post(`${APIURL}/fetch/logout`, {}, { withCredentials: true });
+      alert("Logged out successfully.");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+    setUser(null); // clear context
+  };
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

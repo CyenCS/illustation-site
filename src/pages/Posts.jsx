@@ -12,7 +12,7 @@ function Posts() {
   const { user } = useAuthContext();
   const { artid } = useParams();
   
-  const userId = user.userid; // (TBD) Stop using this. Use context or a global state instead.
+  const [userId] = useState(user ? user.userid : null);
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);

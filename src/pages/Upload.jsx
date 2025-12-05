@@ -8,6 +8,8 @@ import "../Design/form.css";
 import DeleteDialog from '../Components/Dialog.jsx';
 import { useAuthContext } from '../Script/AuthContext.jsx';
 
+
+//Problem: Manual typing URL by "/edit" redirects to login page even if logged in.
 function Upload() {
   const { user } = useAuthContext();
   

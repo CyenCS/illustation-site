@@ -1,23 +1,36 @@
-import { useState,} from 'react';
-import { getAccountMenuData } from './backend';
+// src/Script/AccountMenu.jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from "../Script/AuthContext";
 
 export default function AccountMenu() {
-  const { user } = useAuthContext();
+  const { user, logout } = useAuthContext();
   const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+
+  if (!user || !user.username) return null;
 
   const toggleDropdown = () => {
-      console.log('Dropdown toggled!');
-      setShowDropdown(!showDropdown);
-    };
-  if (!user.username) return null;
+    setShowDropdown(prev => !prev);
+  };
 
-  const { name, links } = getAccountMenuData(user.username);
+  const onProfile = (e) => {
+    e.preventDefault();
+    setShowDropdown(false);
+    alert('Navigating to Profile...');
+    // navigate('/profile');
+  };
+
+  const onSignOut = async (e) => {
+    e.preventDefault();
+    setShowDropdown(false);
+    await logout(); // calls server logout and sets user=null in context
+    navigate('/');  // optional: go to homepage after logout
+  };
 
   return (
     <div className="dropdown">
-      <div >
-        <button
+      <button
         id="accname"
         className={"transparent" + (showDropdown ? ' active' : '')}
         onClick={toggleDropdown}
@@ -25,28 +38,15 @@ export default function AccountMenu() {
         aria-haspopup="true"
         aria-expanded={showDropdown}
       >
-        {name}
+        {user.username}
       </button>
+
       {showDropdown && (
         <div className="dropdown-content">
-          {links.map(link => (
-            <a
-            href="/"
-            key={link.id}
-              id={link.id}
-              onClick={(e) => {
-                e.preventDefault();
-                link.action();
-              }}
-            >
-              {link.text}
-            </a>
-          ))}
+          <a href="/" onClick={onProfile}>Profile</a>
+          <a href="/" onClick={onSignOut}>Sign Out</a>
         </div>
       )}
-
-      </div>
-      
     </div>
   );
 }
