@@ -5,12 +5,14 @@ import '../Design/posts.css';
 
 import { useNavigate } from 'react-router-dom';
 import FormatTime from "../Script/TimeFormat.jsx";
+import { useAuthContext } from "../Script/AuthContext.jsx";
 
 function Posts() {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
+  const { artid } = useParams();
   
-    const { artid } = useParams();
-    const userId = localStorage.getItem('userid'); // set at login
+  const userId = user.userid; // (TBD) Stop using this. Use context or a global state instead.
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -60,7 +62,7 @@ function Posts() {
           console.error(err);
         }
       }).finally(() => setLoading(false));
-  }, [artid, userId]);
+  }, [artid, APIURL, userId]);
 
 
   // Scroll selected thumbnail into view when selectedIndex changes
@@ -109,10 +111,7 @@ if (!post) return <div>Post data not available</div>;
                 <div className="info">
                     <p>By: {post.username}</p>
                     <p>Published: {published}</p>
-                    {/* post.created */}
                     {edited ? <p>Edited: {edited}</p>:null}
-                    {/* post.edited */}
-                    <p>Category: {post.category}</p>
                     <div className="description">
                         {post.caption ?? <i>No Desription</i>}
                     </div>

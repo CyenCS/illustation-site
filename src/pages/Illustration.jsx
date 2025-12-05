@@ -18,10 +18,6 @@ function Illustration() {
   const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrender.com";
   console.log("URL: "+ process.env.REACT_APP_API_URL);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
-
   const [posts, setPosts] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -70,24 +66,24 @@ function Illustration() {
       } finally{
         setLoading(false);
       }
-    }, []);
+    }, [APIURL]);
 
     useEffect(() => {
       fetchPosts(search, currentPage);
     },[search, currentPage, fetchPosts]);
 
 
-    const toastShown = useRef(false);
-  useEffect(() => {
-    if (location.state?.deleted) {
-      toastShown.current = true;
-      toast.success("Artwork deleted successfully!");
-      setTimeout(() => {
-        navigate(location.pathname, { replace: true, state: {} });
-        toastShown.current = false;
-      }, 1); 
-    }
-  }, [location.state, navigate, location.pathname]);
+  //   const toastShown = useRef(false);
+  // useEffect(() => {
+  //   if (location.state?.deleted) {
+  //     toastShown.current = true;
+  //     toast.success("Notice: Artwork deleted successfully!");
+  //     setTimeout(() => {
+  //       navigate(location.pathname, { replace: true, state: {} });
+  //       toastShown.current = false;
+  //     }, 1); 
+  //   }
+  // }, [location.state, navigate, location.pathname]);
 
   //!!!!!!!!Abandoned - useSearchParams already does this kind of function
   // const handlePageChange = (direction) => {
@@ -103,14 +99,14 @@ function Illustration() {
   //   });
   // };
 
-  if (loading) {
-  return <div className="loading"><p>Loading...</p></div>;
-} 
+    if (loading) {
+      return <div className="loading"><p>Loading...</p></div>;
+    } 
 
-if (error) {
-  return <div className="error"><p>Error: ${error}</p></div>;
-}
-console.log("Search: ", search);
+    if (error) {
+      return <div className="error"><p>Error: ${error}</p></div>;
+    }
+
     return (
         <div className="content"> 
           <h2>Illustrations</h2>
@@ -138,8 +134,8 @@ console.log("Search: ", search);
         </div>
               </Link>
         ))}
-  </div>
-  <div style={{ marginTop: 20 }}>
+      </div>
+      <div style={{ marginTop: 20 }}>
               <button 
               disabled = {currentPage <= 1}
               onClick={() => setSearchParams({ search: search, page: currentPage - 1 })}>
@@ -157,7 +153,7 @@ console.log("Search: ", search);
                 Next
               </button>
             </div>
-  </div>
+      </div>
   
           )
         }

@@ -1,17 +1,18 @@
 import { useState,} from 'react';
 import { getAccountMenuData } from './backend';
+import { useAuthContext } from "../Script/AuthContext";
 
 export default function AccountMenu() {
-  const displayname = localStorage.getItem('name');
+  const { user } = useAuthContext();
   const [showDropdown, setShowDropdown] = useState(false);
 
   const toggleDropdown = () => {
       console.log('Dropdown toggled!');
       setShowDropdown(!showDropdown);
     };
-  if (!displayname) return null;
+  if (!user.username) return null;
 
-  const { name, links } = getAccountMenuData(displayname);
+  const { name, links } = getAccountMenuData(user.username);
 
   return (
     <div className="dropdown">

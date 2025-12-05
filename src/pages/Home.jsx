@@ -33,7 +33,7 @@ function Home(){
     ]);
 
     return (
-        <div>
+        <div className="content">
             <h2>Recent Posts</h2>
         <div className='listpage'>
         {posts.map((post) => (
@@ -56,14 +56,12 @@ function Home(){
 
         {/* Repeat content as needed */}
 
-      <div className="content"> 
       {/* ref={introRef} */}
         <h2>Recommendation</h2>
         <div><Recommendation /></div>
 
         {/* Repeat content as needed */}
           </div>
-        </div>
     );
 }
 

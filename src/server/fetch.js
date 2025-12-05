@@ -4,6 +4,7 @@ const db = require('./connect'); // Make sure connect.js exports the MySQL pool
 const bcrypt = require('bcrypt');
 const { requireLogin } = require('./auth');
 const crypto = require('crypto');
+const { count } = require('console');
 
 //Login
 router.post('/login', async (req, res) => {
@@ -27,6 +28,7 @@ router.post('/login', async (req, res) => {
       // Successful login
       req.session.user = {userid: user.id, name: user.name}; // Store user info in session
       req.session.userid = user.id;
+      req.session.username = user.name;
 
         //A long-term cookie to remember the user that restores session if session expired or browser closed
         const rememberToken = crypto.randomBytes(32).toString('hex');
@@ -57,6 +59,14 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.get('/auth/me', (req, res) => {
+  if (req.session.userid) {
+    res.json({ success: true, userid: req.session.userid, username: req.session.username });
+  } else {
+    res.status(401).json({ success: false });
+  }
+});
+
 
 //Register
 router.post('/registry', async (req, res) => {
@@ -83,6 +93,51 @@ router.post('/registry', async (req, res) => {
       return res.status(500).json({ success: false, message: 'Server error' });
     }
   });
+
+router.get('/profile/:userid', async (req, res) => {
+  try{
+    const { userid } = req.params;
+    const limit = 10;
+    const currentPage = parseInt(req.query.page) || 1;
+    const offset = parseInt((currentPage - 1) * limit);
+
+    const countQuery = `SELECT COUNT(*) AS total FROM illustrations WHERE userid = ?`;
+    const [countRows] = await db.promise().query(countQuery, [userid]);
+    const total = countRows[0]?.total;
+    const maxpage = Math.max(1, Math.ceil(total / limit));
+
+    const query = `
+      SELECT artwork.*, users.name AS username
+      FROM artwork INNER JOIN userid ON artwork.userid = users.id
+      WHERE userid LIKE ?
+      ORDER BY artwork.created DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    const params = [userid, limit, offset];
+    const [rows] = await db.promise().query(query, params);
+      const posts = rows.map(post => {
+      let imagesArray = [];
+      try {
+        imagesArray = JSON.parse(post.image);
+        console.log("Parsed images:", imagesArray);
+        
+      } catch (e) {
+        console.error("Image JSON parse error:", e);
+      }
+      return {
+        ...post,
+        firstImage: imagesArray[0], // Return only the first image URL as thumbnail
+        // artid: post.artid, ...
+      };
+    });
+
+    res.json({ success: true, posts, total,  maxpage});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "DB error: " + err.message });
+  }
+});
 
 router.post('/logout', requireLogin, async (req, res) => {
   try{

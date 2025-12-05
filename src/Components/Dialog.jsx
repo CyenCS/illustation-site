@@ -26,13 +26,16 @@ function DeleteDialog({ open, onClose, onConfirm }) {
 
   if (!open) return null;
 
+  // A plain <button> without type="button" inside it 
+  // would default to type="submit" and triggers the form submit regardless of onClick handler.
+
   return (
     <div className="overlay" onClick={onClose}>
       <div className="dialog" onClick={e => e.stopPropagation()}>
-        <button className="close" onClick={onClose}>✕</button>
+        <button type="button" className="close" onClick={onClose}>✕</button>
         <h3>Delete this work?</h3>
-        <button className="delete" onClick={onConfirm}>Delete</button>
-        <button className="cancel" onClick={onClose}>Cancel</button>
+        <button type="button" className="delete" onClick={onConfirm}>Delete</button>
+        <button type="button" className="cancel" onClick={onClose}>Cancel</button>
       </div>
     </div>
   );

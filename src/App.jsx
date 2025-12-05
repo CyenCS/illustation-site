@@ -11,6 +11,8 @@ import './Design/style.css';
 import Registry from "./pages/Registry.jsx";
 import Upload from "./pages/Upload.jsx";
 import Posts from "./pages/Posts.jsx";
+import Profile from "./pages/Profile.jsx";
+import { AuthProvider } from "./Script/AuthContext.jsx";
 
 // const Layout = ({ children }) => {
 
@@ -31,7 +33,7 @@ function Layout({ children }) { //Global layout wrapper
 
 function App() {
   return (
-    <>
+    <AuthProvider>
     <Router>
       <Layout>
         <Routes>
@@ -42,6 +44,7 @@ function App() {
           {/* Assuming Registry is a component for user registration */}
           <Route path="/registry" element={<Registry />} />
           <Route path="/posts/:artid" element={<Posts />} />
+          <Route path="/profile/:userid" element={<Profile />} />
           
           {/* Add more routes as needed */}
 
@@ -49,7 +52,7 @@ function App() {
       </Layout>
     </Router>
     <ToastContainer position="bottom-left" autoClose={3000} theme="light" closeOnClick />
-    </>
+    </AuthProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import { useParams,useLocation } from 'react-router-dom';
+import { useParams} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
 // import { Insert } from "./placeholder/Insert.jsx"; // Adjust the import path as necessary
 import { useNavigate } from 'react-router-dom';
@@ -6,11 +6,13 @@ import ImageUploading from "react-images-uploading";
 import axios from 'axios';
 import "../Design/form.css";
 import DeleteDialog from '../Components/Dialog.jsx';
+import { useAuthContext } from '../Script/AuthContext.jsx';
 
 function Upload() {
+  const { user } = useAuthContext();
+  
   const { artid } = useParams(); //replaces encodeURIComponent()
   const isEdit = !!artid;
-  const { arttitle, artdescription} = useLocation().state || {};
 
   const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
     const [title, setTitleName] = useState('');
@@ -34,7 +36,7 @@ function Upload() {
     e.preventDefault();
 
         const formData = new FormData();
-    formData.append("userid", localStorage.getItem("userid"));
+    formData.append("userid", user.userid);
     // formData.append('artid', uuidv4());
     formData.append('artid', artid || Math.floor(Math.random() * 1e10).toString());
     formData.append("title", title);
@@ -66,7 +68,7 @@ function Upload() {
     }
 
     const formData = new FormData();
-    formData.append("userid", localStorage.getItem("userid"));
+    formData.append("userid", user.userid);
     // formData.append('artid', uuidv4());
     formData.append('artid', artid || Math.floor(Math.random() * 1e10).toString());
     formData.append("title", title);
@@ -99,7 +101,6 @@ function Upload() {
       const serverMessage = err.response?.data?.message || err.message;
       if(err.response?.status===401){
       alert(`Upload error: ` + serverMessage);
-      localStorage.clear();
       navigate('/');
       }
     }
@@ -108,23 +109,22 @@ function Upload() {
   // Delete handler
 const handleDelete = async (e) => {
   // ...delete logic...
-  const response = await axios.post(`${APIURL}/illust/delete`,
-    {artid},
-    { withCredentials: true }
-  );
+  const response = await axios.delete(`${APIURL}/illust/delete`,{
+    // axios.delete only supports one argument for URL, config. Must type 'data' inside config.
+    data: { artid },
+    withCredentials: true 
+  });
   console.log("Delete response:", response.data);
-  setShowDialog(false);
+  
   if(response.data.success){
     alert(response.data.message);
-    navigate('/illustration', { state: { deleted: true } });
+    navigate('/illustration');
   }
   else{
     alert("Delete failed: " + response.data.message);
   }
 };
 
-
-const userid = localStorage.getItem('userid');
 useEffect(() => {
   function fetchPostDataForEdit(artid) {
   axios.get(`${APIURL}/illust/posts/${artid}/edit`, // Fetch existing post data for editing
@@ -154,7 +154,7 @@ useEffect(() => {
         });
 }
 
-  if (!userid) {
+  if (!user) {
     alert("You must log in for upload.");
     navigate('/registry');
   }
@@ -166,7 +166,7 @@ useEffect(() => {
     }
   }
 }
-, [userid, isEdit, artid, navigate, APIURL]);
+, [user, isEdit, artid, navigate, APIURL]);
 
     return(
       <>

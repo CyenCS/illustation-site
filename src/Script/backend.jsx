@@ -21,8 +21,6 @@ async function signout() {
   // } catch (err) {
   //   console.error("Error during logout", err);
   // }
-
-  localStorage.clear(); // Remove all user data
   sessionStorage.clear();
   alert('You have been logged out!');
   window.location.href = '/';

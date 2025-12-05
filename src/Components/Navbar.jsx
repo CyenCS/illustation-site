@@ -6,10 +6,11 @@ import { useNavigate, NavLink } from "react-router-dom";
 import AccountMenu from '../Script/AccountMenu.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useAuthContext } from "../Script/AuthContext";
 
 function Navbar() {
-
-  const isLoggedIn = !!localStorage.getItem('name'); //!! => boolean check
+   const { user } = useAuthContext();
+  const isLoggedIn = !!user;
   const [search, setSearch] = useState(""); //input text state only, not the active search query
   const navigate = useNavigate();
 
@@ -21,8 +22,9 @@ function Navbar() {
     } else {
       navigate(`/illustration?page=1`);
     }
-
   }
+
+  
  
   return (
     <nav className="navbar">
@@ -40,9 +42,6 @@ function Navbar() {
         
         <div>
           <ul id="account">
-          {/* <li><NavLink to="/about" className={({ isActive }) => isActive ? "direct highlight" : "direct"}>About</NavLink></li>
-          <li><NavLink to="/product" className={({ isActive }) => isActive ? "direct highlight" : "direct"}>Products</NavLink></li>
-          <li><NavLink to="/contact" className={({ isActive }) => isActive ? "direct highlight" : "direct"}>Contact</NavLink></li> */}
           {isLoggedIn ? 
           <>
             <li><NavLink to="/upload" className={({ isActive }) => isActive ? "direct highlight" : "direct"}>Upload</NavLink></li>
