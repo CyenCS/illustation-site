@@ -6,9 +6,10 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+    const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/auth/me`, { withCredentials: true })
+    axios.get(`${APIURL}/auth/me`, { withCredentials: true })
       .then(res => {
         if (res.data.success) {
           setUser(res.data); // { userid, username, ... }

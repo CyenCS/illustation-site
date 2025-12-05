@@ -49,8 +49,7 @@ function Navbar() {
           </>
           :
            <li >
-            {isLoggedIn ? <AccountMenu /> :
-            <NavLink to="/registry" id="registry">Registry</NavLink>}
+            <NavLink to="/registry" id="registry">Registry</NavLink>
           </li>}
           
         </ul>
