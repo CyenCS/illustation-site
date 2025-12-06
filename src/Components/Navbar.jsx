@@ -9,8 +9,8 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useAuthContext } from "../Script/AuthContext";
 
 function Navbar() {
-   const { user } = useAuthContext();
-  const isLoggedIn = !!user;
+   const { user, loading} = useAuthContext();
+  // const isLoggedIn = !!user;
   const [search, setSearch] = useState(""); //input text state only, not the active search query
   const navigate = useNavigate();
 
@@ -28,7 +28,8 @@ function Navbar() {
  
   return (
     <nav className="navbar">
-      <div className="navdiv">
+      <div className="navdiv"> 
+        {/* spacing div for nav items */}
         <div className="logo">
           <NavLink to="/">IlluStation (PT)</NavLink>
         </div>
@@ -40,19 +41,43 @@ function Navbar() {
           </form>
            
         
-        <div>
+                <div>
           <ul id="account">
-          {isLoggedIn ? 
-          <>
-            <li><NavLink to="/upload" className={({ isActive }) => isActive ? "direct highlight" : "direct"}>Upload</NavLink></li>
-            <li><AccountMenu /></li>
-          </>
-          :
-           <li >
-            <NavLink to="/registry" id="registry">Registry</NavLink>
-          </li>}
-          
-        </ul>
+            {loading ? (
+              // keep a placeholder so layout doesn't jump while auth is being verified
+              <li>
+                <div
+                  style={{
+                    display: "inline-block",
+                    width: 160,
+                    height: 32,
+                    background: "#f0f0f0",
+                    borderRadius: 4,
+                  }}
+                />
+              </li>
+            ) : user ? (
+              <>
+                <li>
+                  <NavLink
+                    to="/upload"
+                    className={({ isActive }) => (isActive ? "direct highlight" : "direct")}
+                  >
+                    Upload
+                  </NavLink>
+                </li>
+                <li>
+                  <AccountMenu />
+                </li>
+              </>
+            ) : (
+              <li>
+                <NavLink to="/registry" id="registry">
+                  Registry
+                </NavLink>
+              </li>
+            )}
+          </ul>
         </div>
         
       </div>

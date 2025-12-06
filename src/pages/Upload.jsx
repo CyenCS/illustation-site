@@ -9,9 +9,8 @@ import DeleteDialog from '../Components/Dialog.jsx';
 import { useAuthContext } from '../Script/AuthContext.jsx';
 
 
-//Problem: Manual typing URL by "/edit" redirects to login page even if logged in.
 function Upload() {
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
   
   const { artid } = useParams(); //replaces encodeURIComponent()
   const isEdit = !!artid;
@@ -156,6 +155,8 @@ useEffect(() => {
         });
 }
 
+  if (loading) return; // Wait until loading is complete  
+
   if (!user) {
     alert("You must log in for upload.");
     navigate('/registry');
@@ -168,7 +169,7 @@ useEffect(() => {
     }
   }
 }
-, [user, isEdit, artid, navigate, APIURL]);
+, [user, isEdit, artid, loading, navigate, APIURL]);
 
     return(
       <>
