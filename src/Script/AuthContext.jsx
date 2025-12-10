@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
     axios.get(`${APIURL}/fetch/auth/me`, { withCredentials: true })
       .then(res => {
         if (res.data.success) {
-          setUser(res.data); // { userid, username, ... }
+          setUser(res.data.user); // { userid, username, ... }
         }
       })
       .catch(() => setUser(null))
