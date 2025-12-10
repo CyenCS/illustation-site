@@ -61,7 +61,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/auth/me', (req, res) => {
   if (req.session.userid) {
-    res.json({ success: true, userid: req.session.userid, username: req.session.username });
+    res.json({ success: true, user:{userid: req.session.userid, username: req.session.username} });
   } else {
     res.status(401).json({ success: false });
   }
