@@ -94,7 +94,7 @@ router.post('/registry', async (req, res) => {
     }
   });
 
-router.get('/profile/:profileid', async (req, res) => {
+router.get('/profile/:userid', async (req, res) => {
   try{
     const { userid } = req.params;
     const limit = 10;
