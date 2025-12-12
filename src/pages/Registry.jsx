@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import '../Design/registry.css';
+import { NavLink } from "react-router-dom";
 
 function Registry() {
   const [showLogin, setShowLogin] = useState(true);
@@ -10,6 +11,7 @@ function Registry() {
     <main className="registry-page-container">
       <div className="registry-page">
         <h1>ILLUSTATION</h1>
+        <NavLink to="/"><p>Click here to go back</p></NavLink>
         {showLogin ? (
           <LoginForm />
         ) : (

@@ -11,7 +11,7 @@ import './Design/style.css';
 import Registry from "./pages/Registry.jsx";
 import Upload from "./pages/Upload.jsx";
 import Posts from "./pages/Posts.jsx";
-import Profile from "./pages/Profile.jsx";
+import Profile from "./Components/Profile.jsx";
 import { AuthProvider } from "./Script/AuthContext.jsx";
 
 // const Layout = ({ children }) => {
@@ -44,7 +44,7 @@ function App() {
           {/* Assuming Registry is a component for user registration */}
           <Route path="/registry" element={<Registry />} />
           <Route path="/posts/:artid" element={<Posts />} />
-          <Route path="/profile/:userid" element={<Profile />} />
+          <Route path="/profile/:profileid" element={<Profile />} />
           
           {/* Add more routes as needed */}
 

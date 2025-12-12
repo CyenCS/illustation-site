@@ -1,89 +1,65 @@
-import React, { useState, useEffect, useCallback, use } from 'react';
-import Recommendation from '../Components/Recommendation.jsx';
-import axios from 'axios';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect,} from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import { useRef } from 'react';
+import ArtworkList from '../Components/ArtworkList.jsx';
+import ArtworkHooks from '../Script/ArtworkHooks.js';
 
-
-
-function truncateText(text, maxLength) {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + '...';
-}
+//Notes (keep it up to 5 lines, exculding this row of line):
+//Drive everything from the URL: always read pageParam and search from useSearchParams.
 
 function Illustration() {
-  
-  const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrender.com";
-  console.log("URL: "+ process.env.REACT_APP_API_URL);
-
-  const [posts, setPosts] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = searchParams.get("search") || '';
   const pageParam = parseInt(searchParams.get("page") || '1', 10);
 
-  const [total, setTotal] = useState(0);
-   const [maxPage, setMaxPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // const [total, setTotal] = useState(0);
+  //  const [maxPage, setMaxPage] = useState(1);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(pageParam);
   
   useEffect(() => {
     setCurrentPage(pageParam);
   }, [pageParam]);
 
-    const fetchPosts = useCallback(
-    async (search, currentPage) => {
-            setLoading(true); setError(null);
-      try{
-        const res = await axios.get(`${APIURL}/illust/illusts`, {
-          params: {
-            search: search || '',
-            currentPage: currentPage || 1,
-          }
-        });
-        // console.log();
-        if (res.data?.success) {
-            setPosts(res.data.posts);
-            setTotal(res.data.total);
-            setMaxPage(res.data.maxpage);
-            setCurrentPage((prev) => Math.min(prev, res.data.maxpage)); // Adjust current page if it exceeds maxPage
-            setError(null);
-            setLoading(false);
-            console.log("Fetched posts: ", res.data.posts);
-        } else{
-          setPosts([]);
-          setTotal(0);
-          setMaxPage(1);
-          setLoading(false);
-        }
-      } catch (err){
-        setPosts([]);
-        console.error("Error fetching posts: ", err);
-        setLoading(false);
-      } finally{
-        setLoading(false);
-      }
-    }, [APIURL]);
 
-    useEffect(() => {
-      fetchPosts(search, currentPage);
-    },[search, currentPage, fetchPosts]);
+    // const fetchPosts = useCallback(
+    // async (search, currentPage) => {
+    //         setLoading(true); setError(null);
+    //   try{
+    //     const res = await axios.get(`${APIURL}/illust/illusts`, {
+    //       params: {
+    //         search: search || '',
+    //         currentPage: currentPage || 1,
+    //       }
+    //     });
+    //     // console.log();
+    //     if (res.data?.success) {
+    //         setPosts(res.data.posts);
+    //         setTotal(res.data.total);
+    //         setMaxPage(res.data.maxpage);
+    //         setCurrentPage((prev) => Math.min(prev, res.data.maxpage)); // Adjust current page if it exceeds maxPage
+    //         setError(null);
+    //         setLoading(false);
+    //         console.log("Fetched posts: ", res.data.posts);
+    //     } else{
+    //       setPosts([]);
+    //       setTotal(0);
+    //       setMaxPage(1);
+    //       setLoading(false);
+    //     }
+    //   } catch (err){
+    //     setPosts([]);
+    //     console.error("Error fetching posts: ", err);
+    //     setLoading(false);
+    //   } finally{
+    //     setLoading(false);
+    //   }
+    // }, [APIURL]);
 
-
-  //   const toastShown = useRef(false);
-  // useEffect(() => {
-  //   if (location.state?.deleted) {
-  //     toastShown.current = true;
-  //     toast.success("Notice: Artwork deleted successfully!");
-  //     setTimeout(() => {
-  //       navigate(location.pathname, { replace: true, state: {} });
-  //       toastShown.current = false;
-  //     }, 1); 
-  //   }
-  // }, [location.state, navigate, location.pathname]);
+    // useEffect(() => {
+    //   fetchPosts(search, currentPage);
+    // },[search, currentPage, fetchPosts]);
 
   //!!!!!!!!Abandoned - useSearchParams already does this kind of function
   // const handlePageChange = (direction) => {
@@ -98,44 +74,23 @@ function Illustration() {
   //     return nextPage;
   //   });
   // };
-
-    if (loading) {
-      return <div className="loading"><p>Loading...</p></div>;
-    } 
-
-    if (error) {
-      return <div className="error"><p>Error: ${error}</p></div>;
-    }
+    const { posts, total, maxPage, loading, error } = ArtworkHooks({ search, currentPage:pageParam });
+    if (error) return <div className="content">Error: {error}</div>;
 
     return (
         <div className="content"> 
           <h2>Illustrations</h2>
           {search ? <p>Search: <strong>{search || '(empty)'}</strong></p>:null}
-          {search && total > 0 ? <p>Found: <strong>{total}</strong> artworks</p>:null}
+          {(search && total > 0)&&!loading ? <p>Found: <strong>{total}</strong> artworks</p>:null}
           
-          {posts.length === 0 ? (
+          {(posts.length === 0)&&!loading ? (
             <p>No Illustrations found.</p>
-          ): (
-            <div>
-            <div className='listpage'>
-            {posts.map((post) => (
-              <Link key={post.artid} to={`/posts/${post.artid}`} className="thumbnail-link">
-              <div >
-                {post.firstImage && (
-                  <img style={{width: "170px", height: "170px", objectFit: "cover"}}
-                  src={post.firstImage}
-                  //`${APIURL}/posts/${post.firstImage}`
-                  alt={post.title}
-                  className="thumbnail"
-              />
-            )}
-          <h3>{truncateText(post.title, 16)}</h3>
-        <p>by {post.username}</p>
-        </div>
-              </Link>
-        ))}
-      </div>
-      <div style={{ marginTop: 20 }}>
+          ): loading ? (
+            <p>Loading...</p>
+          ) : (
+          <div>
+            <ArtworkList search={search} currentPage={currentPage} />
+            <div style={{ marginTop: 20 }}>
               <button 
               disabled = {currentPage <= 1}
               onClick={() => setSearchParams({ search: search, page: currentPage - 1 })}>
@@ -153,7 +108,7 @@ function Illustration() {
                 Next
               </button>
             </div>
-      </div>
+          </div>
   
           )
         }

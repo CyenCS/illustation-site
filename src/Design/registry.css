@@ -14,7 +14,8 @@
 }
 
 .registry-page {
-  width: 350px;
+  height: 70%;
+  width: 400px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -39,7 +40,7 @@
 
 .proceed {
   width: 100%;
-  font-size: 12px;
+  font-size: 24px;
   padding: 10px;
   font-weight: bold;
   letter-spacing: 2px;
@@ -53,6 +54,7 @@
 }
 
 .switch{
+  font-size: 16px;
   background:none;
     border:none;
     margin:0;
@@ -66,20 +68,18 @@
 .proceed:hover {
   background: rgb(0, 102, 255);
 }
-
+/* 
 .registry-page p {
   color: #b3b3b3;
-  font-size: 12px;
-}
+} */
 
-.registry-page p a {
-  text-decoration: none;
+.registry-page a{
+  text-align: center;
+  text-decoration: none; /* Removes underline */
+  font-size: 16px;
   color: #2000af;
 }
 
-.registry-page .registration {
-  /* display: none; */
-}
 
 .registry-page form {
   transition: all 0.5s ease;
