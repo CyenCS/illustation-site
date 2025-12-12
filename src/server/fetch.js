@@ -101,7 +101,7 @@ router.get('/profile/:profileid', async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
     const offset = parseInt((currentPage - 1) * limit);
 
-    const countQuery = `SELECT COUNT(*) AS total FROM illustrations WHERE userid = ?`;
+    const countQuery = `SELECT COUNT(*) AS total FROM artwork WHERE userid = ?`;
     const [countRows] = await db.promise().query(countQuery, [userid]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
@@ -109,7 +109,7 @@ router.get('/profile/:profileid', async (req, res) => {
     const query = `
       SELECT artwork.*, users.name AS username
       FROM artwork INNER JOIN userid ON artwork.userid = users.id
-      WHERE userid LIKE ?
+      WHERE userid = ?
       ORDER BY artwork.created DESC
       LIMIT ? OFFSET ?
     `;
