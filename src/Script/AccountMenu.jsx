@@ -17,7 +17,7 @@ export default function AccountMenu() {
   const onProfile = (e) => {
     e.preventDefault();
     setShowDropdown(false);
-    alert('Navigating to Profile...');
+    navigate(`/profile/${user.userid}`);
     // navigate('/profile');
   };
 

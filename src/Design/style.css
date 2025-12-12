@@ -162,7 +162,7 @@ footer {
   margin: 0 10px; /* Optional spacing between nav items */
 }
 
-.navbar a {
+.navbar a, .dropdown-item{
   color: white;
   text-decoration: none;
   /* ^ removes underline for link*/
@@ -174,7 +174,7 @@ footer {
   text-align: center;
 }
 
-.navbar a:hover {
+.navbar a:hover, .dropdown-item:hover{
   background-color: hsl(0, 0%, 10%);
   color: white;
 }

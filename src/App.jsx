@@ -44,7 +44,7 @@ function App() {
           {/* Assuming Registry is a component for user registration */}
           <Route path="/registry" element={<Registry />} />
           <Route path="/posts/:artid" element={<Posts />} />
-          <Route path="/profile/:profileid" element={<Profile />} />
+          <Route path="/profile/:userid" element={<Profile/>} />
           
           {/* Add more routes as needed */}
 

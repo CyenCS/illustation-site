@@ -9,7 +9,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null}) 
     const [posts, setPosts] = useState([]);
     const [total, setTotal] = useState(0);
     const [maxPage, setMaxPage] = useState(1);
-    const [artistname, setArtistname] = useState(null);
+    const [artistname, setArtistname] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     // const [selectedPage ,setCurrentPage] = useState(currentPage);
@@ -32,7 +32,8 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null}) 
                   setMaxPage(res.data.maxpage);
                   if (profileid) {
                     const username = res.data.posts[0]?.username;
-                    setArtistname(username); // 👈 capture username from backend
+                    setArtistname(username);
+                    console.log("Artistname:", artistname);
                   }
                   setError(null);
               } else{
@@ -50,7 +51,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null}) 
               setLoading(false);
             });
         //   fetchPosts(search, currentPage);
-        },[search, currentPage, profileid]);
+        },[search, currentPage, profileid, artistname]);
 
     return { posts, total, artistname, maxPage, loading, error };
 }
