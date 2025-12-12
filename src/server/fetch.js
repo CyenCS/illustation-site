@@ -108,7 +108,7 @@ router.get('/profile/:profileid', async (req, res) => {
 
     const query = `
       SELECT artwork.*, users.name AS username
-      FROM artwork INNER JOIN userid ON artwork.userid = users.id
+      FROM artwork INNER JOIN users ON artwork.userid = users.id
       WHERE userid = ?
       ORDER BY artwork.created DESC
       LIMIT ? OFFSET ?
