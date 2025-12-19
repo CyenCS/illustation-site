@@ -1,4 +1,6 @@
 // src/context/AuthContext.jsx
+//https://dev.to/miracool/how-to-manage-user-authentication-with-react-js-3ic5
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 

@@ -6,7 +6,7 @@ function truncateText(text, maxLength) {
   return text.slice(0, maxLength) + '...';
 }
 
-export default function ArtworkCard({ post }) {
+export default function ArtworkCard({profile ,post }) {
     return (
         <Link key={post.artid} to={`/posts/${post.artid}`} className="thumbnail-link">
                <div>
@@ -17,8 +17,9 @@ export default function ArtworkCard({ post }) {
                className="thumbnail"
                />
                )}
-    <h3>{truncateText(post.title, 20)}</h3>
-    <p>by {post.username}</p>
+               <h3>{truncateText(post.title, 20)}</h3>
+               <p>by {post.username}</p>
+               {/* {profile ? null : <p>by {post.username}</p>} */}
   </div>
           </Link>
     );

@@ -75,7 +75,6 @@ function Illustration() {
   //   });
   // };
     const { posts, total, maxPage, loading, error } = ArtworkHooks({ search, currentPage:pageParam });
-    if (error) return <div className="content">Error: {error}</div>;
 
     return (
         <div className="content"> 
@@ -86,11 +85,13 @@ function Illustration() {
           {(posts.length === 0)&&!loading ? (
             <p>No Illustrations found.</p>
           ): loading ? (
-            <p>Loading...</p>
+            <p className="loading">Loading...</p>
+          ) : error ? (
+            <p className="error">Error: {error}</p>
           ) : (
-          <div>
+          <div >
             <ArtworkList search={search} currentPage={currentPage} />
-            <div style={{ marginTop: 20 }}>
+            <div className='artspage'>
               <button 
               disabled = {currentPage <= 1}
               onClick={() => setSearchParams({ search: search, page: currentPage - 1 })}>

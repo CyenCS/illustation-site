@@ -40,7 +40,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null}) 
                 setPosts([]);
                 setTotal(0);
                 setMaxPage(1);
-                setArtistname("");
+                setError(res.data.error);
               }
             }).catch((err) => {
               setPosts([]);

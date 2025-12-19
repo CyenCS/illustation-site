@@ -11,7 +11,7 @@ function Profile(){
     const { userid } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const search = searchParams.get("search") || '';
+    // const search = searchParams.get("search") || '';
     const pageParam = parseInt(searchParams.get("page") || '1', 10);
     const [currentPage, setCurrentPage] = useState(pageParam);
       
@@ -19,23 +19,28 @@ function Profile(){
         setCurrentPage(pageParam);
     }, [pageParam]);
 
-    const { posts,total,artistname,maxPage,loading,error } = ArtworkHooks({currentPage:pageParam, userid});
+    const { posts, total, artistname, maxPage, loading, error } = ArtworkHooks(
+        {
+            search: null,
+            currentPage:pageParam, 
+            profileid: userid
+        });
 
-    // if (loading) return <div><p>Loading...</p></div>;
-    if (error) return <div><p>Error: {error}</p></div>;
     return(
         <div className="content">
             <h2>{artistname || `User ${userid}`}</h2>
             <p>This is a placeholder for the profile page.</p>
-            {(search && total > 0)&&!loading ? <p>Found: <strong>{total}</strong> artworks</p>:null}
+            {(userid && total > 0)&&!loading ? <p>Found: <strong>{total}</strong> artworks</p>:null}
             {(posts.length === 0)&&!loading ? (
             <p>No Illustrations found.</p>
           ): loading ? (
             <p>Loading...</p>
+          ) : error ? (
+            <p className='error'>Error: {error}</p>
           ) : (
           <div>
             <ArtworkList profileid={userid} currentPage={currentPage} />
-            <div style={{ marginTop: 20 }}>
+            <div className='artspage'>
               <button 
               disabled = {currentPage <= 1}
               onClick={() => setSearchParams({page: currentPage - 1 })}>

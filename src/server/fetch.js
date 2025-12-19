@@ -100,12 +100,18 @@ router.get('/profile/:userid', async (req, res) => {
     const limit = 10;
     const currentPage = parseInt(req.query.page) || 1;
     const offset = parseInt((currentPage - 1) * limit);
+    
+    const [results] = await db.promise().query('SELECT * FROM users WHERE id = ?', [userid]);
 
     const countQuery = `SELECT COUNT(*) AS total FROM artwork WHERE userid = ?`;
     const [countRows] = await db.promise().query(countQuery, [userid]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
-
+    
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, error: 'No user found' });
+    }
+    else {
     const query = `
       SELECT artwork.*, users.name AS username
       FROM artwork INNER JOIN users ON artwork.userid = users.id
@@ -133,7 +139,7 @@ router.get('/profile/:userid', async (req, res) => {
     });
 
     res.json({ success: true, posts, total,  maxpage});
-  } catch (err) {
+  }} catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "DB error: " + err.message });
   }

@@ -9,7 +9,7 @@ function ArtworkList({ search, currentPage, profileid }) {
     return(
         <div className='listpage'>
             {posts.map((post) => (
-              <ArtworkCard key={post.artid} post={post} />
+              <ArtworkCard key={post.artid} post={post} profile={post.userid}/>
             ))}
         </div>
     );

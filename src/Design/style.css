@@ -76,15 +76,17 @@ footer {
   box-sizing: border-box;
   min-height: 100vh;
   min-width: 1200px;   /* adjust to the layout width you want */
-  overflow-x: hidden;
+  overflow-x: auto;
   margin-top: auto;
   
   border: 25px ; /* solid #E8C48F */
-  flex-direction: column; /* Align items vertically */
   gap: 10px; /* Add spacing between items */
-  padding: 20px 50px;
+  padding: 20px 50px 20px 50px;
   background-color: rgb(55, 55, 55);
   color: white;
+  display: flex;
+  flex-direction: column;/* Align items vertically */
+  justify-content: center;
 }
 
 .loading, .error {
@@ -96,6 +98,15 @@ footer {
   background-color: rgb(55, 55, 55);
   color: white;
   font-size: 1.5em;
+}
+
+.artspage{
+  border: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .navpage{
