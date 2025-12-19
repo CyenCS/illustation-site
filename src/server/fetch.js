@@ -109,7 +109,7 @@ router.get('/profile/:userid', async (req, res) => {
     const maxpage = Math.max(1, Math.ceil(total / limit));
     
     if (results.length === 0) {
-      return res.status(404).json({ success: false, error: 'No user found' });
+      return res.status(404).json({ success: false, message: 'No user found' });
     }
     else {
     const query = `

@@ -28,10 +28,8 @@ function Profile(){
 
     return(
         <div className="content">
-            <h2>{artistname || `User ${userid}`}</h2>
-            <p>This is a placeholder for the profile page.</p>
-            {(userid && total > 0)&&!loading ? <p>Found: <strong>{total}</strong> artworks</p>:null}
-            {(posts.length === 0)&&!loading ? (
+            
+            {(!error && posts.length === 0)&&!loading ? (
             <p>No Illustrations found.</p>
           ): loading ? (
             <p>Loading...</p>
@@ -39,6 +37,9 @@ function Profile(){
             <p className='error'>Error: {error}</p>
           ) : (
           <div>
+            <h2>{artistname || `User ${userid}`}</h2>
+            <p>This is a placeholder for the profile page.</p>
+            {(userid && total > 0)&&!loading ? <p>Found: <strong>{total}</strong> artworks</p>:null}
             <ArtworkList profileid={userid} currentPage={currentPage} />
             <div className='artspage'>
               <button 
