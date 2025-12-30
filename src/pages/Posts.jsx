@@ -7,12 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import FormatTime from "../Script/TimeFormat.jsx";
 import { useAuthContext } from "../Script/AuthContext.jsx";
 
+import { Link } from 'react-router-dom';
+
 function Posts() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const { artid } = useParams();
   
-  const [userId] = useState(user ? user.userid : null); // Logged in user's ID
+  const userId = user?.userid ?? null; // Logged in user's ID
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -49,7 +51,7 @@ function Posts() {
           const imgs = Array.isArray(res.data.post.images) ? res.data.post.images : [];
           setImagesList(imgs);
           setSelectedIndex(0);
-          setIsOwner(Number(userId) === res.data.post.userid);
+          setIsOwner(String(userId) === String(res.data.post.userid));
         } else {
           setNotFound(true);
         }
@@ -87,8 +89,6 @@ if (!post) return <div>Post data not available</div>;
 
   console.log("Images List:", imagesList);    
 
-
-
     return(
         <div className="content">
           <div className="posts">
@@ -109,7 +109,11 @@ if (!post) return <div>Post data not available</div>;
                      
                 </div>)}
                 <div className="info">
-                    <p>By: {post.username}</p>
+                    <p>By: 
+                      <Link className="artist-link" key={post.userid} to={`/profile/${post.userid}`}> 
+                      {post.username}
+                      </Link>
+                    </p>
                     <p>Published: {published}</p>
                     {edited ? <p>Edited: {edited}</p>:null}
                     <div className="description">

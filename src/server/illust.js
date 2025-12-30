@@ -223,7 +223,7 @@ router.get('/illusts', async (req, res) => {
   try {
     const {search = ""} = req.query;
     const limit = 10;
-  const currentPage = parseInt(req.query.currentPage) || 1;
+  const currentPage = parseInt(req.query.currentPage);
   const offset = parseInt((currentPage - 1) * limit);
   
   //1) Count Total
@@ -234,18 +234,18 @@ router.get('/illusts', async (req, res) => {
 
     //2) Fetch Posts
 
-    const query = `
+    let query = `
       SELECT artwork.*, users.name AS username
       FROM artwork INNER JOIN users ON artwork.userid = users.id
       WHERE artwork.title COLLATE utf8mb4_general_ci LIKE ?
       ORDER BY artwork.created DESC
-      LIMIT ? OFFSET ?
     `;
     //case sensitive (for TiDB): utf8mb4_bin, 
     //case insensitive by default (for mysql): utf8mb4_general_ci
 
     //OFFSET ? // offset formula = (current page - 1) * limit
-    const params = [`%${search}%`, limit, offset];
+    const params = [`%${search}%`];
+    if (!Number.isNaN(currentPage) && currentPage >= 1) { query += " LIMIT ? OFFSET ?"; params.push(limit, offset);}
     const [rows] = await db.promise().query(query, params);
     
 

@@ -109,6 +109,16 @@ footer {
   margin-top: 20px;
 }
 
+    /* Left arrow button */
+    .btn-left::before {
+        content: "\2190"; /* Unicode left arrow ← */
+    }
+
+    /* Right arrow button */
+    .btn-right::after {
+        content: "\2192"; /* Unicode right arrow → */
+    }
+
 .navpage{
   border: 25px;
   background: black;

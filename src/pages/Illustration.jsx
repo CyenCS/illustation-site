@@ -61,7 +61,7 @@ function Illustration() {
     //   fetchPosts(search, currentPage);
     // },[search, currentPage, fetchPosts]);
 
-  //!!!!!!!!Abandoned - useSearchParams already does this kind of function
+  //!!!!!!!!Abandoned - useSearchParams already does this kind of function by grabbing parameters from the URL
   // const handlePageChange = (direction) => {
   //   setCurrentPage((prev) => {
   //     let nextPage;
@@ -92,21 +92,19 @@ function Illustration() {
           <div >
             <ArtworkList search={search} currentPage={currentPage} />
             <div className='artspage'>
-              <button 
+              <button className="btn-left"
               disabled = {currentPage <= 1}
               onClick={() => setSearchParams({ search: search, page: currentPage - 1 })}>
-                Previous
               </button>
 
               <span style={{ margin: "0 10px" }}>
                 Page {currentPage} of {maxPage}
               </span>
 
-              <button 
+              <button className='btn-right'
               
               onClick={() => setSearchParams({ search: search, page: currentPage + 1 })} 
               disabled={currentPage === maxPage}>
-                Next
               </button>
             </div>
           </div>

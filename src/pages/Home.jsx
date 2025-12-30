@@ -3,6 +3,7 @@ import Recommendation from '../Script/Recommendation.jsx';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ArtworkCard from '../Components/ArtworkCard.jsx';
+import ArtworkList from '../Components/ArtworkList.jsx';
 const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrender.com";
 
 //No more http://localhost:3001 as server for production
@@ -32,10 +33,11 @@ function Home(){
     return (
         <div className="content">
             <h2>Recent Posts</h2>
-        <div className='listpage'>
-        {posts.map((post) => (
+        <div >
+          <ArtworkList />
+        {/* <div className='listpage'> {posts.map((post) => (
           <ArtworkCard key={post.artid} post={post} />
-        ))}
+        ))} </div>  */}
         </div>
 
         {/* Repeat content as needed */}

@@ -200,3 +200,8 @@ button{
   width: 100px;
   background-color: #ff4d4d;
 }
+
+.artist-link{
+  color: #83c1ff;
+  text-decoration: none;
+}

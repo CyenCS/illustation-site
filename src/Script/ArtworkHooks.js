@@ -5,7 +5,7 @@ const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrend
 
 //Custom hook to fetch artwork posts based on search, pagination, and profile ID
 
-export default function ArtworkHooks({search, currentPage = 1, profileid=null}) {
+export default function ArtworkHooks({search, currentPage = 1, profileid=null, recommend=false}) {
     const [posts, setPosts] = useState([]);
     const [total, setTotal] = useState(0);
     const [maxPage, setMaxPage] = useState(1);
@@ -22,7 +22,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null}) 
               `${APIURL}/fetch/profile/${profileid}` :
               `${APIURL}/illust/illusts`;
 
-            const params = profileid ? { currentPage } : { search, currentPage };
+            const params = profileid ? { currentPage } : recommend ? {search, currentPage: null} : { search, currentPage };
 
             axios.get(url, { params })
             .then((res) => {
@@ -33,7 +33,6 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null}) 
                   if (profileid) {
                     const username = res.data.posts[0]?.username;
                     setArtistname(username);
-                    console.log("Artistname:", artistname);
                   }
                   setError(null);
               } else{
@@ -45,13 +44,15 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null}) 
             }).catch((err) => {
               setPosts([]);
               console.error("Error fetching posts: ", err);
-              setError(err.message || "Error fetching posts");
+              const msg = err.response?.data?.message;
+              setError(msg);
             })
             .finally(() => {
               setLoading(false);
             });
         //   fetchPosts(search, currentPage);
-        },[search, currentPage, profileid, artistname]);
+        },[search, currentPage, profileid]); 
+        // dont put artistname here, causes loading twice if there is artistname being used for display
 
     return { posts, total, artistname, maxPage, loading, error };
 }

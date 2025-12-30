@@ -1,12 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 function truncateText(text, maxLength) {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + '...';
 }
 
-export default function ArtworkCard({profile ,post }) {
+export default function ArtworkCard({post }) {
+  const { userid: profileId } = useParams();
+  const hideLink = profileId && String(profileId) === String(post.userid);
+
     return (
         <Link key={post.artid} to={`/posts/${post.artid}`} className="thumbnail-link">
                <div>
@@ -18,8 +22,14 @@ export default function ArtworkCard({profile ,post }) {
                />
                )}
                <h3>{truncateText(post.title, 20)}</h3>
-               <p>by {post.username}</p>
-               {/* {profile ? null : <p>by {post.username}</p>} */}
+               {hideLink ? null : (
+          <p>
+            <Link className="artist-link" key={post.userid} to={`/profile/${post.userid}`}>
+              {post.username}
+            </Link>
+          </p>
+        )}
+               {/* {isOwner ? null : <p>by {post.username}</p>} */}
   </div>
           </Link>
     );
