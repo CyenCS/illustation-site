@@ -231,6 +231,7 @@ router.get('/illusts', async (req, res) => {
     const [countRows] = await db.promise().query(countQuery, [`%${search}%`]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
+    const recommend = req.query.recommend;
 
     //2) Fetch Posts
 
@@ -245,7 +246,9 @@ router.get('/illusts', async (req, res) => {
 
     //OFFSET ? // offset formula = (current page - 1) * limit
     const params = [`%${search}%`];
-    if (!Number.isNaN(currentPage) && currentPage >= 1) { query += " LIMIT ? OFFSET ?"; params.push(limit, offset);}
+    if (currentPage >= 1 && !recommend) { query += " LIMIT ? OFFSET ?"; params.push(limit, offset);}
+    if (recommend) { query += " , RAND() LIMIT 5"; } // fixed 10 recommendations
+
     const [rows] = await db.promise().query(query, params);
     
 
