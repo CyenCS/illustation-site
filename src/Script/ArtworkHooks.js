@@ -22,7 +22,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null, r
               `${APIURL}/fetch/profile/${profileid}` :
               `${APIURL}/illust/illusts`;
 
-            const params = profileid ? { currentPage } : recommend ? {search, currentPage: null} : { search, currentPage };
+            const params = profileid ? { currentPage } : recommend ? { search, currentPage } : {search, currentPage: null};
 
             axios.get(url, { params })
             .then((res) => {
