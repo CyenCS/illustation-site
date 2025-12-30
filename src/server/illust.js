@@ -239,15 +239,14 @@ router.get('/illusts', async (req, res) => {
       SELECT artwork.*, users.name AS username
       FROM artwork INNER JOIN users ON artwork.userid = users.id
       WHERE artwork.title COLLATE utf8mb4_general_ci LIKE ?
-      ORDER BY 
     `;
     //case sensitive (for TiDB): utf8mb4_bin, 
     //case insensitive by default (for mysql): utf8mb4_general_ci
 
     //OFFSET ? // offset formula = (current page - 1) * limit
     const params = [`%${search}%`];
-    if (currentPage >= 1 && !recommend) { query += "artwork.created DESC LIMIT ? OFFSET ?;"; params.push(limit, offset);}
-    if (recommend) { query += " RAND() LIMIT 5;"; } // fixed 10 recommendations
+    if (currentPage >= 1 && !recommend) { query += "ORDER BY artwork.created DESC LIMIT ? OFFSET ?;"; params.push(limit, offset);}
+    if (recommend) { query += "ORDER BY RAND() LIMIT 5;"; } // fixed 10 recommendations
 
     const [rows] = await db.promise().query(query, params);
     
