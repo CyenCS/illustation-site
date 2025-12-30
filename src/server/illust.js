@@ -223,7 +223,7 @@ router.get('/illusts', async (req, res) => {
   try {
     const {search = ""} = req.query;
     const limit = 10;
-  const currentPage = parseInt(req.query.currentPage) || 1;
+  const currentPage = parseInt(req.query.currentPage);
   const offset = parseInt((currentPage - 1) * limit);
   
   //1) Count Total
@@ -231,21 +231,24 @@ router.get('/illusts', async (req, res) => {
     const [countRows] = await db.promise().query(countQuery, [`%${search}%`]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
+    const recommend = req.query.recommend;
 
     //2) Fetch Posts
 
-    const query = `
+    let query = `
       SELECT artwork.*, users.name AS username
       FROM artwork INNER JOIN users ON artwork.userid = users.id
       WHERE artwork.title COLLATE utf8mb4_general_ci LIKE ?
       ORDER BY artwork.created DESC
-      LIMIT ? OFFSET ?
     `;
     //case sensitive (for TiDB): utf8mb4_bin, 
     //case insensitive by default (for mysql): utf8mb4_general_ci
 
     //OFFSET ? // offset formula = (current page - 1) * limit
-    const params = [`%${search}%`, limit, offset];
+    const params = [`%${search}%`];
+    if (currentPage >= 1 && !recommend) { query += " LIMIT ? OFFSET ?"; params.push(limit, offset);}
+    if (recommend) { query += " , RAND() LIMIT 5"; } // fixed 10 recommendations
+
     const [rows] = await db.promise().query(query, params);
     
 
