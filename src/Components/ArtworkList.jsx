@@ -6,13 +6,13 @@ import { useAuthContext } from '../Script/AuthContext.jsx';
 function ArtworkList({ search, currentPage, profileid, recommend }) {
     const { posts} = ArtworkHooks({ search, currentPage, profileid, recommend }); 
     // Returned values => from the imported file by using the custom hooks 
-    const { user } = useAuthContext();
-  const isProfileOwner = String(user?.userid) === String(profileid);
 
     return(
         <div className='listpage'>
             {posts.map((post) => (
-              <ArtworkCard key={post.artid} post={post} profile={post.userid} isOwner={isProfileOwner}/>
+              <ArtworkCard key={post.artid} post={post} profile={post.userid}/>
+              // No need to do ArtworkCard as this file is not messy nor complex.
+              // Both of these are just for better readability and reusability concerns.
             ))}
         </div>
     );

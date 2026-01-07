@@ -20,9 +20,7 @@ function Profile(){
     const pageParam = parseInt(searchParams.get("page") || '1', 10);
     const [currentPage, setCurrentPage] = useState(pageParam);
       
-    useEffect(() => {
-        setCurrentPage(pageParam);
-    }, [pageParam]);
+      
 
     useEffect(() => {
   if (!profileId) return setIsOwner(false);
@@ -38,14 +36,22 @@ function Profile(){
   //     }
   //   })
   //   .catch(() => setIsOwner(false));
-}, [profileId]);
+}, [profileId, user]);
 
-    const { posts, total, artistname, maxPage, loading, error, message } = ArtworkHooks(
+    const { posts, total, artistname, maxPage, loading, error,} = ArtworkHooks(
         {
             search: null,
             currentPage:pageParam, 
             profileid: profileId
         });
+    
+    useEffect(() => {
+        setCurrentPage(pageParam);
+        if(!loading && pageParam > maxPage){
+          setSearchParams({ page: maxPage });
+          setCurrentPage(maxPage);
+        }
+    }, [loading, pageParam, maxPage, setSearchParams]);
 
     return(
         <div className="content">
@@ -57,13 +63,15 @@ function Profile(){
           ) : error &&!loading ? (
             <p className='error'>Error: {error}</p>
           ) : (
+          <div className='flex'>
           <div>
             <h2>{artistname}</h2>
             
-            <p>This is a placeholder for {isOwner ? "your" : "this user's"} profile page.</p>
+            <p>This is {isOwner ? "your" : "this user's"} profile page.</p>
             {(profileId && total > 0)&&!loading ? <p>Found: <strong>{total}</strong> artworks</p>:null}
             <ArtworkList profileid={profileId} currentPage={currentPage} />
-            <div className='artspage'>
+          </div> 
+          <div className='artspage'>
               <button className="btn-left"
               disabled = {currentPage <= 1}
               onClick={() => setSearchParams({page: currentPage - 1 })}>
@@ -78,8 +86,9 @@ function Profile(){
               onClick={() => setSearchParams({ page: currentPage + 1 })} 
               disabled={currentPage === maxPage}>
               </button>
-            </div>
           </div>
+          </div>
+          
   
           )
         }

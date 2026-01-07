@@ -158,8 +158,7 @@ useEffect(() => {
   if (loading) return; // Wait until loading is complete  
 
   if (!user) {
-    alert("You must log in for upload.");
-    navigate('/registry');
+    navigate('/');
   }
   else{
     if (isEdit) {

@@ -109,7 +109,7 @@ if (!post) return <div>Post data not available</div>;
                      
                 </div>)}
                 <div className="info">
-                    <p>By: 
+                    <p>By:&ensp;
                       <Link className="artist-link" key={post.userid} to={`/profile/${post.userid}`}> 
                       {post.username}
                       </Link>

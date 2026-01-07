@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -26,7 +27,7 @@ axios.interceptors.response.use(
       // token expired -> clear saved token and redirect to login
       localStorage.removeItem('token');
       // optional: show message to user
-      window.location.href = '/registry'; // or your login route
+      window.location.href = '/'; // or your login route
     }
     return Promise.reject(err);
   }

@@ -12,6 +12,7 @@ export default function ArtworkCard({post }) {
   const hideLink = profileId && String(profileId) === String(post.userid);
 
     return (
+      <div >
         <Link key={post.artid} to={`/posts/${post.artid}`} className="thumbnail-link">
                <div>
                {post.firstImage && (
@@ -21,16 +22,16 @@ export default function ArtworkCard({post }) {
                className="thumbnail"
                />
                )}
-               <h3>{truncateText(post.title, 20)}</h3>
-               {hideLink ? null : (
+               <h3>{truncateText(post.title, 16)}</h3>
+               </div>
+        </Link>
+        {hideLink ? null : (
           <p>
             <Link className="artist-link" key={post.userid} to={`/profile/${post.userid}`}>
               {post.username}
             </Link>
           </p>
         )}
-               {/* {isOwner ? null : <p>by {post.username}</p>} */}
-  </div>
-          </Link>
+      </div >
     );
 }

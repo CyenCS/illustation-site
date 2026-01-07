@@ -32,8 +32,8 @@ h1 {
   text-align: center;
 }
 
-h3 {
-  height: 30px;
+h3 { 
+  text-align: flex-start;
 }
 
 header {
@@ -79,15 +79,14 @@ footer {
   overflow-x: auto;
   margin-top: auto;
   
-  border: 25px ; /* solid #E8C48F */
-  gap: 10px; /* Add spacing between items */
   padding: 20px 50px 20px 50px;
   background-color: rgb(55, 55, 55);
   color: white;
   display: flex;
   flex-direction: column;/* Align items vertically */
-  justify-content: center;
+  justify-content: flex-start;
 }
+
 
 .loading, .error {
   display: flex;
@@ -98,6 +97,19 @@ footer {
   background-color: rgb(55, 55, 55);
   color: white;
   font-size: 1.5em;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.flex{
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1; /* Take up available space */
 }
 
 .artspage{
@@ -309,12 +321,15 @@ footer {
   text-decoration: none;
   color: inherit;
 }
-
-.thumbnail-link:visited {
+.artist-link{
+  color: #83c1ff;
+  text-decoration: none;
+}
+/* .thumbnail-link:visited {
   color: inherit;
 }
 
 .thumbnail-link:focus,
 .thumbnail-link:active {
   outline: none;
-}
+} */

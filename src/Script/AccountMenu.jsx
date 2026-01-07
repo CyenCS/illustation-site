@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from "../Script/AuthContext";
+import { Link } from 'react-router-dom';
 
 export default function AccountMenu() {
   const { user, logout } = useAuthContext();
@@ -24,8 +25,9 @@ export default function AccountMenu() {
   const onSignOut = async (e) => {
     e.preventDefault();
     setShowDropdown(false);
+    navigate(`/`);
     await logout(); // calls server logout and sets user=null in context
-    navigate('/');  // optional: go to homepage after logout
+    // navigate('/');  // optional: go to homepage after logout
   };
 
   return (
@@ -43,8 +45,8 @@ export default function AccountMenu() {
 
       {showDropdown && (
         <div className="dropdown-content">
-          <a href="/" onClick={onProfile}>Profile</a>
-          <a href="/" onClick={onSignOut}>Sign Out</a>
+         <Link to={`/profile/${user.userid}`} onClick={() => setShowDropdown(false)}> Profile </Link>
+         <Link onClick={onSignOut}> Sign Out </Link>
         </div>
       )}
     </div>

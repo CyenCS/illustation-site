@@ -4,6 +4,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
+
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -27,6 +28,8 @@ export function AuthProvider({ children }) {
     try {
       await axios.post(`${APIURL}/fetch/logout`, {}, { withCredentials: true });
       alert("Logged out successfully.");
+      setUser(null);
+    window.location.href = '/';
     } catch (err) {
       console.error("Logout failed:", err);
     }

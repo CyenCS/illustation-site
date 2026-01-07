@@ -35,19 +35,12 @@ function Home(){
             <h2>Recent Posts</h2>
         <div >
           <ArtworkList />
-        {/* <div className='listpage'> {posts.map((post) => (
-          <ArtworkCard key={post.artid} post={post} />
-        ))} </div>  */}
         </div>
-
-        {/* Repeat content as needed */}
-
-      {/* ref={introRef} */}
         <h2>Recommendation</h2>
         <div><Recommendation /></div>
 
         {/* Repeat content as needed */}
-          </div>
+        </div>
     );
 }
 

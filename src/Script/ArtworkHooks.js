@@ -22,7 +22,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null, r
               `${APIURL}/fetch/profile/${profileid}` :
               `${APIURL}/illust/illusts`;
 
-            const params = profileid ? { currentPage } : recommend ? { search, currentPage } : {search, currentPage: null};
+            const params = profileid ? { currentPage } : recommend ? { search, recommend: true } : {search, currentPage}; //false:true
 
             axios.get(url, { params })
             .then((res) => {
@@ -51,7 +51,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null, r
               setLoading(false);
             });
         //   fetchPosts(search, currentPage);
-        },[search, currentPage, profileid]); 
+        },[search, currentPage, profileid, recommend]); 
         // dont put artistname here, causes loading twice if there is artistname being used for display
 
     return { posts, total, artistname, maxPage, loading, error };

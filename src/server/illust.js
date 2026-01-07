@@ -231,7 +231,7 @@ router.get('/illusts', async (req, res) => {
     const [countRows] = await db.promise().query(countQuery, [`%${search}%`]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
-    const recommend = req.query.recommend;
+    const recommend = req.query.recommend; //not set, always false
 
     //2) Fetch Posts
 
