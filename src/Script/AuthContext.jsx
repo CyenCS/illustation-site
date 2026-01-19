@@ -27,9 +27,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await axios.post(`${APIURL}/fetch/logout`, {}, { withCredentials: true });
-      alert("Logged out successfully.");
       setUser(null);
-    window.location.href = '/';
     } catch (err) {
       console.error("Logout failed:", err);
     }

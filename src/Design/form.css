@@ -2,13 +2,12 @@
     display: grid;
   grid-template-columns: repeat(5, 1fr); /* 5 columns */
   gap: 10px;
-  max-height: 600px;
   overflow: hidden;
 }
 
 .forms-content{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
     gap: 10px;
     align-items: center;
@@ -19,9 +18,9 @@
 /* posts of posts-content / posts-content targets posts */
   .forms-content .forms{
     /* place-items: center; */
-    display: "block";
-    width: 600px;
-    height:500px;
+    display: block;
+    width: 90%;
+    max-height:500px;
     border-radius: 10px;
     padding: 30px;
     flex-direction: column;
@@ -33,6 +32,13 @@
     overflow: auto;
   }
 
+  .filename{
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 5px;
+  }
+
+
 
   .form-control{
     width:100%;
@@ -41,44 +47,97 @@
     box-sizing: border-box;
   }
 
-  .image-item {
+.image-item {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  
   margin: 10px 0;
-  max-width:200px;
+  max-width: 300px;
   max-height: 300px;
-  padding: 50px;
+  padding: 10px;
   background-color: rgb(47, 47, 47);
   overflow: hidden;
 }
 
 .image-item img {
-  display: flex;
-  justify-content: center;
-  overflow: auto;
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;    /* optional - limits very tall images */
+  object-fit: contain; 
 }
 
-/* Image item button wrapper */
-.image-item__btn-wrapper {
+.flex-row{
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  justify-content: space-between;
 }
 
 .upload__image-wrapper {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columns */
-  gap: 16px;
+  justify-content: center;
+  justify-items: center;
+  grid-template-columns: auto auto auto auto;
   margin-top: 16px;
-  
+  max-height: auto;
+  gap: 20px;
 }
 
+
+/* Image item button wrapper */
+.image-item__btn-wrapper {
+  display: flex;
+  padding: 5px;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-mini{
+  font-size: 24px;
+  background:none;
+    border:none;
+    margin:0;
+    padding:5px 10px;
+    color:#fff;
+    cursor: pointer;
+}
+
+.btn-replace::before{
+  content: "↻"; /* Unicode replace symbol */
+}
+
+
+.btn-remove::before{
+  content: "✕"; /* Unicode replace symbol */
+}
+
+
+.btn-add::before{
+  padding: 100px;
+  font-size: 100px;
+  content: "+"; /* Unicode replace symbol */
+}
+
+.upload-btn{
+  height: 40px;
+  width: 300px;
+  background-color: rgb(0, 123, 255);
+  color: white;
+}
+
+.upload-btn:disabled {
+  background-color: #444;
+  color: #aaa;
+  cursor: not-allowed;
+}
 
 textarea {
     font-family: inherit;
   resize: vertical;
   width: 100%; /* or fixed width like 300px */
-  min-height: 60px;
+  min-height: 100px;
   max-height: 300px; /* optional */
   font-size: 16px;
 }
@@ -111,4 +170,9 @@ button.action:disabled {
   background-color: #444;
   color: #aaa;
   cursor: not-allowed;
+}
+
+.removeall{
+  background-color: #ff4d4d;
+  width: 150px;
 }

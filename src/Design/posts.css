@@ -35,6 +35,7 @@
   }
 
   .description-box {
+    
   white-space: pre-wrap;
 }
 
@@ -187,6 +188,11 @@ button{
   transition: background-color 0.3s;
 }
 
+.btn-col{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;}
 
 .edit-btn{
   height: 40px;
@@ -197,7 +203,7 @@ button{
 
 .delete-btn{
   height: 40px;
-  width: 100px;
+  width: 300px;
   background-color: #ff4d4d;
 }
 

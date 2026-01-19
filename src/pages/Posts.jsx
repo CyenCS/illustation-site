@@ -76,6 +76,8 @@ function Posts() {
     }
   }, [selectedIndex]);
 
+useEffect(() => { if (imagesList.length) console.log('Images List:', imagesList); }, [imagesList]);
+
 // Loading and Not Found states
 if (!post && loading) {
   return <div className="loading"><p>Loading...</p></div>;
@@ -86,8 +88,6 @@ if (notFound) {
 }
 
 if (!post) return <div>Post data not available</div>;
-
-  console.log("Images List:", imagesList);    
 
     return(
         <div className="content">

@@ -46,8 +46,8 @@ function Illustration() {
           
             <div className='artspage'>
               <button className="btn-left"
-              disabled = {currentPage <= 1}
-              onClick={() => setSearchParams({ search: search, page: currentPage - 1 })}>
+              disabled={currentPage <= 1}
+              onClick={(e) => { e.stopPropagation(); setSearchParams({ search: search, page: currentPage - 1 }); }}>
               </button>
 
               <span style={{ margin: "0 10px" }}>
@@ -55,8 +55,7 @@ function Illustration() {
               </span>
 
               <button className='btn-right'
-              
-              onClick={() => setSearchParams({ search: search, page: currentPage + 1 })} 
+              onClick={(e) => { e.stopPropagation(); setSearchParams({ search: search, page: currentPage + 1 }); }} 
               disabled={currentPage === maxPage}>
               </button>
             </div>

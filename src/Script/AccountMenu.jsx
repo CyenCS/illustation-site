@@ -25,7 +25,6 @@ export default function AccountMenu() {
   const onSignOut = async (e) => {
     e.preventDefault();
     setShowDropdown(false);
-    navigate(`/`);
     await logout(); // calls server logout and sets user=null in context
     // navigate('/');  // optional: go to homepage after logout
   };

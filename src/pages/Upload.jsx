@@ -159,6 +159,7 @@ useEffect(() => {
 
   if (!user) {
     navigate('/');
+    return;
   }
   else{
     if (isEdit) {
@@ -176,7 +177,7 @@ useEffect(() => {
             {isEdit ? <h3>Edit artwork</h3> : <h3>Submit artwork</h3>}
             <div className="forms-content">
               {/* Upload Section */}
-               <div className="forms" style={{width: "40%" }}>
+              <div className="forms">
                 {isEdit ? 
                 (<div>
                   <p>ID: {artid}</p>
@@ -209,34 +210,43 @@ useEffect(() => {
                           }) => (
                             // write your building UI
                             <div>
-                              <div>Images: {imageList.length}/{maxNumber}</div>
-                              {imageList.length >= maxNumber && ( <p style={{ color: "red" }}>Maximum image limit reached</p> )}
-                              <button
-                                disabled={imageList.length >= maxNumber}
-                                style={isDragging ? { color: "red" } : null}
-                                onClick={onImageUpload}
-                                {...dragProps}> Upload </button>
-                                &nbsp;
-                              <button onClick={onImageRemoveAll}>Remove All</button>
+                              <div className='flex-row'>
+                                <div>Images: {imageList.length}/{maxNumber}</div>
+                              {imageList.length >= maxNumber && ( <div style={{ color: "red" }}>Maximum image limit reached</div> )}
+                              {imageList.length > 0 && (<button className="removeall" onClick={onImageRemoveAll}>Remove All</button>
+                              )}
+                              </div>
                               <div className="upload__image-wrapper">
                                 {imageList.map((image, index) => (
+                                  
                                 <div key={index} className="image-item">
-                                  <img src={image.data_url} alt="" />
-                                  <p>File name: {image.file.name}</p>
                                   <div className="image-item__btn-wrapper">
-                                    <button onClick={() => onImageUpdate(index)}>Update</button>
-                                    <button onClick={() => onImageRemove(index)}>Remove</button>
+                                    <button className="btn-mini btn-replace" onClick={() => onImageUpdate(index)}></button>
+                                    <button className="btn-mini btn-remove" onClick={() => onImageRemove(index)}></button>
                                   </div>
+                                  <img src={image.data_url} alt="" />
+                                  <p className="filename">{image.file.name}</p>
                                 </div>
                               ))}
+                              {(imageList.length >= maxNumber)||(imageList.length === 0) ? null : <button className="btn-mini btn-add"
+                                disabled={imageList.length >= maxNumber}
+                                onClick={onImageUpload}
+                                {...dragProps}> </button>}
                               </div>
+                              <div className='mode'>
+                                {(imageList.length <= 0 )? 
+                              <button className='upload-btn' onClick={onImageUpload}
+                                {...dragProps}>Upload</button>
+                              : null}
+                              </div>
+                              <div></div>
                             </div>
                           )}
                     </ImageUploading>)}
               </div>
                 
                 {/* Form Section */}
-                <div className="forms"  style= {{width: "60%"}} >
+                <div className="forms" >
                     <form onSubmit={isEdit ? handleEdit : handleSubmit} >
                         <div className="inputbox">
                             <label>Title</label>
@@ -255,13 +265,13 @@ useEffect(() => {
                             onChange={(e) => setDescription(e.target.value)}  
                             id="description" className="form-control" 
                             name="description" placeholder="Enter description here" 
-                            minLength="3" autoComplete="off"  required
+                            minLength="0" autoComplete="off"
                              ></textarea>
                         </div>
                         <div className="mode">
                           {isEdit ? 
-                          <div >
-                            <button className="action" type="submit" 
+                          <div className='btn-col'>
+                            <button className="upload-btn" type="submit" 
                           disabled={(title === initialTitle || "" || null) && 
                             (description === initialDescription || "" || null)}>Save Changes</button>
                             <div>
@@ -276,7 +286,7 @@ useEffect(() => {
                     </div>
                           </div> 
                           :  <button disabled={images.length > maxNumber || images.length <= 0}
-                          className = "action" type="submit">Submit</button>
+                          className = "upload-btn" type="submit">Submit</button>
                           }
                         </div>
                     </form>
