@@ -16,7 +16,6 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.13.1",
     "bcrypt": "^6.0.0",
-    "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
@@ -24,7 +23,6 @@
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.14.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -42,8 +40,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "node src/server/index.js",
-    "client": "react-scripts start"
+    "server": "node src/server/index.js"
   },
   "eslintConfig": {
     "extends": [
@@ -64,7 +61,6 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10"
   }
 }
