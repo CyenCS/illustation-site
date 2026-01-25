@@ -15,17 +15,6 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.13.1",
-    "bcrypt": "^6.0.0",
-    "cloudinary": "^1.41.3",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "express-mysql-session": "^3.0.3",
-    "express-session": "^1.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^4.0.0",
-    "mysql2": "^3.14.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-images-uploading": "^3.1.7",
@@ -36,8 +25,8 @@
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },
+  
   "scripts": {
-    "dev:local": "concurrently \"npm run server\" \"npm start\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
