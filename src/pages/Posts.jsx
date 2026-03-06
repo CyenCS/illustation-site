@@ -98,13 +98,7 @@ if (!post) return <div>Post data not available</div>;
                 <h3 className="title">{post.title ?? "No Title"}</h3>
                 {isOwner && (<div className="options">
                     <button className="edit-btn"
-                    onClick={()=> navigate('/posts/'+post.artid+'/edit', 
-                      {state: 
-                        {artimages: imagesList, 
-                          arttitle: post.title, artdescription: post.caption, artid: post.artid,
-                        }
-                      }
-                    )}
+                    onClick={()=> navigate('/posts/'+post.artid+'/edit', )}
                     >Edit</button>
                      
                 </div>)}
