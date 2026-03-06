@@ -24,8 +24,7 @@ Frontend: https://yourname.vercel.app
 Backend API: https://illustation-api.onrender.com
 
 ## Screenshots
-![Home](screenshots/home.png)
-![Upload](screenshots/upload.png)
+
 
 ## Run Locally
 
