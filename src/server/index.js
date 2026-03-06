@@ -14,7 +14,7 @@ const app = express();
 // if (process.env.NODE_ENV !== 'production') {
 //   require('dotenv').config({ path: path.join(__dirname, '.env') });
 // }
-require("dotenv").config(); 
+// require("dotenv").config(); 
 
 const KEY_SECRET = process.env.KEY_SECRET;
 
