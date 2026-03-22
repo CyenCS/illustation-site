@@ -19,8 +19,41 @@ function requireLogin(req, res, next) {
   }
 }
 
+const db = require('./connect');
+async function authMiddleware (req, res, next) {
+  if (req.session.user) { // Extend expiry every visit
+    req.session.cookie.expires = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); 
+    req.session.save(() => {
+      next();   // Continue processing request (Only for middleware)
+    });
+  } 
+  else if (!req.session.user && req.cookies.rememberToken) { 
+    //Restore session from rememberToken
+    const token = req.cookies.rememberToken;
+    try {
+      const [rows] = await db.promise().query('SELECT id, name FROM users WHERE remember_token = ?', [token]);
+      if (rows.length > 0) {
+        req.session.user = { userid: rows[0].id, name: rows[0].name };
+        console.log(`Auto-logged user ${rows[0].name}`);
+        res.cookie('rememberToken', token, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+      }, 
+    );
+    req.session.save(() => next() )
+    return;
+      }
+    } catch (err) {
+      console.error("Auto-login error:", err);
+    }
+  }
+  else{ next(); }
+}
 
-module.exports = { requireLogin };
+
+module.exports = { requireLogin, authMiddleware };
 
 
 //https://medium.com/%40ucangun76/session-and-cookie-management-in-express-js-for-login-and-authentication-bc63ec89e000

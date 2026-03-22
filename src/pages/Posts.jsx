@@ -99,11 +99,11 @@ if (!post) return <div>Post data not available</div>;
                 {isOwner && (<div className="options">
                     <button className="edit-btn"
                     onClick={()=> navigate('/posts/'+post.artid+'/edit', 
-                      {state: 
-                        {artimages: imagesList, 
-                          arttitle: post.title, artdescription: post.caption, artid: post.artid,
-                        }
-                      }
+                      // {state: 
+                      //   {artimages: imagesList, 
+                      //     arttitle: post.title, artdescription: post.caption, artid: post.artid,
+                      //   }
+                      // }
                     )}
                     >Edit</button>
                      

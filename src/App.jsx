@@ -20,7 +20,7 @@ import { AuthProvider } from "./Script/AuthContext.jsx";
 
 function Layout({ children }) { //Global layout wrapper
   const {pathname} = useLocation();
-  const hideLayoutPaths = ["/registry"]; //Hides Navbar and Footer when on /registry
+  const hideLayoutPaths = ["/registry"]; //Hides Navbar and Footer when on Registry page
   const shouldHideLayout = hideLayoutPaths.includes(pathname);
   return(
     <>
@@ -39,8 +39,8 @@ function App() {
         <Routes>
           <Route path="/*" element={<MainContent />} />{/* '/*' Catches all sub routes (Nested inside) */}
           {/* Key: Changes the componenets especially within the same place */}
-          <Route path="/upload" element={<Upload key="upload"/>} />
-          <Route path="/posts/:artid/edit" element={<Upload key="edit"/>} />
+          <Route path="/upload" element={<Upload/>} />
+          <Route path="/posts/:artid/edit" element={<Upload/>} />
           {/* Assuming Registry is a component for user registration */}
           <Route path="/registry" element={<Registry />} />
           <Route path="/posts/:artid" element={<Posts />} />

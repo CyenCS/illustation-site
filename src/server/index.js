@@ -6,6 +6,7 @@ const db = require('./connect');
 const uploadRoutes = require('./illust');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const { authMiddleware } = require('./auth');
 
 const app = express();
 
@@ -14,7 +15,6 @@ const app = express();
 // if (process.env.NODE_ENV !== 'production') {
 //   require('dotenv').config({ path: path.join(__dirname, '.env') });
 // }
-require("dotenv").config(); 
 
 const KEY_SECRET = process.env.KEY_SECRET;
 
@@ -75,38 +75,8 @@ app.use(session({
     }
 }))
 
-//Middleware logic
-app.use(async (req, res, next) => {
-  if (req.session.user) { // Extend expiry every visit
-    req.session.cookie.expires = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); 
-    req.session.save(() => {
-      next();   // Continue processing request (Only for middleware)
-    });
-  } 
-  else if (!req.session.user && req.cookies.rememberToken) { 
-    //Restore session from rememberToken
-    const token = req.cookies.rememberToken;
-    try {
-      const [rows] = await db.promise().query('SELECT id, name FROM users WHERE remember_token = ?', [token]);
-      if (rows.length > 0) {
-        req.session.user = { userid: rows[0].id, name: rows[0].name };
-        console.log(`Auto-logged user ${rows[0].name}`);
-        res.cookie('rememberToken', token, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 1 * 24 * 60 * 60 * 1000,
-      }, 
-    );
-    req.session.save(() => next() )
-    return;
-      }
-    } catch (err) {
-      console.error("Auto-login error:", err);
-    }
-  }
-  else{ next(); }
-});
+//Middleware logic - Move this to a separate file as AuthMiddleware.js for the other files to use if needed
+app.use(authMiddleware);
 
 
 // Routes

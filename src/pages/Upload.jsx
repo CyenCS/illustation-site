@@ -164,7 +164,13 @@ useEffect(() => {
   else{
     if (isEdit) {
       fetchPostDataForEdit(artid);
-    } else{
+    } 
+    else{
+      setImages([]);
+      setTitleName('');
+      setDescription('');
+      setInitialTitle('');
+      setInitialDescription('');
       return;
     }
   }
@@ -225,7 +231,7 @@ useEffect(() => {
                                     <button className="btn-mini btn-remove" onClick={() => onImageRemove(index)}></button>
                                   </div>
                                   <img src={image.data_url} alt="" />
-                                  <p className="filename">{image.file.name}</p>
+                                  <p className="filename">{image?.file?.name || ''}</p>
                                 </div>
                               ))}
                               {(imageList.length >= maxNumber)||(imageList.length === 0) ? null : <button className="btn-mini btn-add"
