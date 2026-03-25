@@ -31,11 +31,11 @@ function LoginForm() {
       console.log('Login successful:', response.data.user.userid);
       window.location.href = '/';
     } else {
-      setErrorMessage(response.data.message || 'Login failed');
+      setErrorMessage('Login failed: '+response.data.message || 'Login failed'); // < Supposed to trigger this 
     }
   } catch (err) {
     console.error(err);
-    const serverMessage = err?.response?.data?.message;
+    const serverMessage = err.response.data.message;
     setErrorMessage(serverMessage || 'Server error');
   }
 };
