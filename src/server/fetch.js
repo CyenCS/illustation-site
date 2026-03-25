@@ -14,7 +14,7 @@ router.post('/login', async (req, res) => {
     const [results] = await db.promise().query('SELECT * FROM users WHERE name = ?', [name]);
     
     if (results.length === 0) {
-      return res.status(400).json({ success: false, message: 'No user found' });
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
     const user = results[0];
     
@@ -22,7 +22,8 @@ router.post('/login', async (req, res) => {
       if (!match) {
         return res.status(401).json({ success: false, message: 'Invalid username or password' });
       }
-      user.password = undefined; // Remove password from user object
+      else{
+        user.password = undefined; // Remove password from user object
 
       // Successful login
       req.session.user = {userid: user.id, name: user.name}; // Store user info in session
@@ -51,6 +52,7 @@ router.post('/login', async (req, res) => {
     user: req.session.user
   });
 });
+      }
     
   } catch (err) {
     console.error('Login error: ',err);
