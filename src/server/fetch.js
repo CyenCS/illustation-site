@@ -42,21 +42,25 @@ router.post('/login', async (req, res) => {
       });
 
       req.session.save(err => {
-  if (err) {
-    console.error("SESSION SAVE ERROR:", err);
-    return res.status(500).json({ success: false, message: "Session error" });
-  }
-
-  return res.json({
-    success: true,
-    user: req.session.user
-  });
-});
+        if (err) {
+          console.error("SESSION SAVE ERROR:", err);
+          return res.status(500).json({ success: false, message: "Session error" });
+        }
+        return res.json({
+          success: true,
+          user: req.session.user
+        });
+      });
       }
     
   } catch (err) {
-    console.error('Login error: ',err);
+    
+    if (err.response) {
+    return res.status(500).json({ success: false, message: err.response.data.message });
+
+  } else {
     return res.status(500).json({ success: false, message: 'Server error' });
+  }
   }
 });
 
