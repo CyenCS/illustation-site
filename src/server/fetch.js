@@ -17,17 +17,10 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'No user found' });
     }
     const user = results[0];
-
-      let match = false;
-      try {
-        match = await bcrypt.compare(password || '', user.password || '');
-      } catch (compareErr) {
-        console.error('pw compare error:', compareErr);
-        return res.status(400).json({ success: false, message: 'Invalid username or password' });
-      }
-
+    
+      const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        return res.status(400).json({ success: false, message: 'Invalid username or password' });
+        return res.status(401).json({ success: false, message: 'Invalid username or password' });
       }
       user.password = undefined; // Remove password from user object
 
