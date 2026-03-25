@@ -4,7 +4,6 @@ const db = require('./connect'); // Make sure connect.js exports the MySQL pool
 const bcrypt = require('bcrypt');
 const { requireLogin } = require('./auth');
 const crypto = require('crypto');
-const { count } = require('console');
 
 //Login
 router.post('/login', async (req, res) => {
@@ -18,8 +17,15 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'No user found' });
     }
     const user = results[0];
-    
-      const match = await bcrypt.compare(password, user.password);
+
+      let match = false;
+      try {
+        match = await bcrypt.compare(password || '', user.password || '');
+      } catch (compareErr) {
+        console.error('pw compare error:', compareErr);
+        return res.status(400).json({ success: false, message: 'Invalid username or password' });
+      }
+
       if (!match) {
         return res.status(400).json({ success: false, message: 'Invalid username or password' });
       }
