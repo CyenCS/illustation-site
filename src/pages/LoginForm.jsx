@@ -35,7 +35,8 @@ function LoginForm() {
     }
   } catch (err) {
     console.error(err);
-    setErrorMessage('Server error');
+    const serverMessage = err?.response?.data?.message;
+    setErrorMessage(serverMessage || 'Server error');
   }
 };
 
