@@ -10,17 +10,10 @@ const { authMiddleware } = require('./auth');
 
 const app = express();
 
-
-
-// if (process.env.NODE_ENV !== 'production') {
-//   require('dotenv').config({ path: path.join(__dirname, '.env') });
-// }
-
 const KEY_SECRET = process.env.KEY_SECRET;
 
 
-//Missing this part will cause errors - explicitly allowing credentials like cookies
-const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app", "https://illustation-site.onrender.com" ]; // Frontend URL 
+const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app", "https://illustation-site.onrender.com" ];
 app.use(cors({
   origin: 
   function (origin, callback) {
@@ -30,7 +23,6 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-   //Domains allowed to access the server
   
   credentials: true                 // allow cookies
 }));
@@ -55,9 +47,6 @@ const MySQLStore = require('express-mysql-session')(session);
 // ^ Automatically creates sessions table if not exists for the database
 
 const sessionStore = new MySQLStore({}, db.promise()); // Reuses the existing db connection
-// !!!!!!NOTICE!!!!
-//Not including this part will cause error if the server restarted/initiated while users already logged in
-//Although unless the user logged in again, the session will be lost if server restarted
 app.set("trust proxy", 1);
 app.use(session({
   //Session cleanup on server
@@ -70,17 +59,15 @@ app.use(session({
         httpOnly: true,
         secure: true, 
         sameSite: "none",
-        //secure: process.env.NODE_ENV === 'production', // Set to true in production (HTTPS)
-        maxAge: 1 * 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 1 * 24 * 60 * 60 * 1000
     }
 }))
 
-//Middleware logic - Move this to a separate file as AuthMiddleware.js for the other files to use if needed
 app.use(authMiddleware);
 
 
 // Routes
-app.use('/fetch', fetchRoutes); //API routes for fetching data
+app.use('/fetch', fetchRoutes);
 app.use('/illust', uploadRoutes);
 app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
 
@@ -89,4 +76,4 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-console.log("Server in development is running on port " + PORT);
+console.log("Server is running on port " + PORT);

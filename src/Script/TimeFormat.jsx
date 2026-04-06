@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 function FormatTime(publishTimestamp, editTimestamp) {
-    //Custom Hooks to format timestamps i.e. live updates
     const [published, setPublished] = useState(null);
     const [edited, setEdited] = useState(null);
 

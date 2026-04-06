@@ -8,7 +8,7 @@ const crypto = require('crypto');
 //Login
 router.post('/login', async (req, res) => {
   const {name, password,} = req.body;
-  console.log(req.body); // Add this line to log the request body
+  console.log(req.body);
 
   try {
     const [results] = await db.promise().query('SELECT * FROM users WHERE name = ?', [name]);
@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        return res.status(401).json({ success: false, message: 'Invalid username or password' });
+        return res.json({ success: false, message: 'Invalid username or password' });
       }
       else{
         user.password = undefined; // Remove password from user object

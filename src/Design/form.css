@@ -14,10 +14,7 @@
 }
 
 /*Uploads */
-
-/* posts of posts-content / posts-content targets posts */
   .forms-content .forms{
-    /* place-items: center; */
     display: block;
     width: 90%;
     max-height:500px;

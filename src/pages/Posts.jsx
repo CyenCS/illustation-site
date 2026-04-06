@@ -14,14 +14,11 @@ function Posts() {
   const { user } = useAuthContext();
   const { artid } = useParams();
   
-  const userId = user?.userid ?? null; // Logged in user's ID
+  const userId = user?.userid ?? null;
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-
-  // const [published, setPublished] = useState(null);
-  // const [edited, setEdited] = useState(null);
   
   //Right
   const [imagesList, setImagesList] = useState([]);
@@ -31,17 +28,12 @@ function Posts() {
 
   const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
 
-  // const postsURL = `${APIURL}/illust/posts/`;
-  // base URL to serve image files (files are stored under /posts/<artid>/...)
-  // const imagesBase = `${APIURL}/posts/`;
-
   const { published, edited } = FormatTime(post?.created, post?.edited);
-//NOTICE: useCallback not needed due to the function being inside of useEffect
   useEffect(() => {
     if (!artid) return;
     setLoading(true);
     setNotFound(false);
-    axios.get(`${APIURL}/illust/posts/${artid}`) //`${APIURL}/illust/posts/${artid}`;
+    axios.get(`${APIURL}/illust/posts/${artid}`)
       .then(res => {
         console.log("Response:", res.data);
         if (res.data.success) {
@@ -78,34 +70,21 @@ function Posts() {
 
 useEffect(() => { if (imagesList.length) console.log('Images List:', imagesList); }, [imagesList]);
 
+let template;
 // Loading and Not Found states
 if (!post && loading) {
-  return <div className="loading"><p>Loading...</p></div>;
-} 
-
-if (notFound) {
-  return <div className="error"><p>Page Not Found</p></div>;
-}
-
-if (!post) return <div>Post data not available</div>;
-
-    return(
-        <div className="content">
+  template = <div className="loading"><p>Loading...</p></div>;
+} else if (notFound) {
+  template = <div className="error"><p>Page Not Found</p></div>;
+} else if (post && !loading) 
+  {
+    template = 
           <div className="posts">
-            {/* className="content posts-content" */}
             <div className="blocks details">
-              {/* className="posts" */}
                 <h3 className="title">{post.title ?? "No Title"}</h3>
                 {isOwner && (<div className="options">
                     <button className="edit-btn"
-                    onClick={()=> navigate('/posts/'+post.artid+'/edit', 
-                      // {state: 
-                      //   {artimages: imagesList, 
-                      //     arttitle: post.title, artdescription: post.caption, artid: post.artid,
-                      //   }
-                      // }
-                    )}
-                    >Edit</button>
+                    onClick={()=> navigate('/posts/'+post.artid+'/edit', )}>Edit</button>
                      
                 </div>)}
                 <div className="info">
@@ -164,10 +143,16 @@ if (!post) return <div>Post data not available</div>;
               </div>
 
             </div>
-            </div>
           </div>
-        )
-      }
+
+  } else {
+  template = <div className="error">Unknown Error</div>;
+  }
+  
+  return(
+    <div className="content">{template}</div>
+    )
+  }
 
 export default Posts;
 

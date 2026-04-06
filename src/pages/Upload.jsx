@@ -1,6 +1,5 @@
 import { useParams} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
-// import { Insert } from "./placeholder/Insert.jsx"; // Adjust the import path as necessary
 import { useNavigate } from 'react-router-dom';
 import ImageUploading from "react-images-uploading";
 import axios from 'axios';
@@ -12,7 +11,7 @@ import { useAuthContext } from '../Script/AuthContext.jsx';
 function Upload() {
   const { user, loading } = useAuthContext();
   
-  const { artid } = useParams(); //replaces encodeURIComponent()
+  const { artid } = useParams();
   const isEdit = !!artid;
 
   const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
@@ -29,7 +28,7 @@ function Upload() {
   const maxNumber = 3;
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
-    console.log(imageList, addUpdateIndex);
+    if (process.env.NODE_ENV === "development") {console.log(imageList, addUpdateIndex);}
     setImages(imageList);
   };
 
@@ -38,16 +37,14 @@ function Upload() {
 
         const formData = new FormData();
     formData.append("userid", user.userid);
-    // formData.append('artid', uuidv4());
     formData.append('artid', artid || Math.floor(Math.random() * 1e10).toString());
     formData.append("title", title);
     formData.append("caption", description);
       
-      // console.log('upload token preview:', (accessToken || '').substring(0,10) + '...');
     try{
-      const payload = { title, caption: description, artid }; // send caption
+      const payload = { title, caption: description, artid };
       const response =  await axios.put(`${APIURL}/illust/edit/${artid}`, //Edit route
-        payload, //edited time
+        payload,
         { withCredentials: true,} 
       );
 
@@ -70,7 +67,6 @@ function Upload() {
 
     const formData = new FormData();
     formData.append("userid", user.userid);
-    // formData.append('artid', uuidv4());
     formData.append('artid', artid || Math.floor(Math.random() * 1e10).toString());
     formData.append("title", title);
     formData.append("caption", description);
@@ -81,16 +77,11 @@ function Upload() {
       formData.append("images", imgObj.file);
     });
 
-    // for (const entry of formData.entries()) {
-    //  // Input Test - Consists of key-value pairs
-    //   console.log('FormData entry:', entry[0], entry[1]);
-    // }
     try{
       
      const response =  await axios.post(`${APIURL}/illust/upload`, 
           formData, { withCredentials: true,} 
-        );
-      // headers: { "Content-Type": "multipart/form-data" },//Breaks Boundary - do not use 
+      );
 
       if (response.data.success) {
         const artId = encodeURIComponent(response.data.post.artid);
@@ -109,9 +100,7 @@ function Upload() {
 
   // Delete handler
 const handleDelete = async (e) => {
-  // ...delete logic...
   const response = await axios.delete(`${APIURL}/illust/delete`,{
-    // axios.delete only supports one argument for URL, config. Must type 'data' inside config.
     data: { artid },
     withCredentials: true 
   });
@@ -148,14 +137,14 @@ useEffect(() => {
         })
         .catch(err => {
           if (err.response?.status === 403) {
-            alert(`You do not have permission to edit this artwork. ${err.response.data.message || ''}`);
+            alert(`${err.response.data.message || ''}`);
             navigate(`/posts/${artid}`);
             return;
           }
         });
 }
 
-  if (loading) return; // Wait until loading is complete  
+  if (loading) return;
 
   if (!user) {
     navigate('/');
@@ -180,7 +169,7 @@ useEffect(() => {
     return(
       <>
             <div className="content">
-            {isEdit ? <h3>Edit artwork</h3> : <h3>Submit artwork</h3>}
+            {isEdit ? <h2>Edit artwork</h2> : <h2>Submit artwork</h2>}
             <div className="forms-content">
               {/* Upload Section */}
               <div className="forms">
@@ -203,7 +192,7 @@ useEffect(() => {
                           onChange={onChange}
                           maxNumber={maxNumber}
                           dataURLKey="data_url"
-                          acceptType={["png", "jpg", "jpeg"]} // Adjust accepted file types as needed
+                          acceptType={["png", "jpg", "jpeg"]}
                         >
                           {({
                             imageList,
@@ -214,7 +203,6 @@ useEffect(() => {
                             isDragging,
                             dragProps
                           }) => (
-                            // write your building UI
                             <div>
                               <div className='flex-row'>
                                 <div>Images: {imageList.length}/{maxNumber}</div>

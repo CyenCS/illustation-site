@@ -1,16 +1,15 @@
 // References
 // https://www.npmjs.com/package/multer-storage-cloudinary
 
-// Uploads
+
 const express = require('express');
 const router = express.Router();
-const db = require('./connect'); // Make sure connect.js exports the MySQL pool
+const db = require('./connect');
 
 const multer = require('multer');
 const { requireLogin } = require('./auth');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
-// Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -91,7 +90,7 @@ async function verifyartwork(res, artid, userId) {
 
     const postOwner = rows[0].userid;
     if (postOwner !== userId) {
-      res.status(403).json({ success: false, message: 'Unauthorized: Not your post' });
+      res.status(403).json({ success: false, message: 'Unauthorized to modify post' });
       return false;
     }
 
@@ -100,38 +99,34 @@ async function verifyartwork(res, artid, userId) {
 
 // // Edit (replace existing)
 router.put('/edit/:artid', requireLogin, async (req, res) => {
-  //   console.log('EDIT request:', { params: req.params, body: req.body, session: req.session && {
-  //   userid: req.session.userid
-  // }});
   try{
     const userid = req.session.userid;
-    // const artid = req.params.artid; //from url path
     const {title, caption, artid} = req.body;
 
-    if (!userid || !title || !caption || !artid) {
+    if (!(await verifyartwork(res, artid, userid))) {return;}
+    else{
+      if (!userid || !title || !caption || !artid) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
+      }
+
+      const edited = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+      const updateQuery = 
+      `UPDATE artwork SET title = ?, caption = ?, edited = ? WHERE artid = ? AND userid = ?`;
+
+      const params = [title, caption, edited, artid, userid];
+      const [result] = await db.promise().query(updateQuery, params);
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: 'Post not found or unauthorized' });
+      }
+      res.json({ success: true, message: 'Edit successful' });
     }
-
-    const edited = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-    
-
-    const updateQuery = 
-    `UPDATE artwork SET title = ?, caption = ?, edited = ? WHERE artid = ? AND userid = ?`;
-
-    const params = [title, caption, edited, artid, userid];
-    const [result] = await db.promise().query(updateQuery, params);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: 'Post not found or unauthorized' });
-    }
-    res.json({ success: true, message: 'Edit successful' });
 
   } catch (err) {
     console.error("Edit failed: ", err);
     res.status(500).json({ success: false, message: err.message });
   }
-  // await db.query("UPDATE artwork SET title=?, caption=?, WHERE artid=?", [..., artid]);
 
 });
 
@@ -139,7 +134,9 @@ router.put('/edit/:artid', requireLogin, async (req, res) => {
 router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
   try {
     const { artid } = req.params;
-    const userId = req.session.userid; // or however you store user ID in session
+    const userid = req.session.userid;
+    if (!(await verifyartwork(res, artid, userid))) {return;}
+    else{
     // Fetch the post
     const [rows] = await db.promise().query(
       'SELECT * FROM artwork WHERE artid = ?', [artid]
@@ -156,13 +153,10 @@ router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
       post.images = [];
     }
 
-    // Check ownership
-    if (post.userid !== userId) {
-      return res.status(403).json({ success: false, message:`Unauthorized` });
-    }
-
     // Return post data for editing
     res.json({ success: true, post });
+    }
+
   } catch (err) {
     res.status(500).json({ success: false, message: "Server error: " + err.message });
   }
@@ -192,7 +186,6 @@ router.get('/posts/:artid', async (req, res) => {
       images = JSON.parse(post.image);
     } catch (e){
       console.error("Image JSON parse error:", e);
-      // images = [post.image];
     }
 
     post.images = images;
@@ -201,17 +194,6 @@ router.get('/posts/:artid', async (req, res) => {
     res.json({
       success: true,
       post: post,
-      // {
-      //   artid: post.artid,
-      //   userid: post.userid,
-      //   username: post.username,
-      //   title: post.title,
-      //   caption: post.caption,
-      //   category: post.category,
-      //   created: post.created,
-      //   edited: post.edited,
-      //   images
-      // }
     });
   } catch (err) {
     console.error(err);
@@ -231,7 +213,7 @@ router.get('/illusts', async (req, res) => {
     const [countRows] = await db.promise().query(countQuery, [`%${search}%`]);
     const total = countRows[0]?.total;
     const maxpage = Math.max(1, Math.ceil(total / limit));
-    const recommend = req.query.recommend; //not set, always false
+    const recommend = req.query.recommend;
 
     //2) Fetch Posts
 
@@ -246,14 +228,12 @@ router.get('/illusts', async (req, res) => {
     //OFFSET ? // offset formula = (current page - 1) * limit
     const params = [`%${search}%`];
     if (currentPage >= 1 && !recommend) { query += "ORDER BY artwork.created DESC LIMIT ? OFFSET ?;"; params.push(limit, offset);}
-    if (recommend) { query += "ORDER BY RAND() LIMIT 5;"; } // fixed 10 recommendations
+    if (recommend) { query += "ORDER BY RAND() LIMIT 5;"; }
 
     const [rows] = await db.promise().query(query, params);
     
 
     // 3) Convert image arrays => Cloudinary URLs
-    
-
     const posts = rows.map(post => {
       let imagesArray = [];
       try {
@@ -265,8 +245,7 @@ router.get('/illusts', async (req, res) => {
       }
       return {
         ...post,
-        firstImage: imagesArray[0], // Return only the first image URL as thumbnail
-        // artid: post.artid, ...
+        firstImage: imagesArray[0], // thumbnail
       };
     });
 
@@ -277,7 +256,7 @@ router.get('/illusts', async (req, res) => {
   }
 });
 
-router.delete('/delete', requireLogin, async (req, res) => {
+router.delete('/delete', requireLogin,   async (req, res) => {
   const { artid } = req.body;
   const userid = req.session.userid;
 
@@ -298,8 +277,6 @@ router.delete('/delete', requireLogin, async (req, res) => {
 });
 
 
-
-// ✅ PAGINATION ROUTE
 router.get('/recent', async (req, res) => {
   const { userid, limit, offset, keyword } = req.body;
   console.log('Home Pagination request:', req.body);
@@ -307,15 +284,10 @@ router.get('/recent', async (req, res) => {
   const query = 
   `SELECT * FROM artwork
   WHERE created >= DATE_SUB(NOW(), INTERVAL 7 DAY)`;
-    // `SELECT * FROM items
-    // WHERE userid = ? AND itemname LIKE ?
-    // LIMIT ? OFFSET ?`;
-
-  // const [rows] = await db.promise().query(query);
 
   db.query(query, [userid, `%${keyword}%`, limit, offset], (err, results) => {
     if (err) {
-      console.error('❌ DB error during pagination:', err);
+      console.error('database error during pagination:', err);
       return res.status(500).json({ success: false, message: 'DB error' });
     }
 
@@ -325,11 +297,10 @@ router.get('/recent', async (req, res) => {
 
     db.query(totalQuery, [userid, `%${keyword}%`], (countErr, countResult) => {
       if (countErr) {
-        console.error('❌ DB count error:', countErr);
+        console.error('database count error:', countErr);
         return res.status(500).json({ success: false, message: 'DB count error' });
       }
-
-      console.log('✅ Pagination success:', results.length, 'items');
+      
       res.json({
         success: true,
         data: results,
@@ -340,34 +311,3 @@ router.get('/recent', async (req, res) => {
 });
 
 module.exports = router;
-
-// const verifyToken = require('../unused/auth');
-
-// Set storage engine
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     const artid = req.body.artid || generateArtId();
-//     if (!req.body.artid){
-//       req.generatedArtid = artid;
-//       req.body.artid = artid;
-//     }
-
-//     // Ensure both exist
-//     if (!artid) return cb(new Error("Missing userid or artid"));
-
-//     const dir = path.join(__dirname, '..', '..', 'posts', artid);
-//     fs.mkdirSync(dir, { recursive: true });
-//     cb(null, dir);
-//   },
-//   filename: function (req, file, callback) {
-//     // Generate unique filename: artid + original extension
-//     const artid = req.body.artid || req.generatedArtid || generateArtId();
-//     if (req.fileIndex === undefined) req.fileIndex = 0;
-//     const index = req.fileIndex;
-//     req.fileIndex += 1;
-//     const ext = path.extname(file.originalname);
-//     const filename = `${artid}_p${index}${ext}`;
-    
-//     callback(null, filename)
-//   }
-// });

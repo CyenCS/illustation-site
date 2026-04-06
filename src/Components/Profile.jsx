@@ -1,22 +1,17 @@
 import { useParams} from 'react-router-dom';
-import React, {useEffect, useState} from "react";
-// import { Insert } from "./placeholder/Insert.jsx"; // Adjust the import path as necessary
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import {useEffect, useState} from "react";
 import { useSearchParams } from 'react-router-dom';
 import ArtworkHooks from '../Script/ArtworkHooks';
 import ArtworkList from '../Components/ArtworkList.jsx';
 import { useAuthContext } from '../Script/AuthContext.jsx';
-const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrender.com";
 
 
 function Profile(){
-    const { userid: profileId } = useParams(); // Profile userid from URL
-    const { user } = useAuthContext();// Logged in user info
+    const { userid: profileId } = useParams();
+    const { user } = useAuthContext();
     const [searchParams, setSearchParams] = useSearchParams();
     const [isOwner, setIsOwner] = useState(false);
 
-    // const search = searchParams.get("search") || '';
     const pageParam = parseInt(searchParams.get("page") || '1', 10);
     const [currentPage, setCurrentPage] = useState(pageParam);
       
@@ -27,15 +22,6 @@ function Profile(){
 
   setIsOwner(String(user?.userid) === String(profileId));
 
-  // axios.get(`${APIURL}/fetch/auth/me`, { withCredentials: true })
-  //   .then(res => {
-  //     if (res.data?.success && res.data.user?.userid) {
-  //       setIsOwner(String(res.data.user.userid) === String(userid));
-  //     } else {
-  //       setIsOwner(false);
-  //     }
-  //   })
-  //   .catch(() => setIsOwner(false));
 }, [profileId, user]);
 
     const { posts, total, artistname, maxPage, loading, error,} = ArtworkHooks(

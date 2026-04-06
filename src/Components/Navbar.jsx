@@ -1,7 +1,5 @@
-// components/Navbar.js
 import React, {useState} from 'react';
 import { useNavigate, NavLink } from "react-router-dom";
-// import '../Design/style.css';
 
 import AccountMenu from '../Script/AccountMenu.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,8 +8,7 @@ import { useAuthContext } from "../Script/AuthContext";
 
 function Navbar() {
    const { user, loading} = useAuthContext();
-  // const isLoggedIn = !!user;
-  const [search, setSearch] = useState(""); //input text state only, not the active search query
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   function onSearchSubmit(e) {
@@ -29,7 +26,6 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navdiv"> 
-        {/* spacing div for nav items */}
         <div className="logo">
           <NavLink to="/">IlluStation (PT)</NavLink>
         </div>
@@ -44,7 +40,6 @@ function Navbar() {
                 <div>
           <ul id="account">
             {loading ? (
-              // keep a placeholder so layout doesn't jump while auth is being verified
               <li>
                 <div
                   style={{

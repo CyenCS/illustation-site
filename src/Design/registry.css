@@ -6,8 +6,8 @@
 }
 
 .registry-page-container {
-  height: 100vh; /* Ensure it covers the entire viewport */
-  background: rgb(121, 121, 121); /* Cyan background */
+  height: 100vh;
+  background: rgb(121, 121, 121);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,6 +23,10 @@
   padding: 40px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2), 0 5px 5px rgba(0, 0, 0, 0.24);
   background: #fff;
+}
+
+.registry-page h1{
+  color: black;
 }
 
 .registry-page .inputbox {
@@ -68,10 +72,6 @@
 .proceed:hover {
   background: rgb(0, 102, 255);
 }
-/* 
-.registry-page p {
-  color: #b3b3b3;
-} */
 
 .registry-page a{
   text-align: center;

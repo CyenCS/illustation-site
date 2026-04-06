@@ -3,8 +3,6 @@ import axios from "axios";
 
 const APIURL = process.env.REACT_APP_API_URL || "https://illustation-site.onrender.com";
 
-//Custom hook to fetch artwork posts based on search, pagination, and profile ID
-
 export default function ArtworkHooks({search, currentPage = 1, profileid=null, recommend=false}) {
     const [posts, setPosts] = useState([]);
     const [total, setTotal] = useState(0);
@@ -12,7 +10,6 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null, r
     const [artistname, setArtistname] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    // const [selectedPage ,setCurrentPage] = useState(currentPage);
     
         useEffect(() => {
             setLoading(true);
@@ -22,7 +19,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null, r
               `${APIURL}/fetch/profile/${profileid}` :
               `${APIURL}/illust/illusts`;
 
-            const params = profileid ? { currentPage } : recommend ? { search, recommend: true } : {search, currentPage}; //false:true
+            const params = profileid ? { currentPage } : recommend ? { search, recommend: true } : {search, currentPage};
 
             axios.get(url, { params })
             .then((res) => {
@@ -50,9 +47,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null, r
             .finally(() => {
               setLoading(false);
             });
-        //   fetchPosts(search, currentPage);
         },[search, currentPage, profileid, recommend]); 
-        // dont put artistname here, causes loading twice if there is artistname being used for display
 
     return { posts, total, artistname, maxPage, loading, error };
 }

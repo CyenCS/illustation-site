@@ -1,13 +1,10 @@
-// src/Script/AccountMenu.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from "../Script/AuthContext";
 import { Link } from 'react-router-dom';
 
 export default function AccountMenu() {
   const { user, logout } = useAuthContext();
   const [showDropdown, setShowDropdown] = useState(false);
-  const navigate = useNavigate();
 
   if (!user || !user.username) return null;
 
@@ -15,18 +12,10 @@ export default function AccountMenu() {
     setShowDropdown(prev => !prev);
   };
 
-  const onProfile = (e) => {
-    e.preventDefault();
-    setShowDropdown(false);
-    navigate(`/profile/${user.userid}`);
-    // navigate('/profile');
-  };
-
   const onSignOut = async (e) => {
     e.preventDefault();
     setShowDropdown(false);
-    await logout(); // calls server logout and sets user=null in context
-    // navigate('/');  // optional: go to homepage after logout
+    await logout();
   };
 
   return (

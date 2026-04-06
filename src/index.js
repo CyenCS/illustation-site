@@ -13,9 +13,6 @@ root.render(
   //* </React.StrictMode> */}
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
 axios.interceptors.response.use(
@@ -24,10 +21,8 @@ axios.interceptors.response.use(
     const status = err.response?.status;
     const message = err.response?.data?.message;
     if (status === 401 && message && message.toLowerCase().includes('expired')) {
-      // token expired -> clear saved token and redirect to login
       localStorage.removeItem('token');
-      // optional: show message to user
-      window.location.href = '/'; // or your login route
+      window.location.href = '/';
     }
     return Promise.reject(err);
   }

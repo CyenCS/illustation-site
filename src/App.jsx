@@ -14,18 +14,15 @@ import Posts from "./pages/Posts.jsx";
 import Profile from "./Components/Profile.jsx";
 import { AuthProvider } from "./Script/AuthContext.jsx";
 
-// const Layout = ({ children }) => {
-
-// }
 
 function Layout({ children }) { //Global layout wrapper
   const {pathname} = useLocation();
-  const hideLayoutPaths = ["/registry"]; //Hides Navbar and Footer when on Registry page
+  const hideLayoutPaths = ["/registry"];
   const shouldHideLayout = hideLayoutPaths.includes(pathname);
   return(
     <>
     {!shouldHideLayout && <Navbar />}
-    {children}
+    <div className="content"> {children}</div>
     {!shouldHideLayout && <Footer />}
     </>
   )
@@ -37,17 +34,11 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/*" element={<MainContent />} />{/* '/*' Catches all sub routes (Nested inside) */}
-          {/* Key: Changes the componenets especially within the same place */}
-          <Route path="/upload" element={<Upload/>} />
+          <Route path="/*" element={<MainContent />} />
           <Route path="/posts/:artid/edit" element={<Upload/>} />
-          {/* Assuming Registry is a component for user registration */}
           <Route path="/registry" element={<Registry />} />
           <Route path="/posts/:artid" element={<Posts />} />
           <Route path="/profile/:userid" element={<Profile/>} />
-          
-          {/* Add more routes as needed */}
-
         </Routes>
       </Layout>
     </Router>
