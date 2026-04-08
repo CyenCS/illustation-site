@@ -23,10 +23,10 @@ router.post('/login', async (req, res) => {
         return res.json({ success: false, message: 'Invalid username or password' });
       }
       else{
-        user.password = undefined; // Remove password from user object
+        user.password = undefined;
 
       // Successful login
-      req.session.user = {userid: user.id, name: user.name}; // Store user info in session
+      req.session.user = {userid: user.id, name: user.name};
       req.session.userid = user.id;
       req.session.username = user.name;
 

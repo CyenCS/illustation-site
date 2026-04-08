@@ -19,7 +19,7 @@ function LoginForm() {
       );
 
     if (response.data.success) {
-      if (process.env.NODE_ENV === "development") { console.log('Login successful:', response.data.user.userid);}
+      if (process.env.NODE_ENV === "development") { console.log('Login successful');}
       window.location.href = '/';
     } else {
       setErrorMessage('Login failed: '+response.data.message || 'Login failed');

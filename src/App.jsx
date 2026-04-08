@@ -35,6 +35,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/*" element={<MainContent />} />
+          <Route path="/upload" element={<Upload/>} />
           <Route path="/posts/:artid/edit" element={<Upload/>} />
           <Route path="/registry" element={<Registry />} />
           <Route path="/posts/:artid" element={<Posts />} />

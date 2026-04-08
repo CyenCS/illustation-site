@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-// import { handleFormSubmit } from "../Script/backend";
-import axios from 'axios'; // make sure it's imported
+import axios from 'axios';
 
-
-// WARNING: Hashed password length is 60 characters, so ensure your database parameter can have above that limit.
 
 function SignupForm() {
   const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
@@ -11,7 +8,7 @@ function SignupForm() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = async (e) => {//Manual Trigger
+  const handleSubmit = async (e) => {
   e.preventDefault(); 
   try {
     const response = await axios.post(
@@ -22,8 +19,6 @@ function SignupForm() {
 
     if (response.data.success) {
       alert('Registration successful! Please log in.');
-      // localStorage.setItem('name', response.data.user.name);
-      // localStorage.setItem('userid', response.data.user.userid);
       window.location.href = '/registry';
     } else {
       setErrorMessage(response.data.message || 'Signup failed');

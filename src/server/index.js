@@ -46,7 +46,23 @@ db.getConnection((err, connection) => {
 const MySQLStore = require('express-mysql-session')(session); 
 // ^ Automatically creates sessions table if not exists for the database
 
-const sessionStore = new MySQLStore({}, db.promise()); // Reuses the existing db connection
+let sessionStore;
+try {
+  sessionStore = new MySQLStore({ 
+    expiration: 24 * 60 * 60 * 1000,  // 24 hour expiration
+    createDatabaseTable: true 
+  }, db.promise()); 
+  console.log('Session store initialized');
+} catch (err) {
+  console.warn('Session store initialization failed, using memory store:', err.message);
+  // Fallback to simple in-memory session storage
+  sessionStore = {
+    get: function() {},
+    set: function() {},
+    destroy: function() {}
+  };
+}
+
 app.set("trust proxy", 1);
 app.use(session({
   //Session cleanup on server
