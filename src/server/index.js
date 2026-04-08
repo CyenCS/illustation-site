@@ -7,6 +7,7 @@ const uploadRoutes = require('./illust');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const { authMiddleware } = require('./auth');
+const { stat } = require('fs');
 
 const app = express();
 
@@ -67,7 +68,16 @@ app.use(authMiddleware);
 
 // Health check endpoint (no auth required)
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+  try {
+    const data = {
+    uptime: process.uptime(),
+    status: 'ok',
+    date: new Date()
+  }
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: error.message });
+  }
 });
 
 // Routes
