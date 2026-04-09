@@ -28,5 +28,6 @@ Backend: https://illustation-site.onrender.com
 
 ## Run Locally
 Frontend: npm start
+
 Backend: node src/server/index.js
 
