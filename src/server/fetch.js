@@ -36,8 +36,6 @@ router.post('/login', async (req, res) => {
 
 
       res.cookie('rememberToken', rememberToken, {
-        httpOnly: true, //Cookie cannot be read or modified by frontend JavaScript (document.cookie) to prevent XSS's attack/stealing
-        secure: process.env.NODE_ENV === 'production', //Cookie is only sent over HTTPS
         maxAge: 1 * 24 * 60 * 60 * 1000, //Automatically expires even if stolen
       });
 

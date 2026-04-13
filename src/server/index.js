@@ -58,7 +58,7 @@ app.use(session({
     rolling: true, // Refresh cookie expiry on each request
     cookie: {
         httpOnly: true,
-        secure: true, 
+        secure: process.env.NODE_ENV === 'production',
         sameSite: "none",
         maxAge: 1 * 24 * 60 * 60 * 1000
     }

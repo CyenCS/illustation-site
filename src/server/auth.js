@@ -36,9 +36,6 @@ async function authMiddleware (req, res, next) {
         req.session.user = { userid: rows[0].id, name: rows[0].name };
         console.log(`Auto-logged user ${rows[0].name}`);
         res.cookie('rememberToken', token, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === 'production',
         maxAge: 1 * 24 * 60 * 60 * 1000,
       }, 
     );
