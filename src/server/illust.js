@@ -131,7 +131,7 @@ router.put('/edit/:artid', requireLogin, async (req, res) => {
 });
 
 // Get post data for editing
-router.get('/posts/:artid/edit', requireLogin, async (req, res) => {
+router.get('/posts/:artid/editfetch', requireLogin, async (req, res) => {
   try {
     const { artid } = req.params;
     const userid = req.session.userid;
