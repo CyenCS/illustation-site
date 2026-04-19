@@ -1,7 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 
 import Navbar from "./Components/Navbar.jsx";
 import Footer from "./Components/Footer.jsx";
@@ -43,7 +41,6 @@ function App() {
         </Routes>
       </Layout>
     </Router>
-    <ToastContainer position="bottom-left" autoClose={3000} theme="light" closeOnClick />
     </AuthProvider>
   );
 }
