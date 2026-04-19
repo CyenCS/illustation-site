@@ -117,7 +117,7 @@ const handleDelete = async (e) => {
 
 useEffect(() => {
   function fetchPostDataForEdit(artid) {
-  axios.get(`${APIURL}/illust/posts/${artid}/edit`, // Fetch existing post data for editing
+  axios.get(`${APIURL}/illust/posts/${artid}/editfetch`, // Fetch existing post data for editing
         { withCredentials: true })
         .then(res => {
           if (res.data.success) {
