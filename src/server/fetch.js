@@ -140,7 +140,8 @@ router.get('/profile/:userid', async (req, res) => {
       };
     });
 
-    res.json({ success: true, posts, total, maxpage, username: results[0].name});
+    const username = results[0]?.name; // Get username from user record
+    res.json({ success: true, posts, total, maxpage, username});
   }} catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "DB error: " + err.message });

@@ -8,7 +8,7 @@ import PageTitle from '../Script/PageTitle';
 function Registry() {
   const [showLogin, setShowLogin] = useState(true);
 
-  PageTitle({ title: showLogin ? "Sign In" : "Sign Up" });
+  PageTitle(`${showLogin ? "Sign In" : "Sign Up" } - IlluStation`);
 
   return (
     <main className="registry-page-container">

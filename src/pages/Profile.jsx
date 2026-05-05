@@ -40,10 +40,6 @@ function Profile(){
         }
     }, [loading, pageParam, maxPage, setSearchParams]);
 
-  //     if (notFound) pageTitle = "Artwork not found";
-  // else if (loading) pageTitle = "Loading artwork...";
-  // else if (post?.title) pageTitle = post.title;
-
 let pageTitle = 'Profile';
 if (error) pageTitle = error;
 else if (loading) pageTitle = "Loading profile...";

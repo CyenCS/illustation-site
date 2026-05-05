@@ -28,7 +28,7 @@ export default function ArtworkHooks({search, currentPage = 1, profileid=null, r
                   setTotal(res.data.total);
                   setMaxPage(res.data.maxpage);
                   if (profileid) {
-                    const username = res.data.username || res.data.posts[0]?.username;
+                    const username = res.data.username;
                     setArtistname(username);
                   }
                   setError(null);
