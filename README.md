@@ -1,4 +1,4 @@
-# illustation - Full-stack illustration sharing platform (React, Node, MySQL)
+# IlluStation - Full-stack illustration sharing platform (React, Node, MySQL)
 
 A full-stack web app where users can upload and browse illustrations.
 Users can register, login, upload artworks, browse posts, and manage their own content.
