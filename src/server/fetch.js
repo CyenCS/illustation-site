@@ -77,6 +77,10 @@ router.post('/registry', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Username already exists' });
     }
 
+    if (!password || !name) {
+      return res.status(400).json({ success: false, message: 'Name and password required' });
+    }
+
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -136,7 +140,7 @@ router.get('/profile/:userid', async (req, res) => {
       };
     });
 
-    res.json({ success: true, posts, total,  maxpage});
+    res.json({ success: true, posts, total, maxpage, username: results[0].name});
   }} catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "DB error: " + err.message });

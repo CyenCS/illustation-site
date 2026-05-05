@@ -1,7 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 
 import Navbar from "./Components/Navbar.jsx";
 import Footer from "./Components/Footer.jsx";
@@ -11,7 +9,7 @@ import './Design/style.css';
 import Registry from "./pages/Registry.jsx";
 import Upload from "./pages/Upload.jsx";
 import Posts from "./pages/Posts.jsx";
-import Profile from "./Components/Profile.jsx";
+import Profile from "./pages/Profile.jsx";
 import { AuthProvider } from "./Script/AuthContext.jsx";
 
 
@@ -43,7 +41,6 @@ function App() {
         </Routes>
       </Layout>
     </Router>
-    <ToastContainer position="bottom-left" autoClose={3000} theme="light" closeOnClick />
     </AuthProvider>
   );
 }

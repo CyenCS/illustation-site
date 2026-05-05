@@ -3,9 +3,12 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import '../Design/registry.css';
 import { NavLink } from "react-router-dom";
+import PageTitle from '../Script/PageTitle';
 
 function Registry() {
   const [showLogin, setShowLogin] = useState(true);
+
+  PageTitle({ title: showLogin ? "Sign In" : "Sign Up" });
 
   return (
     <main className="registry-page-container">

@@ -6,6 +6,7 @@ import '../Design/posts.css';
 import { useNavigate } from 'react-router-dom';
 import FormatTime from "../Script/TimeFormat.jsx";
 import { useAuthContext } from "../Script/AuthContext.jsx";
+import PageTitle from "../Script/PageTitle";
 
 import { Link } from 'react-router-dom';
 
@@ -148,9 +149,18 @@ if (!post && loading) {
   } else {
   template = <div className="error">Unknown Error</div>;
   }
+
+  let pageTitle = "Artwork";
+  if (notFound) pageTitle = "Artwork not found";
+  else if (loading) pageTitle = "Loading artwork...";
+  else if (post?.title) pageTitle = post.title;
+
+    PageTitle(pageTitle);
   
   return(
-    <div className="content">{template}</div>
+    <>
+      <div className="content">{template}</div>
+    </>
     )
   }
 

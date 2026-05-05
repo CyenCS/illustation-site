@@ -6,6 +6,7 @@ import axios from 'axios';
 import "../Design/form.css";
 import DeleteDialog from '../Components/Dialog.jsx';
 import { useAuthContext } from '../Script/AuthContext.jsx';
+import PageTitle from '../Script/PageTitle';
 
 
 function Upload() {
@@ -117,7 +118,7 @@ const handleDelete = async (e) => {
 
 useEffect(() => {
   function fetchPostDataForEdit(artid) {
-  axios.get(`${APIURL}/illust/posts/${artid}/edit`, // Fetch existing post data for editing
+  axios.get(`${APIURL}/illust/posts/${artid}/editfetch`, // Fetch existing post data for editing
         { withCredentials: true })
         .then(res => {
           if (res.data.success) {
@@ -166,24 +167,27 @@ useEffect(() => {
 }
 , [user, isEdit, artid, loading, navigate, APIURL]);
 
-    return(
-      <>
-            <div className="content">
-            {isEdit ? <h2>Edit artwork</h2> : <h2>Submit artwork</h2>}
-            <div className="forms-content">
-              {/* Upload Section */}
-              <div className="forms">
-                {isEdit ? 
-                (<div>
-                  <p>ID: {artid}</p>
-                  <p>Current Images:</p>
-                  <div className="upload__image-wrapper">
-                  {images && images.length > 0 ? images.map((image, index) => (
-                    <div key={index} className="image-item">
-                      <img  src={image} alt={`Artwork ${index + 1}`}/>
-                    </div>
-                  )) : null}
-                  </div>
+let pageTitle = isEdit ? 'Edit artwork' : 'Submit artwork';
+
+PageTitle(pageTitle);
+
+  let template = 
+  <div className="content">
+    {isEdit ? <h2>Edit artwork</h2> : <h2>Submit artwork</h2>}
+    <div className="forms-content">
+      {/* Upload Section */}
+      <div className="forms">
+        {isEdit ? 
+        (<div>
+          <p>ID: {artid}</p>
+          <p>Current Images:</p>
+          <div className="upload__image-wrapper">
+            {images && images.length > 0 ? images.map((image, index) => (
+              <div key={index} className="image-item">
+                <img  src={image} alt={`Artwork ${index + 1}`}/>
+                </div>
+                )) : null}
+                </div>
                 </div>)
                 : 
                   (<ImageUploading
@@ -277,18 +281,19 @@ useEffect(() => {
                         onClose={() => setShowDialog(false)}
                       />
                       )}
-                    </div>
-                          </div> 
-                          :  <button disabled={images.length > maxNumber || images.length <= 0}
-                          className = "upload-btn" type="submit">Submit</button>
-                          }
-                        </div>
+                      </div>
+                    </div> 
+                    :  <button disabled={images.length > maxNumber || images.length <= 0}
+                    className = "upload-btn" type="submit">Submit</button>
+                     }
+                     </div>
                     </form>
                 </div>
             </div>
         </div> 
 
-      </>
+    return(
+      <> {template} </>
     )
 }
 

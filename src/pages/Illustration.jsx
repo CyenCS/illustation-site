@@ -2,6 +2,7 @@ import React, { useState, useEffect,} from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ArtworkList from '../Components/ArtworkList.jsx';
 import ArtworkHooks from '../Script/ArtworkHooks.js';
+import PageTitle from '../Script/PageTitle';
 
 function Illustration() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,7 +12,7 @@ function Illustration() {
 
   const [currentPage, setCurrentPage] = useState(pageParam);
   const { posts, total, maxPage, loading, error } = ArtworkHooks({ search, currentPage:pageParam });
-
+  
   useEffect(() => {
     setCurrentPage(pageParam);
     if(!loading && pageParam > maxPage){
@@ -20,7 +21,13 @@ function Illustration() {
     }
   }, [loading, pageParam, maxPage, search, setSearchParams]);
 
+  let pageTitle = search ? `${search}` : "Search Illustrations";
+  if (error) pageTitle = "Error loading illustrations";
+
+  PageTitle(pageTitle);
+
     return (
+      <>
         <div className="content"> 
           
           {search ? <h2>Search: <strong>{search || '(empty)'}</strong></h2>:<h2>Illustrations</h2>}
@@ -59,7 +66,7 @@ function Illustration() {
           )
         }
         </div>
-      
+      </>
     );
 }
 
