@@ -9,7 +9,7 @@ Users can register, login, upload artworks, browse posts, and manage their own c
 - React
 - Node.js / Express
 - MySQL
-- Session-based authentication
+- Session-based cookies authentication
 - Vercel (frontend), Render (backend)
 
 
@@ -17,7 +17,7 @@ Users can register, login, upload artworks, browse posts, and manage their own c
 - User authentication
 - Upload artworks
 - Manage own posts by browsing, editing and deleting.
-- Session-based auth for management
+- Session-based auth for protected routes
 - Pagination & search to view post details
 
 
