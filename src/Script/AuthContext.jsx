@@ -9,7 +9,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-    const APIURL = process.env.REACT_APP_API_URL || `http://localhost:5000`;
+    const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
  //
   useEffect(() => {
     axios.get(`${APIURL}/fetch/auth/me`, { withCredentials: true })

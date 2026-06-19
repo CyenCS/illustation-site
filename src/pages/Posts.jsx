@@ -27,7 +27,7 @@ function Posts() {
   const thumbnailsRef = useRef(null);
   const thumbRefs = useRef([])
 
-  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:5000`;
+  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`;
 
   const { published, edited } = FormatTime(post?.created, post?.edited);
   useEffect(() => {

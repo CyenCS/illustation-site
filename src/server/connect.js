@@ -6,18 +6,14 @@ const mysql = require('mysql2');
 // }
 
 const pool = mysql.createPool({
-host: process.env.DBHOST,
-user: process.env.DBUSER,
-password: process.env.DBPASSWORD,
-database: process.env.DBNAME,
+host: process.env.DBHOST || 'localhost',
+user: process.env.DBUSER || 'root',
+password: process.env.DBPASSWORD || 'mysql80.',
+database: process.env.DBNAME || 'illustation',
 
 // #For Render
 port: process.env.DBPORT,
-ssl: {
-    // For local development, you might not need SSL.
-    // Remove or adjust the following line if your DB doesn't require SSL.
-    rejectUnauthorized: true,
-},  
+ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,  // ← Change this
 //
 
   waitForConnections: true,

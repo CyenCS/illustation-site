@@ -14,7 +14,7 @@ const app = express();
 const KEY_SECRET = process.env.KEY_SECRET;
 
 
-const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app", "https://illustation-site.onrender.com" ];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https://illustation-site.vercel.app", "https://illustation-site.onrender.com" ];
 app.use(cors({
   origin: 
   function (origin, callback) {
@@ -52,6 +52,7 @@ app.set("trust proxy", 1);
 app.use(session({
   //Session cleanup on server
     secret: KEY_SECRET,
+    name: 'sessionId',
     store: sessionStore,
     resave: false, // false - Don't save session if unmodified
     saveUninitialized: false, //false - Don't create session until something is stored
