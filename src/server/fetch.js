@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 //Login
 router.post('/login', async (req, res) => {
-  const {name, password,} = req.body;
+  const {name, password} = req.body;
   console.log(req.body);
 
   try {
@@ -26,7 +26,7 @@ router.post('/login', async (req, res) => {
         user.password = undefined;
 
       // Successful login
-      req.session.user = {userid: user.id, name: user.name};
+      req.session.user = {userid: user.id, username: user.name};
       req.session.userid = user.id;
       req.session.username = user.name;
 

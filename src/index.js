@@ -21,7 +21,6 @@ axios.interceptors.response.use(
     const status = err.response?.status;
     const message = err.response?.data?.message;
     if (status === 401 && message && message.toLowerCase().includes('expired')) {
-      localStorage.removeItem('token');
       window.location.href = '/';
     }
     return Promise.reject(err);

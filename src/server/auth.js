@@ -39,7 +39,7 @@ async function authMiddleware (req, res, next) {
         maxAge: 1 * 24 * 60 * 60 * 1000,
       }, 
     );
-    req.session.save(() => next() )
+    req.session.save(() => next() ) // Ensure session is saved before proceeding
     return;
       }
     } catch (err) {

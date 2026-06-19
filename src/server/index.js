@@ -64,8 +64,6 @@ app.use(session({
     }
 }))
 
-app.use(authMiddleware);
-
 // Health check endpoint (no auth required)
 app.get('/health', (req, res) => {
   try {
@@ -84,6 +82,8 @@ app.get('/health', (req, res) => {
 app.use('/fetch', fetchRoutes);
 app.use('/illust', uploadRoutes);
 app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
+
+app.use(authMiddleware);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
