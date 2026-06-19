@@ -15,7 +15,7 @@ function Upload() {
   const { artid } = useParams();
   const isEdit = !!artid;
 
-  const APIURL = process.env.REACT_APP_API_URL; //||;
+  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:5000`;
     const [title, setTitleName] = useState('');
     const [description, setDescription] = useState('');
     const [initialTitle, setInitialTitle] = useState('');
