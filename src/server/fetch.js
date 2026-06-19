@@ -8,7 +8,6 @@ const crypto = require('crypto');
 //Login
 router.post('/login', async (req, res) => {
   const {name, password} = req.body;
-  console.log(req.body);
 
   try {
     const [results] = await db.promise().query('SELECT * FROM users WHERE name = ?', [name]);
@@ -26,9 +25,10 @@ router.post('/login', async (req, res) => {
         user.password = undefined;
 
       // Successful login
-      req.session.user = {userid: user.id, username: user.name};
+      req.session.user = {userid: user.id, username: user.name, userrole: user.role};
       req.session.userid = user.id;
       req.session.username = user.name;
+      req.session.userrole = user.role;
 
         //A long-term cookie to remember the user that restores session if session expired or browser closed
         const rememberToken = crypto.randomBytes(32).toString('hex');
