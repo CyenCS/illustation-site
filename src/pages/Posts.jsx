@@ -27,7 +27,7 @@ function Posts() {
   const thumbnailsRef = useRef(null);
   const thumbRefs = useRef([])
 
-  const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
+  const APIURL = process.env.REACT_APP_API_URL;// ||;
 
   const { published, edited } = FormatTime(post?.created, post?.edited);
   useEffect(() => {

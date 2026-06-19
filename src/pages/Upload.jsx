@@ -15,7 +15,7 @@ function Upload() {
   const { artid } = useParams();
   const isEdit = !!artid;
 
-  const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
+  const APIURL = process.env.REACT_APP_API_URL; //||;
     const [title, setTitleName] = useState('');
     const [description, setDescription] = useState('');
     const [initialTitle, setInitialTitle] = useState('');

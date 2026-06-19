@@ -5,7 +5,7 @@ import { useAuthContext } from "../Script/AuthContext";
 
 
 function LoginForm() {
-  const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
+  const APIURL = process.env.REACT_APP_API_URL; // ||;
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -23,7 +23,9 @@ function LoginForm() {
       );
 
     if (response.data.success) {
-      if (process.env.NODE_ENV === "development") { console.log('Login successful' + response.data.user); }
+  if (process.env.FRONT_DEBUG === 'true') {
+    console.log('Login successful: ', response.data.user);
+  }
       setUser(response.data.user);
       navigate('/');
     } else {

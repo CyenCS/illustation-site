@@ -9,8 +9,8 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-    const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
-
+    const APIURL = process.env.REACT_APP_API_URL;
+ //
   useEffect(() => {
     axios.get(`${APIURL}/fetch/auth/me`, { withCredentials: true })
       .then(res => {
@@ -18,8 +18,8 @@ export function AuthProvider({ children }) {
           setUser(res.data.user); // { userid, username, ... }
         }
       })
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+      .catch(() => {setUser(null)})
+      .finally(() => {setLoading(false)});
       
   }, [APIURL]);
 
