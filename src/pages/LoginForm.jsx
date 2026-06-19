@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
   const APIURL = process.env.REACT_APP_API_URL || `https://illustation-site.onrender.com`;
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const navigate = useNavigate(); 
 
   const handleSubmit
   = async (e) => {
@@ -20,7 +21,7 @@ function LoginForm() {
 
     if (response.data.success) {
       if (process.env.NODE_ENV === "development") { console.log('Login successful' + response.data.user); }
-      window.location.href = '/';
+      navigate('/');
     } else {
       setErrorMessage('Login failed: '+response.data.message || 'Login failed');
     }
