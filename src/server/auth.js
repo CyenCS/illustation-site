@@ -19,7 +19,16 @@ function requireLogin(req, res, next) {
   }
 }
 
+function requireAdmin(req, res, next) {
+    if (req.session.user.role !== "admin") {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+    next();
+}
+
+
 const db = require('./connect');
+//Auth Middleware for all kinds of users
 async function authMiddleware (req, res, next) {
   if (req.session.user) { // Extend expiry every visit
     req.session.cookie.expires = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); 

@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -14,7 +16,7 @@ const app = express();
 const KEY_SECRET = process.env.KEY_SECRET;
 
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https://illustation-site.vercel.app", "https://illustation-site.onrender.com" ];
+const allowedOrigins = ["http://localhost:3000", "https://illustation-site.vercel.app", "https://illustation-site.onrender.com" ];
 app.use(cors({
   origin: 
   function (origin, callback) {

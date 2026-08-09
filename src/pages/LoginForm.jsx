@@ -5,7 +5,7 @@ import { useAuthContext } from "../Script/AuthContext";
 
 
 function LoginForm() {
-  const APIURL = process.env.REACT_APP_API_URL || `http://localhost:3001`; // ||;
+  const APIURL = process.env.REACT_APP_API_URL// ||;
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

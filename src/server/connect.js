@@ -1,9 +1,9 @@
 const mysql = require('mysql2');
 
-// if (process.env.NODE_ENV !== 'production') {
-//   const path = require('path');
-// require('dotenv').config({ path: path.join(__dirname, '..' , '.env') });
-// }
+if (process.env.NODE_ENV !== 'production') {
+  const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..' , '.env') });
+}
 
 const pool = mysql.createPool({
 host: process.env.DBHOST || 'localhost',
