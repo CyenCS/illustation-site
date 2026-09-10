@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 
 
 function NavPage() {
@@ -6,12 +6,9 @@ function NavPage() {
   const location = useLocation();
   return (
     <nav className="navpage">
-      <button 
-      className={location.pathname === '/' ? 'active' : ''}
-      onClick={() => navigate('/')}>Home</button>
-      <button 
-      className={location.pathname === '/illustration' ? 'active' : ''}
-      onClick={() => navigate('/illustration')}>Illustrations</button>
+      <NavLink className={location.pathname === '/' ? 'active' : ''} to="/" end>Home</NavLink>
+      <NavLink className={location.pathname === '/illustration' ? 'active' : ''} to="/illustration">
+      Illustrations</NavLink>
     </nav>
   );
 }

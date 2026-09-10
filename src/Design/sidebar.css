@@ -1,0 +1,61 @@
+.page-layout{
+    display: flex;
+    align-items: flex-start;
+}
+
+/* Affects the main content area with the sidebar.*/
+.content{
+    flex: 1;
+    min-height: 100vh;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+}
+
+.content.sidebar-open {
+    margin-left: 250px;
+}
+
+.sidebar{
+    background-color: #232323;
+    width: 0px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    transition: width 0.3s ease;
+    overflow-x: hidden;
+}
+
+
+.sidebar.active{
+    width: 250px;
+}
+
+
+.sidebartext{
+    padding: 15px;
+    font-size: 18px;
+    gap: 40px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    
+}
+
+.sidebartext a{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    font-size: 18px;
+    height: 40px;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.sidebartext a:hover{
+    background-color: #444;
+    color: white;
+    transition: all 0.3s ease;
+}

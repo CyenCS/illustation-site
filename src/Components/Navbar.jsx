@@ -1,19 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 
-import AccountMenu from '../Script/AccountMenu.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import AccountMenu from "../Script/AccountMenu.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useAuthContext } from "../Script/AuthContext";
 
-function Navbar() {
-   const { user, loading} = useAuthContext();
+function Navbar({ onToggleSidebar }) {
+  const { user, loading } = useAuthContext();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   function onSearchSubmit(e) {
     e.preventDefault();
-    const trimmed = (search || '').trim();
+    const trimmed = (search || "").trim();
+
     if (trimmed.length > 0) {
       navigate(`/illustration?search=${encodeURIComponent(trimmed)}&page=1`);
     } else {
@@ -21,23 +22,37 @@ function Navbar() {
     }
   }
 
-  
- 
   return (
     <nav className="navbar">
-      <div className="navdiv"> 
-        <div className="logo">
-          <NavLink to="/">IlluStation (PT)</NavLink>
-        </div>
-        
-          <form onSubmit={onSearchSubmit} className="searchbar">
-            <input value={search} onChange={(e) => setSearch(e.target.value)} 
-            type="text" placeholder="Search" className="inputbox"/>
-            <button type="submit" ><FontAwesomeIcon icon={faSearch} /></button>
-          </form>
-           
-        
-                <div>
+      <div className="navdiv">
+        <ul>
+          <li>
+            <button type="button" onClick={onToggleSidebar}>
+              ☰
+            </button>
+          </li>
+
+          <li>
+            <div className="logo">
+              <NavLink to="/">IlluStation (PT)</NavLink>
+            </div>
+          </li>
+        </ul>
+
+        <form onSubmit={onSearchSubmit} className="searchbar">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search"
+            className="inputbox"
+          />
+          <button type="submit">
+            <FontAwesomeIcon icon={faSearch} />
+          </button>
+        </form>
+
+        <div>
           <ul id="account">
             {loading ? (
               <li>
@@ -56,7 +71,9 @@ function Navbar() {
                 <li>
                   <NavLink
                     to="/upload"
-                    className={({ isActive }) => (isActive ? "direct highlight" : "direct")}
+                    className={({ isActive }) =>
+                      isActive ? "direct highlight" : "direct"
+                    }
                   >
                     Upload
                   </NavLink>
@@ -74,7 +91,6 @@ function Navbar() {
             )}
           </ul>
         </div>
-        
       </div>
     </nav>
   );

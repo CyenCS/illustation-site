@@ -49,11 +49,15 @@ header {
   margin-left: 100px;
 }
 
+.navbar{
+  top: 0;
+}
+
 .navbar,
 footer {
+  position: sticky;
   box-sizing: border-box;
-  width: 1200px; 
-  min-width: 1200px; 
+  /* min-width: 1200px;  */
   margin: 0 auto;      /* center on larger viewports */
   flex: 0 0 auto;      /* do not grow or shrink in flex containers */
 }
@@ -61,7 +65,6 @@ footer {
 .content { /* keep layout from compressing; page will scroll horizontally */
   box-sizing: border-box;
   min-height: 100vh;
-  min-width: 1200px;
   overflow-x: auto;
   margin-top: auto;
   
@@ -119,7 +122,7 @@ footer {
   display: flex;
 }
 
-.navpage button {
+.navpage a {
   background: none;
   border: none;
   padding: 10px 50px;
@@ -130,12 +133,12 @@ footer {
   font-size: 16px;
 }
 
-.navpage button:hover {
+.navpage a:hover {
   background-color: hsl(199, 100%, 66%);
   color: white;
 }
 
-.navpage button.active {
+.navpage a.active {
   background-color: hsl(0, 0%, 100%);
   color: rgb(0, 0, 0);
   font-weight: bold;
@@ -192,7 +195,7 @@ footer {
 .navdiv {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   
 }
 
@@ -263,12 +266,13 @@ footer {
 }
 
 .dropdown-content {
-  display: block; /* Hidden by default, DO NOT SET AS NONE */
-  position: absolute;
+  display: flex; /* Hidden by default, DO NOT SET AS NONE */
+  flex-direction: column;
+  right: 10px;
+  position: fixed;
   background-color: #f1f1f1;
   min-width: 160px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0);
-  z-index: 1;
 }
 .dropdown-content a {
   color: black;
@@ -279,10 +283,9 @@ footer {
  background: none;
  text-align: left;
  cursor: pointer;
- color: black;
 }
 .dropdown-content a:hover {
-  background-color: #ddd;
+  background-color: #252525;
 }
 
 /*Home Page*/
