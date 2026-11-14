@@ -42,8 +42,8 @@ router.get("/admin/dashboard",requireLogin, requireAdmin, async (req, res) => {
   const [artworkCount] = await db.query(countArtworks);
 
   //Daily
-  const dailyUsersQuery = 'SELECT DATE(created_at) AS date, COUNT(*) AS newUsers '+ 
-  'FROM users GROUP BY DATE(created_at) ORDER BY DATE(created_at) DESC LIMIT 7';
+  const dailyUsersQuery = 'SELECT DATE(date), COUNT(*) AS newUsers '+ 
+  'FROM users GROUP BY DATE(date) ORDER BY DATE(date) DESC LIMIT 7';
   const dailyArtworksQuery = 'SELECT COUNT(*) AS newArtworks FROM artwork '+
   'WHERE created >= CURDATE() - INTERVAL 6 DAY AND created < CURDATE() + INTERVAL 1 DAY';
 
@@ -78,7 +78,7 @@ const artworkActivity = fillMissingDays(artworkRegistryData);
 
 
   const countRecentUsers = 
-  'SELECT id, name, `date` FROM users ORDER BY `date` DESC LIMIT 5;'
+  'SELECT id, name, date FROM users ORDER BY date DESC LIMIT 5;'
 
   const [recentUsers] = await db.query(countRecentUsers);
 
