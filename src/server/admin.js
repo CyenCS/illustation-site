@@ -2,6 +2,7 @@ import { requireLogin, requireAdmin } from './auth'; // Import the requireAdmin 
 
 const express = require('express');
 const router = express.Router();
+module.exports = router;
 const db = require('./connect'); 
 
 function fillMissingDays(rows) {
