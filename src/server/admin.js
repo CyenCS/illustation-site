@@ -1,4 +1,4 @@
-import { requireLogin, requireAdmin } from './auth'; // Import the requireAdmin middleware
+const { requireLogin, requireAdmin } = require('.auth');
 
 const express = require('express');
 const router = express.Router();
