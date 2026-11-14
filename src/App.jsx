@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate, Outlet } from "react-router-dom";
 
 import Navbar from "./Components/Navbar.jsx";
 import Footer from "./Components/Footer.jsx";
@@ -14,6 +14,27 @@ import Profile from "./pages/Profile.jsx";
 import { AuthProvider, useAuthContext } from "./Script/AuthContext.jsx";
 import Sidebar from "./Components/MainLayout.jsx";
 import AdminSidebar from "./Admin/AdminLayout.jsx";
+import AdminDashboard from "./Admin/dashboard.jsx";
+
+function RequireLogin() {
+  const { user, loading } = useAuthContext();
+
+  if (loading) return <div>Checking login...</div>;
+  if (!user) return <Navigate to="/" replace />;
+
+  return <Outlet />;
+}
+
+function RequireAdmin() {
+  const { user, loading } = useAuthContext();
+
+  if (loading) return <div>Loading...</div>;
+  if (!user || user.userrole !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+}
 
 function Layout({ children }) {
   const location = useLocation();
@@ -57,15 +78,20 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/*" element={<MainContent />} />
-            <Route path="/upload" element={<Upload />} />
-            <Route path="/posts/:artid/edit" element={<Upload />} />
+            <Route element={<RequireLogin />}>
+              <Route path="/upload" element={<Upload />} />
+              <Route path="/posts/:artid/edit" element={<Upload />} />
+            </Route>
             <Route path="/registry" element={<Registry />} />
             <Route path="/posts/:artid" element={<Posts />} />
             <Route path="/profile/:userid" element={<Profile />} />
-
-            <Route path="/admin" element={<div>Admin Dashboard</div>} />
-            <Route path="/admin/users" element={<div>Admin Users</div>} />
-            <Route path="/admin/posts" element={<div>Admin Posts</div>} />
+            <Route element={<RequireAdmin />}> 
+               <Route path="/admin" element={<AdminDashboard/>} /> 
+               {/* <AdminDashboard/> */}
+               <Route path="/admin/users" element={<div>Admin Users</div>} />
+               <Route path="/admin/posts" element={<div>Admin Posts</div>} />
+               <Route path="/admin/stats" element={<div>Admin Stats</div>} />
+            </Route>
           </Routes>
         </Layout>
       </Router>

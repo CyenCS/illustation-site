@@ -15,6 +15,7 @@ export function AuthProvider({ children }) {
       .then(res => {
         if (res.data.success) {
           setUser(res.data.user); // { userid, username, ... }
+
         }
       })
       .catch(() => {setUser(null)})
@@ -33,7 +34,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout, loading }}>
+    <AuthContext.Provider value={{ user,  setUser, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

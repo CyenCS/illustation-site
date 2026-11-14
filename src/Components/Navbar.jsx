@@ -27,7 +27,7 @@ function Navbar({ onToggleSidebar }) {
       <div className="navdiv">
         <ul>
           <li>
-            <button type="button" onClick={onToggleSidebar}>
+            <button type="button" style={{ border: "none", background: "none" }} onClick={onToggleSidebar}>
               ☰
             </button>
           </li>
@@ -78,6 +78,11 @@ function Navbar({ onToggleSidebar }) {
                     Upload
                   </NavLink>
                 </li>
+                {user.userrole === "admin" && (
+                  <li>
+                    <NavLink to="/admin">Moderation</NavLink>
+                  </li>
+                )}
                 <li>
                   <AccountMenu />
                 </li>

@@ -4,7 +4,7 @@ function PageTitle( title ) {
     useEffect(() => {
         document.title = title ? `${title}` : "Illustation";
     }, [title]);
-    return null; // This component only manages document.title
+    return null;
 }
 
 export default PageTitle;

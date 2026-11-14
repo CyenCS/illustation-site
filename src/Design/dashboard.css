@@ -1,0 +1,110 @@
+.dashboard-stats, .dashboard-graphs, .dashboard-datalist{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: hsl(0, 0%, 20%);
+    flex:1;
+}
+  /* grid-template-columns: repeat(2, 1fr); */
+
+/* Useful for both views including mobile. */
+/* .dashboard-graphs {
+    flex-wrap: wrap;
+    gap: 20px;
+    min-width: 0;
+} */
+
+
+
+.dashboard-stats div, .dashboard-graphs .chart-container, 
+.dashboard-datalist .recent-table{
+    background-color: hsl(0, 0%, 30%);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 20px 20px 20px 20px;
+}
+
+.dashboard-stats div{
+    height: 100px; width: 300px;
+}
+.dashboard-datalist .recent-table{
+    height: 450px; width: 600px;
+    flex:1;
+}
+
+
+.dashboard-stats div p {
+    font-size: 2em;
+    margin: 10px 0 0 0;
+}
+.dashboard-graphs .chart-container {
+    display: flex;
+    flex-direction: column;
+    width: 700px;
+}
+/* Useful for both views including mobile. */
+/* .dashboard-graphs .chart-container {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    flex: 1 1 480px;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+} */
+
+.dashboard-graphs .chart-container {
+    width: 100%;
+}
+
+.custom-tooltip {
+    background-color: hsl(0, 0%, 0%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 7px;
+    height: 20px;
+    min-width: 50px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.dashboard-datalist .recent-table {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: #e5e5e5;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px 0;
+    border-bottom: 1px solid #808080;
+    text-align: left;
+}
+
+.data-table th {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.data-table td {
+    font-size: 20px;
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+    text-align: right;
+}

@@ -147,11 +147,7 @@ useEffect(() => {
 
   if (loading) return;
 
-  if (!user) {
-    navigate('/');
-    return;
-  }
-  else{
+
     if (isEdit) {
       fetchPostDataForEdit(artid);
     } 
@@ -163,7 +159,6 @@ useEffect(() => {
       setInitialDescription('');
       return;
     }
-  }
 }
 , [user, isEdit, artid, loading, navigate, APIURL]);
 

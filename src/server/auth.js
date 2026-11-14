@@ -20,7 +20,7 @@ function requireLogin(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-    if (req.session.user.role !== "admin") {
+    if (req.session.user.userrole !== "admin") {
         return res.status(403).json({ message: "Forbidden" });
     }
     next();
@@ -28,6 +28,8 @@ function requireAdmin(req, res, next) {
 
 
 const db = require('./connect');
+
+
 //Auth Middleware for all kinds of users
 async function authMiddleware (req, res, next) {
   if (req.session.user) { // Extend expiry every visit
@@ -59,4 +61,4 @@ async function authMiddleware (req, res, next) {
 }
 
 
-module.exports = { requireLogin, authMiddleware };
+module.exports = { requireLogin, requireAdmin, authMiddleware };

@@ -14,7 +14,7 @@ body {
   place-items: center;
 }
 
-h1 {
+h1, h4{
   text-align: center;
 }
 
@@ -51,10 +51,12 @@ header {
 
 .navbar{
   top: 0;
+  z-index: 1000; /* Ensure the navbar stays on top of other content - Prevents being overlapped */
 }
 
 .navbar,
 footer {
+  
   position: sticky;
   box-sizing: border-box;
   /* min-width: 1200px;  */
