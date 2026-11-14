@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const { authMiddleware } = require('./auth');
 const { stat } = require('fs');
+const adminRoutes = require('./admin');
 
 const app = express();
 
@@ -87,6 +88,7 @@ app.use('/illust', uploadRoutes);
 app.use('/posts', express.static(path.join(__dirname, "..","..", "posts")));
 
 app.use(authMiddleware);
+app.use(adminRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
