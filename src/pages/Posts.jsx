@@ -1,0 +1,168 @@
+import { useParams,} from "react-router-dom";
+import { useRef, useEffect, useState } from "react";
+import axios from "axios";
+import '../Design/posts.css';
+
+import { useNavigate } from 'react-router-dom';
+import FormatTime from "../Script/TimeFormat.jsx";
+import { useAuthContext } from "../Script/AuthContext.jsx";
+import PageTitle from "../Script/PageTitle";
+
+import { Link } from 'react-router-dom';
+
+function Posts() {
+  const navigate = useNavigate();
+  const { user } = useAuthContext();
+  const { artid } = useParams();
+  
+  const userId = user?.userid ?? null;
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+  
+  //Right
+  const [imagesList, setImagesList] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const thumbnailsRef = useRef(null);
+  const thumbRefs = useRef([])
+
+  const APIURL = process.env.REACT_APP_API_URL;
+
+  const { published, edited } = FormatTime(post?.created, post?.edited);
+  useEffect(() => {
+    if (!artid) return;
+    setLoading(true);
+    setNotFound(false);
+    axios.get(`${APIURL}/illust/posts/${artid}`)
+      .then(res => {
+        console.log("Response:", res.data);
+        if (res.data.success) {
+          setPost(res.data.post);
+          console.log(res.data.post.created, res.data.post.edited);
+          
+          const imgs = Array.isArray(res.data.post.images) ? res.data.post.images : [];
+          setImagesList(imgs);
+          setSelectedIndex(0);
+          setIsOwner(String(userId) === String(res.data.post.userid));
+        } else {
+          setNotFound(true);
+        }
+      
+      })
+      .catch(err => {
+        if (err.response?.status === 404) {
+          setNotFound(true);
+        } else {
+          console.error(err);
+        }
+      }).finally(() => setLoading(false));
+  }, [artid, APIURL, userId]);
+
+
+  // Scroll selected thumbnail into view when selectedIndex changes
+  useEffect(() => {
+    const selectedborder = thumbRefs.current[selectedIndex];
+    if (selectedborder) {
+      // prefer centering the item in the scroll container
+      selectedborder.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }, [selectedIndex]);
+
+useEffect(() => { if (imagesList.length) console.log('Images List:', imagesList); }, [imagesList]);
+
+let template;
+// Loading and Not Found states
+if (!post && loading) {
+  template = <div className="loading"><p>Loading...</p></div>;
+} else if (notFound) {
+  template = <div className="error"><p>Page Not Found</p></div>;
+} else if (post && !loading) 
+  {
+    template = 
+          <div className="posts">
+            <div className="blocks details">
+                <h3 className="title">{post.title ?? "No Title"}</h3>
+                {isOwner && (<div className="options">
+                    <button className="edit-btn"
+                    onClick={()=> navigate('/posts/'+post.artid+'/edit', )}>Edit</button>
+                     
+                </div>)}
+                <div className="info">
+                    <p>By:&ensp;
+                      <Link className="artist-link" key={post.userid} to={`/profile/${post.userid}`}> 
+                      {post.username}
+                      </Link>
+                    </p>
+                    <p>Published: {published}</p>
+                    {edited ? <p>Edited: {edited}</p>:null}
+                    <div className="description">
+                        {post.caption ?? <i>No Desription</i>}
+                    </div>
+                </div>
+                
+            </div>
+            {/* Image Display */}
+            
+            <div className="blocks showimage">
+              <div className="gallery-outer">
+                <div className="gallery-container">
+                  {/* Main image */}
+                  <div className="main-image">
+                    <img src={imagesList[selectedIndex]} alt={`Artwork ${selectedIndex + 1}`} />
+                  </div>
+                  <div className="thumbnail-strip">
+                    <button
+          className="nav-btn"
+          onClick={() => setSelectedIndex((selectedIndex - 1 + imagesList.length) % imagesList.length)}
+        >
+          ◀
+        </button>
+
+        <div className="thumbnails" ref={thumbnailsRef}>
+          {imagesList.map((src, index) => (
+            <img
+              key={index}
+              ref={(selectedborder) => (thumbRefs.current[index] = selectedborder)}
+              src={src}
+              className={`thumbnailList ${selectedIndex === index ? "active" : ""}`}
+              alt={`Thumbnail ${index + 1}`}
+              onClick={() => setSelectedIndex(index)}
+            />
+          ))}
+        </div>
+
+        <button
+          className="nav-btn"
+          onClick={() => setSelectedIndex((selectedIndex + 1) % imagesList.length)}
+        >
+          ▶
+        </button>
+                  </div>
+                  <div className="page-label">{`${selectedIndex + 1} of ${imagesList.length}`}</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+  } else {
+  template = <div className="error">Unknown Error</div>;
+  }
+
+  let pageTitle = "Artwork";
+  if (notFound) pageTitle = "Artwork not found";
+  else if (loading) pageTitle = "Loading artwork...";
+  else if (post?.title) pageTitle = post.title;
+
+    PageTitle(pageTitle);
+  
+  return(
+    <>
+      <div className="content">{template}</div>
+    </>
+    )
+  }
+
+export default Posts;
+
