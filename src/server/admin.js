@@ -1,9 +1,11 @@
-const { requireLogin, requireAdmin } = require('.auth');
+
 
 const express = require('express');
 const router = express.Router();
 module.exports = router;
 const db = require('./connect'); 
+
+const { requireLogin, requireAdmin } = require('./auth');
 
 function fillMissingDays(rows) {
 
