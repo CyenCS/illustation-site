@@ -152,7 +152,12 @@ router.post('/logout', requireLogin, async (req, res) => {
   try{
     await db.promise().query('UPDATE users SET remember_token = NULL WHERE id = ?', [req.session.userid]);
 
-    res.clearCookie('connect.sid');
+    res.clearCookie('sessionId', {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'none',
+  path: '/'
+});
     res.clearCookie("rememberToken");
     req.session.destroy( err => {
       if(err){
