@@ -87,10 +87,10 @@ const artworkActivity = fillMissingDays(artworkRegistryData);
 
   const countRecentArtworks =
   'SELECT a.artid, a.title, a.image, a.created, u.name AS username' +
-  'FROM artwork a' +
-  'JOIN users u ON a.userid = u.id' +
-  'ORDER BY a.created DESC' +
-  'LIMIT 5;'
+  ' FROM artwork a' +
+  ' JOIN users u ON a.userid = u.id' +
+  ' ORDER BY a.created DESC' +
+  ' LIMIT 5;'
 
   const [recentArtworks] = await db.query(countRecentArtworks);
 
