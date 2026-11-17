@@ -30,7 +30,8 @@ function RequireAdmin() {
 
   if (loading) return <div>Loading...</div>;
   if (!user || user.userrole !== "admin") {
-    return <Navigate to="/" replace />;
+    return;
+    //<Navigate to="/" replace />
   }
 
   return <Outlet />;

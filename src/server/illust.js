@@ -5,6 +5,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./connect');
+const util = require('util');
 
 const multer = require('multer');
 const { requireLogin } = require('./auth');
@@ -35,9 +36,22 @@ const storage = new CloudinaryStorage({
 });
 
 const upload = multer({ storage });
+const uploadImages = upload.array('images', 3);
 
 //Upload Artwork
-router.post('/upload', requireLogin, upload.array('images', 3), async (req, res) => {
+router.post('/upload', requireLogin, async (req, res, next) => {
+  uploadImages(req, res, (err) => {
+    if (!err) return next();
+
+    console.error("MULTER / CLOUDINARY UPLOAD ERROR:");
+    console.error(util.inspect(err, { depth: 5, colors: false }));
+
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Image upload failed"
+    });
+  });
+}, async (req, res) => {
   try{
     const userid = req.body.userid;
     const { title, caption, category, artid } = req.body;
@@ -79,7 +93,8 @@ router.post('/upload', requireLogin, upload.array('images', 3), async (req, res)
     console.error("Upload failed: ", err);
     res.status(500).json({ success: false, message: 'Upload error: '+err.message });
   }
-});
+},
+  );
 
 async function verifyartwork(res, artid, userId) {
   const [rows] = await db.promise().query('SELECT userid FROM artwork WHERE artid = ?', [artid]);

@@ -91,9 +91,14 @@ function Upload() {
         alert(`Upload failed: ` + response.data.message);
       }
     } catch (err) {
+      console.error("Artwork upload failed:", {
+    status: err.response?.status,
+    response: err.response?.data,
+    message: err.message
+  });
       const serverMessage = err.response?.data?.message || err.message;
-      if(err.response?.status===401){
       alert(`Upload error: ` + serverMessage);
+      if(err.response?.status===401){
       navigate('/');
       }
     }

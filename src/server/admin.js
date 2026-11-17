@@ -41,8 +41,8 @@ router.get("/admin/dashboard",requireLogin, requireAdmin, async (req, res) => {
   const countUsers = 'SELECT COUNT(*) AS totalUsers FROM users';
   const countArtworks = 'SELECT COUNT(*) AS totalArtworks FROM artwork';
   
-  const [userCount] = await db.query(countUsers);
-  const [artworkCount] = await db.query(countArtworks);
+  const [userCount] = await db.promise().query(countUsers);
+  const [artworkCount] = await db.promise().query(countArtworks);
 
   //Daily
   const dailyUsersQuery = 'SELECT DATE(date), COUNT(*) AS newUsers '+ 
@@ -50,8 +50,8 @@ router.get("/admin/dashboard",requireLogin, requireAdmin, async (req, res) => {
   const dailyArtworksQuery = 'SELECT COUNT(*) AS newArtworks FROM artwork '+
   'WHERE created >= CURDATE() - INTERVAL 6 DAY AND created < CURDATE() + INTERVAL 1 DAY';
 
-  const [userCountDaily] = await db.query(dailyUsersQuery);
-  const [artworkCountDaily] = await db.query(dailyArtworksQuery);
+  const [userCountDaily] = await db.promise().query(dailyUsersQuery);
+  const [artworkCountDaily] = await db.promise().query(dailyArtworksQuery);
 
   //Weekly Graph 
   const dailyUserRegistry = 
@@ -62,7 +62,7 @@ router.get("/admin/dashboard",requireLogin, requireAdmin, async (req, res) => {
   ' GROUP BY DATE(`date`)' +
   ' ORDER BY day ASC;';
 
-  const [userRegistryData] = await db.query(dailyUserRegistry);
+  const [userRegistryData] = await db.promise().query(dailyUserRegistry);
 
   const dailyArtworkRegistry = 
   'SELECT DATE_FORMAT(`created`, `%Y-%m-%d`) AS day, COUNT(*) AS total' +
@@ -72,7 +72,7 @@ router.get("/admin/dashboard",requireLogin, requireAdmin, async (req, res) => {
   ' GROUP BY DATE(`created`)' +
   ' ORDER BY day ASC;';
 
-    const [artworkRegistryData] = await db.query(dailyArtworkRegistry);
+    const [artworkRegistryData] = await db.promise().query(dailyArtworkRegistry);
 
 const userActivity = fillMissingDays(userRegistryData);
 const artworkActivity = fillMissingDays(artworkRegistryData);
@@ -83,7 +83,7 @@ const artworkActivity = fillMissingDays(artworkRegistryData);
   const countRecentUsers = 
   'SELECT id, name, date FROM users ORDER BY date DESC LIMIT 5;'
 
-  const [recentUsers] = await db.query(countRecentUsers);
+  const [recentUsers] = await db.promise().query(countRecentUsers);
 
   const countRecentArtworks =
   'SELECT a.artid, a.title, a.image, a.created, u.name AS username' +
@@ -92,7 +92,7 @@ const artworkActivity = fillMissingDays(artworkRegistryData);
   ' ORDER BY a.created DESC' +
   ' LIMIT 5;'
 
-  const [recentArtworks] = await db.query(countRecentArtworks);
+  const [recentArtworks] = await db.promise().query(countRecentArtworks);
 
   res.json({ 
     success: true,
@@ -110,13 +110,13 @@ const artworkActivity = fillMissingDays(artworkRegistryData);
 });
 
 router.get("/admin/userlist", requireAdmin, async (req, res) => {
-  const [users] = await db.query("SELECT * FROM users");
+  const [users] = await db.promise().query("SELECT * FROM users");
   res.json(users);
 });
 
 
 router.get("/admin/postlist", requireAdmin, async (req, res) => {
-  const [posts] = await db.query("SELECT * FROM artwork");
+  const [posts] = await db.promise().query("SELECT * FROM artwork");
   res.json(posts);
 });
 

@@ -40,7 +40,7 @@ function AdminDashboard() {
     }
     setLoading(true);
     setNotFound(false);
-    axios.get(`${APIURL}/admin/dashboard`)
+    axios.get(`${APIURL}/admin/dashboard`, { withCredentials: true })
     .then(res=>{
       console.log("Response:", res.data);
       if (res.data.success) {
@@ -70,7 +70,7 @@ function AdminDashboard() {
 } else if (!notFound && !loading) {
   template = <div>
       <div className="dashboard-stats">
-        <WeeklyStats stats/>
+        <WeeklyStats stats={stats}/>
       </div>
       <div className="dashboard-graphs">
         <RegistryBarChart />
