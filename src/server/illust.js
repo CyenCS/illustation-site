@@ -54,7 +54,7 @@ router.post('/upload', requireLogin, async (req, res, next) => {
     error: err.error,
     response: err.response,
     cause: err.cause,
-    keys: Object.keys(err),
+    headers: err.response?.headers,
   }, { depth: 8 });
 
     return res.status(500).json({
