@@ -43,7 +43,19 @@ router.post('/upload', requireLogin, async (req, res, next) => {
     if (!err) return next();
 
     console.error("MULTER / CLOUDINARY UPLOAD ERROR:");
-    console.error(util.inspect(err, { depth: 5, colors: false }));
+      if (!err) return next();
+
+  console.error("CLOUDINARY UPLOAD DEBUG");
+
+  console.dir({
+    name: err.name,
+    message: err.message,
+    http_code: err.http_code,
+    error: err.error,
+    response: err.response,
+    cause: err.cause,
+    keys: Object.keys(err),
+  }, { depth: 8 });
 
     return res.status(500).json({
       success: false,
