@@ -30,7 +30,6 @@ const storage = new CloudinaryStorage({
       folder: `posts/${artid}`,
       public_id: `${artid}_p${index}`,
       allowed_formats: ["jpg", "jpeg", "png", "webp"],
-      version: null,
     };
   },
 });
